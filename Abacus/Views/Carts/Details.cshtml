@@ -1,0 +1,98 @@
+﻿@model Abacus.Models.Cart
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Cart</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Buyer.HDBUserName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Buyer.HDBUserName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BuyerEmail.EmailAddress)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BuyerEmail.EmailAddress)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CartNumber)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CartNumber)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SaleDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SaleDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.NumberOfItems)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NumberOfItems)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.NumberOfSellers)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NumberOfSellers)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TotalValue)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TotalValue)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ItemCost)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ItemCost)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ShippingCost)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ShippingCost)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PayPalFees)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PayPalFees)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

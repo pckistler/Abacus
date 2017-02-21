@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type='text/xsl' href='_MigrationReport_Files/MigrationReport.xslt'?>
+<UpgradeLog>
+<Properties>
+<Property Name="Solution" Value="C:\Users\Peter_2\documents\visual studio 2015\Projects\Abucus\Abucus.sln"></Property>
+<Property Name="Solution File" Value="C:\Users\Peter_2\documents\visual studio 2015\Projects\Abucus"></Property>
+<Property Name="Date" Value="12/29/2016 3:55:52 PM"></Property>
+</Properties>
+<Event ErrorLevel="3" Project="Abucus" Source="BundleConfig.cs" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="FilterConfig.cs" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="IdentityConfig.cs" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="RouteConfig.cs" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="Startup.Auth.cs" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="bootstrap.css" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="bootstrap.min.css" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="Site.css" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="AccountController.cs" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="HomeController.cs" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="ManageController.cs" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="favicon.ico" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="glyphicons-halflings-regular.eot" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="glyphicons-halflings-regular.svg" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="glyphicons-halflings-regular.ttf" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="glyphicons-halflings-regular.woff" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="Global.asax.cs" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="AccountViewModels.cs" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="IdentityModels.cs" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="ManageViewModels.cs" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="packages.config" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="Project_Readme.html" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="AssemblyInfo.cs" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="_references.js" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="bootstrap.js" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="bootstrap.min.js" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="jquery-1.10.2.intellisense.js" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="jquery-1.10.2.js" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="jquery-1.10.2.min.js" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="jquery-1.10.2.min.map" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="jquery.validate-vsdoc.js" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="jquery.validate.js" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="jquery.validate.min.js" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="jquery.validate.unobtrusive.js" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="jquery.validate.unobtrusive.min.js" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="modernizr-2.6.2.js" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="respond.js" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="respond.min.js" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="Startup.cs" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="_ViewStart.cshtml" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="_ExternalLoginsListPartial.cshtml" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="ConfirmEmail.cshtml" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="ExternalLoginConfirmation.cshtml" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="ExternalLoginFailure.cshtml" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="ForgotPassword.cshtml" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="ForgotPasswordConfirmation.cshtml" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="Login.cshtml" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="Register.cshtml" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="ResetPassword.cshtml" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="ResetPasswordConfirmation.cshtml" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="SendCode.cshtml" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="VerifyCode.cshtml" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="About.cshtml" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="Contact.cshtml" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="Index.cshtml" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="AddPhoneNumber.cshtml" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="ChangePassword.cshtml" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="Index.cshtml" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="ManageLogins.cshtml" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="SetPassword.cshtml" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="VerifyPhoneNumber.cshtml" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="_Layout.cshtml" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="_LoginPartial.cshtml" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="Error.cshtml" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="Lockout.cshtml" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="Web.config" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="Web.Debug.config" Description="No need to convert"></Event>
+<Event ErrorLevel="3" Project="Abucus" Source="Web.Release.config" Description="No need to convert"></Event>
+
+</UpgradeLog>

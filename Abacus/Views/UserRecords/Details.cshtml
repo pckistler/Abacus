@@ -1,0 +1,66 @@
+﻿@model Abacus.Models.UserRecord
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>UserRecord</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.PayPalId.EmailAddress)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PayPalId.EmailAddress)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PreferredEmail.EmailAddress)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PreferredEmail.EmailAddress)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.HDBUserName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.HDBUserName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.HDBUserId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.HDBUserId)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.FirstName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FirstName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LastName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LastName)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
