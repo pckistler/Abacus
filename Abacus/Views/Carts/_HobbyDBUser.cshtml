@@ -5,13 +5,21 @@
     if (Model.IsNewRecord)
     { action = "Create New "; }
 
+    var updateTarget = "";
     var title = action + " HobbyDB ";
     if (Model.IsBuyer && Model.IsSeller)
     { title += "User"; }
     else if (Model.IsBuyer)
-    { title += "Buyer"; }
+    {
+        title += "Buyer";
+        updateTarget = "buyer_dropdown";
+    }
     else
-    { title += "Seller"; }
+    {
+        title += "Seller";
+        updateTarget = "seller_dropdown";
+    }
+    ViewBag.ListType = Model.IsBuyer;
 
 }
 <script>
@@ -26,12 +34,18 @@
     <h4 class="modal-title">@title</h4>
 </div>
 <div class="modal-body">
-    @using (Html.BeginForm("HobbyDBUser", "UserRecords", FormMethod.Post))
-            {
+    @using (Ajax.BeginForm("HobbyDBUser", "Carts", FormMethod.Post, new AjaxOptions {
+        InsertionMode = InsertionMode.Replace,
+        HttpMethod = "POST",
+        UpdateTargetId = updateTarget,
+        OnSuccess = "success",
+        OnFailure = "failure"
+    }, new { target = Model.IsBuyer }))
+    {
         @Html.AntiForgeryToken()
         @Html.HiddenFor(model => model.Id)
 
-
+        <input data-val="true" data-val-number="The field Id must be a number." data-val-required="The Id field is required." id="DropDownTarget" name="DropDownTarget" type="hidden" value="@updateTarget">
 
 
         <div class="form-horizontal">
@@ -90,6 +104,7 @@
                     <button type="submit" id="approve-btn" class="btn btn-danger">Save</button>
                 </div>
             </div>
+
             @*<div class="form-group">
                     <div class="col-md-offset-2 col-md-10">
                         <input type="submit" value="Create" class="btn btn-default" />

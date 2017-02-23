@@ -27,9 +27,10 @@ namespace Abacus.ViewModel
         [Display(Name = "Number of Sellers")]
         public int NumberOfSellers { get; set; }
 
-        public int ExistingBuyerId { get; set; }
-        [ForeignKey("ExistingBuyerId")]
+        public int BuyerId { get; set; }
+        [ForeignKey("BuyerId")]
         public virtual Models.UserRecord Buyer { get; set; }
+        public System.Web.Mvc.SelectList Buyers { get; set; }
 
         [Display(Name = "Total Amout in Cart")]
         [DataType(DataType.Currency)]
@@ -48,6 +49,8 @@ namespace Abacus.ViewModel
         public int SellerId { get; set; }
         [ForeignKey("SellerId")]
         public virtual Models.UserRecord Seller { get; set; }
+        public System.Web.Mvc.SelectList Sellers { get; set; }
+
         [Display(Name = "Total Items Cost")]
         [DataType(DataType.Currency)]
         public double SellerItemsTotal { get; set; }
