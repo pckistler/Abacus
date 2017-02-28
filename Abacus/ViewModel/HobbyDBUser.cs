@@ -30,6 +30,12 @@ namespace Abacus.ViewModel
         [DataType(DataType.EmailAddress)]
         public string PayPalEmail { get; set; }
 
+        [Display(Name ="First name")]
+        public string FirstName { get; set; }
+
+        [Display(Name = "Last name")]
+        public string LastName { get; set; }
+
         [Display(Name = "Buyer")]
         public bool IsBuyer { get; set; }
 

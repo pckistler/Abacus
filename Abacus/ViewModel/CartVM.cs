@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Abacus.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -9,6 +10,86 @@ namespace Abacus.ViewModel
 {
     public class CartVM
     {
+        public CartVM()
+        {
+
+        }
+
+        public CartVM(Models.Cart cart)
+        {
+            Id = cart.Id;
+            CartNumber = cart.CartNumber;
+            SaleDate = cart.SaleDate;
+            NumberOfItems = cart.NumberOfItems;
+            NumberOfSellers = cart.NumberOfSellers;
+            BuyerId = cart.BuyerId;
+            CartAmount = cart.TotalValue;
+            ItemsAmount = cart.ItemCost;
+            ShippingAmount = cart.ShippingCost;
+            PayPalAmount = cart.PayPalFees;
+            Models.TransactionRecord tr = cart.Transactions.ElementAtOrDefault(0);
+            TransactionId = tr.Id;
+            SellerId = tr.SellerId;
+            SellerItemsTotal = tr.ItemCosts;
+            SellerShippingTotal = tr.ShippingCost;
+            TrackingNumber = string.Empty;
+            ShippingRecordId = 0;
+            if (tr.ShippingRecord != null)
+            {
+                ShippingRecordId = tr.Id;
+                TrackingNumber = tr.ShippingRecord.TrackingNumber;
+            }
+        }
+        public Models.Cart Cart
+        {
+            get
+            {
+                Models.Cart cart = new Models.Cart()
+                {
+                    Id = Id,
+                    BuyerId = BuyerId,                    
+                    CartNumber = CartNumber,
+                    TotalValue = CartAmount,
+                    ItemCost = ItemsAmount,
+                    ShippingCost = ShippingAmount,
+                    PayPalFees = PayPalAmount
+                };
+
+                Models.UserRecord buyer = Buyer;
+                if (buyer == null)
+                {
+                    ApplicationDbContext db = new ApplicationDbContext();
+                    buyer = db.UserRecords.SingleOrDefault(r=>r.Id == BuyerId);
+                }
+                cart.BuyerEmailId = buyer.PreferredEmailId;
+
+                return cart;
+            }
+        }
+        public List<Models.TransactionRecord> Transactions
+        {
+            get
+            {
+                List<Models.TransactionRecord> list = new List<Models.TransactionRecord>();
+                Models.TransactionRecord tr = new Models.TransactionRecord()
+                {
+                    Id = TransactionId,
+                    SellerId = SellerId,
+                    ItemCosts = SellerItemsTotal,
+                    ShippingCost = SellerShippingTotal,
+                };
+                Models.ShippingRecord sr = new Models.ShippingRecord()
+                {
+                    Id = ShippingRecordId,
+                    TrackingNumber = TrackingNumber
+                };
+                tr.ShippingRecord = sr;
+                tr.ShippingRecordId = sr.Id;
+                list.Add(tr);
+
+                return list;
+            }
+        }
         [Key]
         public int Id { get; set; } = 0;
 
@@ -57,6 +138,9 @@ namespace Abacus.ViewModel
         [Display(Name = "Total Shipping Costs")]
         [DataType(DataType.Currency)]
         public double SellerShippingTotal { get; set; }
+
+        public int TransactionId { get; set; }
+        public int ShippingRecordId { get; set; }
 
         public string TrackingNumber { get; set; }
     }

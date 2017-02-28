@@ -191,9 +191,18 @@ namespace Abacus.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.BuyerId = new SelectList(db.UserRecords, "Id", "HDBUserName", cart.BuyerId);
-            ViewBag.BuyerEmailId = new SelectList(db.Emails, "Id", "EmailAddress", cart.BuyerEmailId);
-            return View(cart);
+            //ViewBag.BuyerId = new SelectList(db.UserRecords, "Id", "HDBUserName", cart.BuyerId);
+            //ViewBag.BuyerEmailId = new SelectList(db.Emails, "Id", "EmailAddress", cart.BuyerEmailId);
+
+            CartVM cartVM = new CartVM(cart);
+            var list = db.UserRecords.OrderBy(u => u.HDBUserName).ToList();
+            cartVM.Buyers = new SelectList(list.Where(u => (u.UserType & UserRecord.UserTypes.Buyer) == UserRecord.UserTypes.Buyer), "Id", "HDBUserName");
+            cartVM.Sellers = new SelectList(list.Where(u => (u.UserType & UserRecord.UserTypes.Seller) == UserRecord.UserTypes.Seller), "Id", "HDBUserName");
+            ViewBag.BuyerId = cartVM.Buyers;
+            ViewBag.SellerId = cartVM.Sellers;
+
+
+            return View(cartVM);
         }
 
         // POST: Carts/Edit/5
@@ -201,17 +210,28 @@ namespace Abacus.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "Id,CartNumber,SaleDate,NumberOfItems,NumberOfSellers,BuyerId,BuyerEmailId,TotalValue,ItemCost,ShippingCost,PayPalFees")] Cart cart)
+        public async Task<ActionResult> Edit([Bind] CartVM cartVM)
+        //public async Task<ActionResult> Edit([Bind(Include = "Id,CartNumber,SaleDate,NumberOfItems,NumberOfSellers,BuyerId,BuyerEmailId,CartAmount,ItemsAmount,ShippingAmount,PayPalAmount,SellerId,SellerItemsTotal,SellerShippingTotal,TrackingNumber")] CartVM cartVM)
         {
             if (ModelState.IsValid)
             {
+                Cart cart = cartVM.Cart;
+                TransactionRecord tr = cartVM.Transactions.ElementAtOrDefault(0);
+
                 db.Entry(cart).State = EntityState.Modified;
                 await db.SaveChangesAsync();
+
+                if (tr != null)
+                {
+                    db.Entry(tr).State = EntityState.Modified;
+                    await db.SaveChangesAsync();
+                }                
+                //await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            ViewBag.BuyerId = new SelectList(db.UserRecords, "Id", "HDBUserName", cart.BuyerId);
-            ViewBag.BuyerEmailId = new SelectList(db.Emails, "Id", "EmailAddress", cart.BuyerEmailId);
-            return View(cart);
+            //ViewBag.BuyerId = new SelectList(db.UserRecords, "Id", "HDBUserName", cart.BuyerId);
+            //ViewBag.BuyerEmailId = new SelectList(db.Emails, "Id", "EmailAddress", cart.BuyerEmailId);
+            return View(cartVM);
         }
 
         // GET: Carts/Delete/5
@@ -314,6 +334,8 @@ namespace Abacus.Controllers
                     {
                         HDBUserName = hdbUser.HobbyDBUserName,
                         HDBUserId = hdbUser.HobbyDBUserId,
+                        LastName = hdbUser.LastName,
+                        FirstName = hdbUser.FirstName,
                         UserType = (hdbUser.IsBuyer ? UserRecord.UserTypes.Buyer : 0) | (hdbUser.IsSeller ? UserRecord.UserTypes.Seller : UserRecord.UserTypes.None),
                         PreferredEmailId = preferredEmail.Id,
                         PayPalEmailId = payPalEmail.Id
