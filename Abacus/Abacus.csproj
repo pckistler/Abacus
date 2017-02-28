@@ -215,6 +215,10 @@
     <Compile Include="Migrations\201702210315287_Init.Designer.cs">
       <DependentUpon>201702210315287_Init.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201702240523535_LogRecords.cs" />
+    <Compile Include="Migrations\201702240523535_LogRecords.Designer.cs">
+      <DependentUpon>201702240523535_LogRecords.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Address.cs" />
@@ -350,6 +354,7 @@
     <Content Include="Views\ShippingRecords\Index.cshtml" />
     <Content Include="Views\Carts\_HobbyDBUser.cshtml" />
     <Content Include="Views\Carts\_UpdateDropdown.cshtml" />
+    <Content Include="Views\Carts\_CartList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -361,6 +366,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201702210315287_Init.resx">
       <DependentUpon>201702210315287_Init.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201702240523535_LogRecords.resx">
+      <DependentUpon>201702240523535_LogRecords.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

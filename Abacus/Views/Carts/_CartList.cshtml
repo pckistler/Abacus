@@ -1,0 +1,50 @@
+﻿@model IEnumerable<Abacus.Models.Cart>
+
+@{
+    int totalCount = Model.Count();
+    string format = "Cart {0} ($ {1})";
+}
+
+<div id="CartListing">
+    @for (int ii = 0; ii < 5; ii++)
+    {
+        <div class="row">
+            @if (ii < totalCount)
+            {
+                string txt = string.Format(format, Html.ActionLink(Model.ElementAt(ii + 0).CartNumber.ToString(), "Edit", new { id = Model.ElementAt(ii + 0).Id }), Model.ElementAt(ii).TotalValue);
+                <div class="col-md-4">
+                    <ul>
+                        <li>
+                            <label>@Html.Raw(txt)</label>
+                        </li>
+                    </ul>
+                </div>
+            }
+            @if (ii + 5 < totalCount)
+            {
+                string txt = string.Format(format, Html.ActionLink(Model.ElementAt(ii + 5).CartNumber.ToString(), "Edit", new { id = Model.ElementAt(ii + 5).Id }), Model.ElementAt(ii).TotalValue);
+                <div class="col-md-8">
+                    <ul>
+                        <li>
+                            <label>@Html.Raw(txt)</label>
+                        </li>
+                    </ul>
+                </div>
+            }
+            @if (ii + 10 < totalCount)
+            {
+                string txt = string.Format(format, Html.ActionLink(Model.ElementAt(ii + 10).CartNumber.ToString(), "Edit", new { id = Model.ElementAt(ii + 10).Id }), Model.ElementAt(ii).TotalValue);
+                <div class="col-md-12">
+                    <ul>
+                        <li>
+                            <label>@Html.Raw(txt)</label>
+                        </li>
+                    </ul>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+
+

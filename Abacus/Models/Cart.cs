@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Web;
 
 namespace Abacus.Models
 {
+    [Guid("9550DBC5-D187-4EEC-9FF0-26198EFEC593")]
     public class Cart
     {
         [Key]

@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Web;
 
 namespace Abacus.Models
 {
+    [Guid("D78BC091-69D9-4EA7-828F-2414A2612A97")]
     public class Country
     {
         [Key]

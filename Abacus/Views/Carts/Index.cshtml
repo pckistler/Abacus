@@ -4,18 +4,20 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
+<h2>Carts</h2>
 
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
-<table class="table">
+@Html.Partial("_CartList", Model)
+
+@*<table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Buyer.HDBUserName)
+            Seller 
         </th>
-        <th>
-            @Html.DisplayNameFor(model => model.BuyerEmail.EmailAddress)
+                <th>
+            Buyer
         </th>
         <th>
             @Html.DisplayNameFor(model => model.CartNumber)
@@ -27,30 +29,22 @@
             @Html.DisplayNameFor(model => model.NumberOfItems)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.NumberOfSellers)
-        </th>
-        <th>
             @Html.DisplayNameFor(model => model.TotalValue)
         </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ItemCost)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ShippingCost)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.PayPalFees)
-        </th>
+
         <th></th>
     </tr>
 
 @foreach (var item in Model) {
     <tr>
         <td>
-            @Html.DisplayFor(modelItem => item.Buyer.HDBUserName)
-        </td>
+            @if (item.Transactions.Count > 0)
+            {
+                @item.Transactions.First().Seller.HDBUserName;
+            }
+        </td>        
         <td>
-            @Html.DisplayFor(modelItem => item.BuyerEmail.EmailAddress)
+            @Html.DisplayFor(modelItem => item.Buyer.HDBUserName)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.CartNumber)
@@ -62,19 +56,7 @@
             @Html.DisplayFor(modelItem => item.NumberOfItems)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.NumberOfSellers)
-        </td>
-        <td>
             @Html.DisplayFor(modelItem => item.TotalValue)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ItemCost)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ShippingCost)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.PayPalFees)
         </td>
         <td>
             @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
@@ -83,5 +65,4 @@
         </td>
     </tr>
 }
-
-</table>
+</table>*@

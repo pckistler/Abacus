@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Web;
 
 namespace Abacus.Models
 {
+    [Guid("8BAB1468-BFCE-439D-B219-88D4ED4C0E3B")]
     public class Address
     {
         [Key]

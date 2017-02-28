@@ -1,7 +1,19 @@
-﻿@{ 
-    string target = ViewBag.DropDownName;
-}
+﻿@model Abacus.ViewModel.CartVM
 
-@Html.DropDownList(target, null, htmlAttributes: new { @class = "form-control", tabindex = 5 })
+
+@{
+    string target = ViewBag.DropDownName;
+    bool isBuyer = ViewBag.DropDownType;
+    int tabIndex = ViewBag.tabIndex;
+}
+@if (isBuyer)
+{
+    @Html.DropDownListFor(m => m.BuyerId, Model.Buyers, htmlAttributes: new { @class = "form-control", tabindex = 5 })
+}
+else
+{
+    @Html.DropDownListFor(m => m.SellerId, Model.Sellers, htmlAttributes: new { @class = "form-control", tabindex = tabIndex })
+}
+@*@Html.DropDownList(target, null, htmlAttributes: new { @class = "form-control", tabindex = 5 })*@
 
 

@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Web;
 
 namespace Abacus.Models
 {
+    [Guid("4C4B9ADF-8C92-4CC9-89F9-01157A4923DA")]
     public class UserRecord
     {
         [Key]

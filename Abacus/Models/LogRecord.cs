@@ -16,6 +16,9 @@ namespace Abacus.Models
         public DateTime DateTime { get; set; }
         public Utilities.RecordType RecordType { get; set; }
 
+        public int RecordId { get; set; }
+        public Guid Guid { get; set; }
+
         [StringLength(256)]
         public string Notes { get; set; }
     }

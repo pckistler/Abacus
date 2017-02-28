@@ -24,6 +24,13 @@
 }
 <script>
     $(document).ready(function () {
+
+
+
+        
+
+
+
         document.getElementById("HobbyDBUserName").focus();
     });
 </script>
@@ -33,7 +40,7 @@
     <button type="button" class="close" data-dismiss="modal">&times;</button>
     <h4 class="modal-title">@title</h4>
 </div>
-<div class="modal-body">
+<div class="modal-body" id="HobbyDBUserForm">
     @using (Ajax.BeginForm("HobbyDBUser", "Carts", FormMethod.Post, new AjaxOptions {
         InsertionMode = InsertionMode.Replace,
         HttpMethod = "POST",
@@ -44,6 +51,7 @@
     {
         @Html.AntiForgeryToken()
         @Html.HiddenFor(model => model.Id)
+        @Html.ValidationSummary(false)
 
         <input data-val="true" data-val-number="The field Id must be a number." data-val-required="The Id field is required." id="DropDownTarget" name="DropDownTarget" type="hidden" value="@updateTarget">
 
