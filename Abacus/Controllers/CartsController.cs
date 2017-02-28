@@ -224,6 +224,7 @@ namespace Abacus.Controllers
                 if (tr != null)
                 {
                     db.Entry(tr).State = EntityState.Modified;
+                    tr.CartId = cart.Id;
                     await db.SaveChangesAsync();
                 }                
                 //await db.SaveChangesAsync();
