@@ -8,6 +8,41 @@ namespace Abacus.ViewModel
 {
     public class HobbyDBUser
     {
+        public HobbyDBUser()
+        {                
+        }
+
+        public HobbyDBUser(Models.UserRecord user)
+        {
+            Id = user.Id;
+            HobbyDBUserName = user.HDBUserName;
+            HobbyDBUserId = user.HDBUserId;
+            FirstName = user.FirstName;
+            LastName = user.LastName;
+            Email = user.PreferredEmail.EmailAddress;
+            PayPalEmail = user.PayPalId.EmailAddress;
+            IsBuyer = (user.UserType & Models.UserRecord.UserTypes.Buyer) == Models.UserRecord.UserTypes.Buyer;
+            IsSeller = (user.UserType & Models.UserRecord.UserTypes.Seller) == Models.UserRecord.UserTypes.Seller;
+            IsNewRecord = false;
+        }
+
+        public Models.UserRecord UserRecord
+        {
+            get
+            {
+                Models.UserRecord ur = new Models.UserRecord()
+                {
+                    Id = Id,
+                    HDBUserId =HobbyDBUserId,
+                    HDBUserName = HobbyDBUserName,
+                    FirstName = FirstName,
+                    LastName = LastName,                    
+                };
+                ur.UserType = (IsBuyer ? Models.UserRecord.UserTypes.Buyer : 0) | (IsSeller ? Models.UserRecord.UserTypes.Seller : 0);
+                return ur;
+            }
+        }
+
         [Key]
         public int Id { get; set; }
 

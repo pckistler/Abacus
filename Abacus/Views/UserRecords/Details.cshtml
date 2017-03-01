@@ -4,42 +4,17 @@
     ViewBag.Title = "Details";
 }
 
-<h2>Details</h2>
+<h2>User Details</h2>
 
 <div>
-    <h4>UserRecord</h4>
     <hr />
     <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.PayPalId.EmailAddress)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.PayPalId.EmailAddress)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.PreferredEmail.EmailAddress)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.PreferredEmail.EmailAddress)
-        </dd>
-
         <dt>
             @Html.DisplayNameFor(model => model.HDBUserName)
         </dt>
 
         <dd>
             @Html.DisplayFor(model => model.HDBUserName)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.HDBUserId)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.HDBUserId)
         </dd>
 
         <dt>
@@ -57,6 +32,54 @@
         <dd>
             @Html.DisplayFor(model => model.LastName)
         </dd>
+
+
+        <dt>
+            @Html.DisplayNameFor(model => model.UserType)
+        </dt>
+
+        <dd>
+
+            @{
+                string userType = string.Empty;
+                if ((Model.UserType & Abacus.Models.UserRecord.UserTypes.Buyer) == Abacus.Models.UserRecord.UserTypes.Buyer)
+                {
+                    userType = "Buyer";
+                }
+                if ((Model.UserType & Abacus.Models.UserRecord.UserTypes.Seller) == Abacus.Models.UserRecord.UserTypes.Seller)
+                {
+                    if (userType != string.Empty) { userType += ", "; }
+                    userType += "Seller";
+                }
+                @userType
+            }
+        </dd>
+
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PayPalId.EmailAddress)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PayPalId.EmailAddress)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PreferredEmail.EmailAddress)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PreferredEmail.EmailAddress)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.HDBUserId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.HDBUserId)
+        </dd>
+
 
     </dl>
 </div>

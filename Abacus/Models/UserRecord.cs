@@ -16,13 +16,16 @@ namespace Abacus.Models
         public int Id { get; set; }
 
         [StringLength(64)]
-        [Display(Name ="Name")]
+        [Display(Name ="HobbyDB Name")]
         public string HDBUserName { get; set; }
+        [Display(Name="HobbyDB Id")]
         public int HDBUserId { get; set; }
 
+        [Display(Name = "First name")]
         [StringLength(64)]
         public string FirstName { get; set; }
         [StringLength(64)]
+        [Display(Name = "Last name")]
         public string LastName{ get; set; }
 
         public int PayPalEmailId { get; set; }
@@ -37,6 +40,7 @@ namespace Abacus.Models
         //[ForeignKey("PreferredAddressId")]
         //public virtual Address PreferredAddress { get; set; }
 
+        [Display(Name="User type")]
         public UserTypes UserType { get; set; } = UserTypes.None;
 
         public enum UserTypes

@@ -2,7 +2,7 @@
 <script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.js")" type="text/javascript"></script>
 @{
     ViewBag.Title = "Create";
-    var tabIndex = 1; 
+    var tabIndex = 1;
 }
 <script>
     $(document).ready(function () {
@@ -17,250 +17,194 @@
     </div>
 </div>
 
-    @using (Html.BeginForm())
-    {
-        @Html.AntiForgeryToken()
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
 
-        <div class="form-horizontal">
-            <hr />
-            <h4>Cart details</h4>
-            
-            @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+    <div class="form-horizontal">
+        <hr />
+        <h4>Cart details</h4>
 
-            <div class="form-group">
-                @Html.LabelFor(model => model.CartNumber, htmlAttributes: new { @class = "control-label col-md-3" })
-                <div class="col-md-3">                    
-                    @Html.EditorFor(model => model.CartNumber, new { htmlAttributes = new { @class = "form-control", tabindex = tabIndex } })
-                    @Html.ValidationMessageFor(model => model.CartNumber, "", new { @class = "text-danger", })
-                </div>
-                <label class="control-label col-md-1">Buyer</label>
-                <div class="col-md-3" id="buyer_dropdown">
-                    @{ 
-                        ViewBag.DropDownType = true;
-                        ViewBag.tabIndex = 5;
-                    }
-                    @Html.Partial("_UpdateDropdown", Model)
-                    @*@Html.DropDownList("BuyerId", null, htmlAttributes: new { @class = "form-control", tabindex = col2tabIndex++ })*@
-                    @Html.ValidationMessageFor(model => model.BuyerId, "", new { @class = "text-danger" })
-                </div>
-                <button type="button" class="btn editor-container col-md-1" tabindex="6" data-id="0" data-usertype="buyer" data-toggle="modal" data-target="#editor-container">New</button>
+        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CartNumber, htmlAttributes: new { @class = "control-label col-md-3" })
+            <div class="col-md-3">
+                @Html.EditorFor(model => model.CartNumber, new { htmlAttributes = new { @class = "form-control", tabindex = tabIndex } })
+                @Html.ValidationMessageFor(model => model.CartNumber, "", new { @class = "text-danger", })
             </div>
-            <div class="form-group">
-                @Html.LabelFor(model => model.SaleDate, htmlAttributes: new { @class = "control-label col-md-3" })
-                <div class="col-md-3">
-                    @Html.EditorFor(model => model.SaleDate, new { htmlAttributes = new { @class = "form-control", tabindex = ++tabIndex } })
-                    @Html.ValidationMessageFor(model => model.SaleDate, "", new { @class = "text-danger" })
-                </div>
+            <label class="control-label col-md-1">Buyer</label>
+            <div class="col-md-3" id="buyer_dropdown">
+                @{
+                    ViewBag.DropDownType = true;
+                    ViewBag.tabIndex = 5;
+                }
+                @Html.Partial("_UpdateDropdown", Model)
+                @*@Html.DropDownList("BuyerId", null, htmlAttributes: new { @class = "form-control", tabindex = col2tabIndex++ })*@
+                @Html.ValidationMessageFor(model => model.BuyerId, "", new { @class = "text-danger" })
             </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.NumberOfItems, htmlAttributes: new { @class = "control-label col-md-3" })
-                <div class="col-md-3">
-                    @Html.EditorFor(model => model.NumberOfItems, new { htmlAttributes = new { @class = "form-control", tabindex = ++tabIndex } })
-                    @Html.ValidationMessageFor(model => model.NumberOfItems, "", new { @class = "text-danger" })
-                </div>                
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.NumberOfSellers, htmlAttributes: new { @class = "control-label col-md-3" })
-                <div class="col-md-3">
-                    @Html.EditorFor(model => model.NumberOfSellers, new { htmlAttributes = new { @class = "form-control", tabindex = ++tabIndex } })
-                    @Html.ValidationMessageFor(model => model.NumberOfSellers, "", new { @class = "text-danger" })
-                </div>
-            </div>
-            <hr />
-
-
-            <h4>Monetary details</h4>
-            @{ 
-                tabIndex = 10;
-            }
-            <div class="form-group">
-                @Html.LabelFor(model => model.CartAmount, htmlAttributes: new { @class = "control-label col-md-3" })
-                <div class="col-md-3">
-                    @Html.EditorFor(model => model.CartAmount, new { htmlAttributes = new { @class = "form-control", tabindex = tabIndex++ } })
-                </div>
-                <div class="col-md-6">
-                    @Html.ValidationMessageFor(model => model.CartAmount, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.ItemsAmount, htmlAttributes: new { @class = "control-label col-md-3" })
-                <div class="col-md-3">
-                    @Html.EditorFor(model => model.ItemsAmount, new { htmlAttributes = new { @class = "form-control", tabindex = tabIndex++ } })
-                </div>
-                <div class="col-md-6">
-                    @Html.ValidationMessageFor(model => model.ItemsAmount, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.ShippingAmount, htmlAttributes: new { @class = "control-label col-md-3" })
-                <div class="col-md-3">
-                    @Html.EditorFor(model => model.ShippingAmount, new { htmlAttributes = new { @class = "form-control", tabindex = tabIndex++ } })
-                </div>
-                <div class="col-md-6">
-                    @Html.ValidationMessageFor(model => model.ShippingAmount, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.PayPalAmount, htmlAttributes: new { @class = "control-label col-md-3" })
-                <div class="col-md-3">
-                    @Html.EditorFor(model => model.PayPalAmount, new { htmlAttributes = new { @class = "form-control", tabindex = tabIndex++ } })
-                </div>
-                <div class="col-md-6">
-                    @Html.ValidationMessageFor(model => model.PayPalAmount, "", new { @class = "text-danger" })
-                </div>
-            </div>
-            <hr />
-
-
-            <h4>Seller details</h4>
-            @{
-                tabIndex = 20;
-            }
-            <div class="form-group">
-                @Html.LabelFor(model => model.SellerId, htmlAttributes: new { @class = "control-label col-md-3", style = "text-align:left" })
-                @Html.LabelFor(model => model.SellerItemsTotal, htmlAttributes: new { @class = "control-label col-md-3", style = "text-align:left" })
-                @Html.LabelFor(model => model.SellerShippingTotal, htmlAttributes: new { @class = "control-label col-md-3", style = "text-align:left" })
-                @Html.LabelFor(model => model.TrackingNumber, htmlAttributes: new { @class = "control-label col-md-3", style = "text-align:left" })
-            </div>
-            <div class="form-group">
-                <div class="col-md-2" id="seller_dropdown">
-                    @{
-                        ViewBag.DropDownType = false;
-                        ViewBag.tabIndex = tabIndex++;
-                    }
-                    @Html.Partial("_UpdateDropdown")
-                    @*@Html.DropDownList("SellerId", null, htmlAttributes: new { @class = "form-control", tabindex = tabIndex++ })*@
-                    @Html.ValidationMessageFor(model => model.SellerId, "", new { @class = "text-danger" })                    
-                </div>
-                <button type="button" class="btn editor-container col-md-1" tabindex="@tabIndex" data-id="0" data-usertype="seller" data-toggle="modal" data-target="#editor-container">New</button>
-                <div class="col-md-3">
-                    @Html.EditorFor(model => model.SellerItemsTotal, new { htmlAttributes = new { @class = "form-control", tabindex = ++tabIndex } })
-                    @Html.ValidationMessageFor(model => model.SellerItemsTotal, "", new { @class = "text-danger" })
-                </div>
-                <div class="col-md-3">
-                    @Html.EditorFor(model => model.SellerShippingTotal, new { htmlAttributes = new { @class = "form-control", tabindex = ++tabIndex } })
-                    @Html.ValidationMessageFor(model => model.SellerShippingTotal, "", new { @class = "text-danger" })
-                </div>
-                <div class="col-md-3">
-                    @Html.EditorFor(model => model.TrackingNumber, new { htmlAttributes = new { @class = "form-control", tabindex = ++tabIndex } })
-                    @Html.ValidationMessageFor(model => model.TrackingNumber, "", new { @class = "text-danger" })
-                </div>
-            </div>
-            
-            @{ 
-                tabIndex++;
-            }
-            <div class="form-group">
-                <div class="col-md-offset-10 col-md-12">
-                    <input type="submit" value="Save" class="btn btn-default" tabindex="@tabIndex++" />
-                </div>
+            <button type="button" class="btn editor-container col-md-1" tabindex="6" data-id="0" data-usertype="buyer" data-toggle="modal" data-target="#editor-container">New</button>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.SaleDate, htmlAttributes: new { @class = "control-label col-md-3" })
+            <div class="col-md-3">
+                @Html.EditorFor(model => model.SaleDate, new { htmlAttributes = new { @class = "form-control", tabindex = ++tabIndex } })
+                @Html.ValidationMessageFor(model => model.SaleDate, "", new { @class = "text-danger" })
             </div>
         </div>
-    }
 
-    <div>
-        @Html.ActionLink("Back to List", "Index",null,new { tabindex = tabIndex++})
+        <div class="form-group">
+            @Html.LabelFor(model => model.NumberOfItems, htmlAttributes: new { @class = "control-label col-md-3" })
+            <div class="col-md-3">
+                @Html.EditorFor(model => model.NumberOfItems, new { htmlAttributes = new { @class = "form-control", tabindex = ++tabIndex } })
+                @Html.ValidationMessageFor(model => model.NumberOfItems, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.NumberOfSellers, htmlAttributes: new { @class = "control-label col-md-3" })
+            <div class="col-md-3">
+                @Html.EditorFor(model => model.NumberOfSellers, new { htmlAttributes = new { @class = "form-control", tabindex = ++tabIndex } })
+                @Html.ValidationMessageFor(model => model.NumberOfSellers, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <hr />
+
+
+        <h4>Monetary details</h4>
+        @{
+            tabIndex = 10;
+        }
+        <div class="form-group">
+            @Html.LabelFor(model => model.CartAmount, htmlAttributes: new { @class = "control-label col-md-3" })
+            <div class="col-md-3">
+                @Html.EditorFor(model => model.CartAmount, new { htmlAttributes = new { @class = "form-control", tabindex = tabIndex++ } })
+            </div>
+            <div class="col-md-6">
+                @Html.ValidationMessageFor(model => model.CartAmount, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ItemsAmount, htmlAttributes: new { @class = "control-label col-md-3" })
+            <div class="col-md-3">
+                @Html.EditorFor(model => model.ItemsAmount, new { htmlAttributes = new { @class = "form-control", tabindex = tabIndex++ } })
+            </div>
+            <div class="col-md-6">
+                @Html.ValidationMessageFor(model => model.ItemsAmount, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ShippingAmount, htmlAttributes: new { @class = "control-label col-md-3" })
+            <div class="col-md-3">
+                @Html.EditorFor(model => model.ShippingAmount, new { htmlAttributes = new { @class = "form-control", tabindex = tabIndex++ } })
+            </div>
+            <div class="col-md-6">
+                @Html.ValidationMessageFor(model => model.ShippingAmount, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.PayPalAmount, htmlAttributes: new { @class = "control-label col-md-3" })
+            <div class="col-md-3">
+                @Html.EditorFor(model => model.PayPalAmount, new { htmlAttributes = new { @class = "form-control", tabindex = tabIndex++ } })
+            </div>
+            <div class="col-md-6">
+                @Html.ValidationMessageFor(model => model.PayPalAmount, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <hr />
+
+
+        <h4>Seller details</h4>
+        @{
+            tabIndex = 20;
+        }
+        <div class="form-group">
+            @Html.LabelFor(model => model.SellerId, htmlAttributes: new { @class = "control-label col-md-3", style = "text-align:left" })
+            @Html.LabelFor(model => model.SellerItemsTotal, htmlAttributes: new { @class = "control-label col-md-3", style = "text-align:left" })
+            @Html.LabelFor(model => model.SellerShippingTotal, htmlAttributes: new { @class = "control-label col-md-3", style = "text-align:left" })
+            @Html.LabelFor(model => model.TrackingNumber, htmlAttributes: new { @class = "control-label col-md-3", style = "text-align:left" })
+        </div>
+        <div class="form-group">
+            <div class="col-md-2" id="seller_dropdown">
+                @{
+                    ViewBag.DropDownType = false;
+                    ViewBag.tabIndex = tabIndex++;
+                }
+                @Html.Partial("_UpdateDropdown")
+                @*@Html.DropDownList("SellerId", null, htmlAttributes: new { @class = "form-control", tabindex = tabIndex++ })*@
+                @Html.ValidationMessageFor(model => model.SellerId, "", new { @class = "text-danger" })
+            </div>
+            <button type="button" class="btn editor-container col-md-1" tabindex="@tabIndex" data-id="0" data-usertype="seller" data-toggle="modal" data-target="#editor-container">New</button>
+            <div class="col-md-3">
+                @Html.EditorFor(model => model.SellerItemsTotal, new { htmlAttributes = new { @class = "form-control", tabindex = ++tabIndex } })
+                @Html.ValidationMessageFor(model => model.SellerItemsTotal, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-3">
+                @Html.EditorFor(model => model.SellerShippingTotal, new { htmlAttributes = new { @class = "form-control", tabindex = ++tabIndex } })
+                @Html.ValidationMessageFor(model => model.SellerShippingTotal, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-3">
+                @Html.EditorFor(model => model.TrackingNumber, new { htmlAttributes = new { @class = "form-control", tabindex = ++tabIndex } })
+                @Html.ValidationMessageFor(model => model.TrackingNumber, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @{
+            tabIndex++;
+        }
+        <div class="form-group">
+            <div class="col-md-offset-11 col-md-12">
+                <input type="submit" value="Save" class="btn btn-default" tabindex="@tabIndex++" />
+            </div>
+        </div>
     </div>
+            }
 
-    @section scripts
+<div>
+    @Html.ActionLink("Back to List", "Index", null, new { tabindex = tabIndex++ })
+</div>
+
+@section scripts
 {
 
-        <script type="text/javascript">
-            $('#editor-container').on('shown.bs.modal', function () {
-                jQuery.validator.unobtrusive.parse($(this));
-            })
-            $(function () {
-                $('.editor-container').click(function () {
-                    var pid = $(this).attr('data-id');
-                    var defType = $(this).attr('data-usertype');
-                    var url = "ViewHobbyDBUser?Id=" + pid + "&UserType=" + defType;
-                    $.ajax({
-                        url: url,
-                        cache: false,
-                        success: function (data) {
-                            $('#editor-content-container').html(data);
-                            $('#editor-container').modal('show');
-                            document.getElementById("HobbyDBUserName").focus();
+    <script type="text/javascript">
 
-                            //$('#form0').bootstrapValidator({
-                            //    container: '#messages',
-                            //    feedbackIcons: {
-                            //        valid: 'glyphicon glyphicon-ok',
-                            //        invalid: 'glyphicon glyphicon-remove',
-                            //        validating: 'glyphicon glyphicon-refresh'
-                            //    },
-                            //    fields: {
-                            //        HobbyDBUserName: {
-                            //            validators: {
-                            //                notEmpty: {
-                            //                    message: 'The HobbyDB user name is required and cannot be empty'
-                            //                }
-                            //            }
-                            //        },
-                            //        HobbyDBUserId: {
-                            //            validators: {
-                            //                notEmpty: {
-                            //                    message: 'The HobbyDB user id is required and cannot be empty'
-                            //                }
-                            //            }
-                            //        },
-                            //        Email: {
-                            //            validators: {
-                            //                notEmpty: {
-                            //                    message: 'The email address is required and cannot be empty'
-                            //                },
-                            //                emailAddress: {
-                            //                    message: 'The email address is not valid'
-                            //                }
-                            //            }
-                            //        },
-                            //        PayPalEmail: {
-                            //            validators: {
-                            //                notEmpty: {
-                            //                    message: 'The title is required and cannot be empty'
-                            //                },
-                            //                emailAddress: {
-                            //                    message: 'The email address is not valid'
-                            //                }
-                            //            }
-                            //        },
-                            //        content: {
-                            //            validators: {
-                            //                notEmpty: {
-                            //                    message: 'The content is required and cannot be empty'
-                            //                },
-                            //                stringLength: {
-                            //                    max: 500,
-                            //                    message: 'The content must be less than 500 characters long'
-                            //                }
-                            //            }
-                            //        }
-                            //    }
-                            //});
-
-                        }
-                    });
-                });
-
-                $('#editor-container').on('hidden.bs.modal', function () {
-                    $(this).removeData('bs.modal');
+        $(function () {
+            $('.editor-container').click(function () {
+                var pid = $(this).attr('data-id');
+                var defType = $(this).attr('data-usertype');
+                var url = "ViewHobbyDBUser?Id=" + pid + "&UserType=" + defType;
+                $.ajax({
+                    url: url,
+                    cache: false,
+                    success: function (data) {
+                        $('#editor-content-container').html(data);
+                        $('#editor-container').modal('show');
+                    }
                 });
             });
 
-            function success(data, status, xhr) {
-                $('#editor-container').modal('hide');
-            }
+            $('#editor-container').on('shown.bs.modal', function () {
+                jQuery.validator.unobtrusive.parse($(this));
+            })
 
-            function failure(xhr, status, error) {
-                $('#editor-container').modal('show');
-            }
-        </script>
-    }
-    @*@section Scripts {
-            @Scripts.Render("~/bundles/jqueryval")
-        }*@
+            $('#editor-container').on('hidden.bs.modal', function () {
+                $(this).removeData('bs.modal');
+            });
+        });
+
+        function success(data, status, xhr) {
+            $('#editor-container').modal('hide');
+        }
+
+        function failure(xhr, status, error) {
+            $('#editor-container').modal('show');
+        }
+    </script>
+}
+@*@section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }*@

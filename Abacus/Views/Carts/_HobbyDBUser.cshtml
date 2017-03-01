@@ -7,7 +7,7 @@
 
     var updateTarget = "";
     var title = action + " HobbyDB ";
-    if (Model.IsBuyer && Model.IsSeller)
+    if ((Model.IsBuyer && Model.IsSeller )|| Model.Id > 0)
     { title += "User"; }
     else if (Model.IsBuyer)
     {
@@ -24,113 +24,164 @@
 }
 <script>
     $(document).ready(function () {
-
-
-
-        
-
-
-
         document.getElementById("HobbyDBUserName").focus();
+    });
+
+    $('#HobbyDBUserDlg').bootstrapValidator({
+        container: '#messages',
+        feedbackIcons: {
+            valid: 'glyphicon glyphicon-ok',
+            invalid: 'glyphicon glyphicon-remove',
+            validating: 'glyphicon glyphicon-refresh'
+        },
+        fields: {
+            HobbyDBUserName: {
+                validators: {
+                    notEmpty: {
+                        message: 'The HobbyDB user name is required and cannot be empty'
+                    }
+                }
+            },
+            HobbyDBUserId: {
+                validators: {
+                    notEmpty: {
+                        message: 'The HobbyDB user id is required and cannot be empty'
+                    }
+                }
+            },
+            Email: {
+                validators: {
+                    notEmpty: {
+                        message: 'The email address is required and cannot be empty'
+                    },
+                    emailAddress: {
+                        message: 'The email address is not valid'
+                    }
+                }
+            },
+            PayPalEmail: {
+                validators: {
+                    notEmpty: {
+                        message: 'The title is required and cannot be empty'
+                    },
+                    emailAddress: {
+                        message: 'The email address is not valid'
+                    }
+                }
+            },
+            content: {
+                validators: {
+                    notEmpty: {
+                        message: 'The content is required and cannot be empty'
+                    },
+                    stringLength: {
+                        max: 500,
+                        message: 'The content must be less than 500 characters long'
+                    }
+                }
+            }
+        }
     });
 </script>
 
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">@title</h4>
+    </div>
+    <div class="modal-body" id="HobbyDBUserForm">
+        @using (Ajax.BeginForm("HobbyDBUser", "Carts", FormMethod.Post, new AjaxOptions
+        {
+            InsertionMode = InsertionMode.Replace,
+            HttpMethod = "POST",
+            UpdateTargetId = updateTarget,
+            OnSuccess = "success",
+            OnFailure = "failure"
+        }, new { target = Model.IsBuyer, id = "HobbyDBUserDlg" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(model => model.Id)
 
-<div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal">&times;</button>
-    <h4 class="modal-title">@title</h4>
-</div>
-<div class="modal-body" id="HobbyDBUserForm">
-    @using (Ajax.BeginForm("HobbyDBUser", "Carts", FormMethod.Post, new AjaxOptions {
-        InsertionMode = InsertionMode.Replace,
-        HttpMethod = "POST",
-        UpdateTargetId = updateTarget,
-        OnSuccess = "success",
-        OnFailure = "failure"
-    }, new { target = Model.IsBuyer }))
-    {
-        @Html.AntiForgeryToken()
-        @Html.HiddenFor(model => model.Id)
-
-        <input data-val="true" data-val-number="The field Id must be a number." data-val-required="The Id field is required." id="DropDownTarget" name="DropDownTarget" type="hidden" value="@updateTarget">
+            <input data-val="true" data-val-number="The field Id must be a number." data-val-required="The Id field is required." id="DropDownTarget" name="DropDownTarget" type="hidden" value="@updateTarget">
 
 
-        <div class="form-horizontal">
-            <div class="form-group">
-                @Html.LabelFor(model => model.HobbyDBUserName, htmlAttributes: new { @class = "control-label col-md-4" })
-                <div class="col-md-8">
-                    @Html.EditorFor(model => model.HobbyDBUserName, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.HobbyDBUserName, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.HobbyDBUserId, htmlAttributes: new { @class = "control-label col-md-4" })
-                <div class="col-md-8">
-                    @Html.EditorFor(model => model.HobbyDBUserId, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.HobbyDBUserId, "", new { @class = "text-danger" })
-                </div>
-            </div>
-            <div class="form-group">
-                @Html.LabelFor(model => model.FirstName, htmlAttributes: new { @class = "control-label col-md-4" })
-                <div class="col-md-8">
-                    @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
-                </div>
-            </div>            
-            <div class="form-group">
-                @Html.LabelFor(model => model.LastName, htmlAttributes: new { @class = "control-label col-md-4" })
-                <div class="col-md-8">
-                    @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
-                </div>
-            </div>            
-            <div class="form-group">
-                @Html.LabelFor(model => model.Email, "Email", htmlAttributes: new { @class = "control-label col-md-4" })
-                <div class="col-md-8">
-                    @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.PayPalEmail, htmlAttributes: new { @class = "control-label col-md-4" })
-                <div class="col-md-8">
-                    @Html.EditorFor(model => model.PayPalEmail, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.PayPalEmail, "", new { @class = "text-danger" })
-                </div>
-            </div>
-            
-            <div class="form-group">
-                @Html.LabelFor(model => model.IsBuyer, htmlAttributes: new { @class = "control-label col-md-4" })
-                <div class="col-md-1">
-                    @Html.EditorFor(model => model.IsBuyer, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.IsBuyer, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.IsSeller, htmlAttributes: new { @class = "control-label col-md-4" })
-                <div class="col-md-1">
-                    @Html.EditorFor(model => model.IsSeller, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.IsSeller, "", new { @class = "text-danger" })
-                </div>
-            </div>
-            
-            <div class="form-group">
-                <div class="col-md-4 col-md-offset-4">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                    <button type="submit" id="approve-btn" class="btn btn-danger">Save</button>
-                </div>
-            </div>
-
-            @*<div class="form-group">
-                    <div class="col-md-offset-2 col-md-10">
-                        <input type="submit" value="Create" class="btn btn-default" />
+            <div class="form-horizontal">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.HobbyDBUserName, htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-8">
+                        @Html.EditorFor(model => model.HobbyDBUserName, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.HobbyDBUserName, "", new { @class = "text-danger" })
                     </div>
-                </div>*@
-        </div>
-    }
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.HobbyDBUserId, htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-8">
+                        @Html.EditorFor(model => model.HobbyDBUserId, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.HobbyDBUserId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.FirstName, htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-8">
+                        @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.LastName, htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-8">
+                        @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Email, "Email", htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-8">
+                        @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.PayPalEmail, htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-8">
+                        @Html.EditorFor(model => model.PayPalEmail, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.PayPalEmail, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.IsBuyer, htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-1">
+                        @Html.EditorFor(model => model.IsBuyer, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.IsBuyer, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.IsSeller, htmlAttributes: new { @class = "control-label col-md-4" })
+                    <div class="col-md-1">
+                        @Html.EditorFor(model => model.IsSeller, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.IsSeller, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-4 col-md-offset-4">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        <button type="submit" id="approve-btn" class="btn btn-default btn-danger">Save</button>
+                    </div>
+                </div>
+
+                @*<div class="form-group">
+                        <div class="col-md-offset-2 col-md-10">
+                            <input type="submit" value="Create" class="btn btn-default" />
+                        </div>
+                    </div>*@
+            </div>
+        }
+    </div>
 </div>
 
 <script type="text/javascript">

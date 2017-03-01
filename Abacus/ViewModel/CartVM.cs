@@ -51,8 +51,11 @@ namespace Abacus.ViewModel
                     CartNumber = CartNumber,
                     TotalValue = CartAmount,
                     ItemCost = ItemsAmount,
+                    SaleDate = SaleDate,
                     ShippingCost = ShippingAmount,
-                    PayPalFees = PayPalAmount
+                    PayPalFees = PayPalAmount,
+                    NumberOfItems = NumberOfItems,
+                    NumberOfSellers = NumberOfSellers
                 };
 
                 Models.UserRecord buyer = Buyer;

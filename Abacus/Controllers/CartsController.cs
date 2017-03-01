@@ -372,6 +372,11 @@ namespace Abacus.Controllers
             bool isBuyer = string.Compare(Request.Params["UserType"], "buyer") == 0;
 
             HobbyDBUser ur = new ViewModel.HobbyDBUser() { IsNewRecord = (id == 0), Id = id, IsBuyer = isBuyer, IsSeller = !isBuyer };
+            if (id > 0)
+            {
+                UserRecord user = db.UserRecords.SingleOrDefault(u => u.Id == id);
+                ur = new ViewModel.HobbyDBUser(user);
+            }            
 
             return PartialView("_HobbyDBUser", ur);
         }
