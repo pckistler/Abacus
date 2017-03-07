@@ -235,6 +235,8 @@ namespace Abacus.Controllers
             return View(cartVM);
         }
 
+
+
         // GET: Carts/Delete/5
         public async Task<ActionResult> Delete(int? id)
         {
@@ -313,23 +315,20 @@ namespace Abacus.Controllers
 
                 if (hdbUser.Id == 0)
                 {
-                    bool saveChanges = false;
                     Email preferredEmail = db.Emails.SingleOrDefault(e => string.Compare(e.EmailAddress, hdbUser.Email, true) == 0);
                     if (preferredEmail == null)
                     {
                         preferredEmail = new Email() { EmailAddress = hdbUser.Email };
                         db.Emails.Add(preferredEmail);
-                        saveChanges = true;
+                        db.SaveChanges();
                     }
                     Email payPalEmail = db.Emails.SingleOrDefault(e => string.Compare(e.EmailAddress, hdbUser.PayPalEmail, true) == 0);
                     if (payPalEmail == null)
                     {
                         payPalEmail = new Email() { EmailAddress = hdbUser.PayPalEmail };
                         db.Emails.Add(payPalEmail);
-                        saveChanges = true;
-                    }
-                    if (saveChanges)
                         db.SaveChanges();
+                    }
 
                     UserRecord ur = new UserRecord()
                     {

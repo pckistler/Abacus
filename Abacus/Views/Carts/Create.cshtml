@@ -4,6 +4,7 @@
     ViewBag.Title = "Create";
     var tabIndex = 1;
 }
+@*@Html.Partial("_Cart")*@
 <script>
     $(document).ready(function () {
         document.getElementById("CartNumber").focus();
@@ -40,7 +41,6 @@
                     ViewBag.tabIndex = 5;
                 }
                 @Html.Partial("_UpdateDropdown", Model)
-                @*@Html.DropDownList("BuyerId", null, htmlAttributes: new { @class = "form-control", tabindex = col2tabIndex++ })*@
                 @Html.ValidationMessageFor(model => model.BuyerId, "", new { @class = "text-danger" })
             </div>
             <button type="button" class="btn editor-container col-md-1" tabindex="6" data-id="0" data-usertype="buyer" data-toggle="modal" data-target="#editor-container">New</button>
@@ -134,7 +134,6 @@
                     ViewBag.tabIndex = tabIndex++;
                 }
                 @Html.Partial("_UpdateDropdown")
-                @*@Html.DropDownList("SellerId", null, htmlAttributes: new { @class = "form-control", tabindex = tabIndex++ })*@
                 @Html.ValidationMessageFor(model => model.SellerId, "", new { @class = "text-danger" })
             </div>
             <button type="button" class="btn editor-container col-md-1" tabindex="@tabIndex" data-id="0" data-usertype="seller" data-toggle="modal" data-target="#editor-container">New</button>
