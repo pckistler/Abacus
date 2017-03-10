@@ -4,95 +4,99 @@
     ViewBag.Title = "Details";
 }
 
-<h2>Details</h2>
-
-<div>
-    <h4>Cart</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Buyer.HDBUserName)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Buyer.HDBUserName)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.BuyerEmail.EmailAddress)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.BuyerEmail.EmailAddress)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.CartNumber)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.CartNumber)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.SaleDate)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.SaleDate)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.NumberOfItems)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.NumberOfItems)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.NumberOfSellers)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.NumberOfSellers)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.TotalValue)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.TotalValue)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.ItemCost)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.ItemCost)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.ShippingCost)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.ShippingCost)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.PayPalFees)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.PayPalFees)
-        </dd>
-
-    </dl>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-11"><h2>Cart # @Model.CartNumber</h2></div>
+        <div class="col-sm-1"><h2>@Html.ActionLink("Edit", "Edit", new { id = Model.Id })</h2></div>
+    </div>
 </div>
+<hr />
+
+<h4>Cart Details</h4>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-2"><label>Cart Number</label></div>
+        <div class="col-sm-3">@Model.CartNumber</div>
+        <div class="col-sm-2"><label>Buyer Username</label></div>
+        <div class="col-sm-2">@Model.Buyer.HDBUserName</div>
+        
+    </div>
+    <div class="row">
+        <div class="col-sm-2"><label>Date</label></div>
+        <div class="col-sm-3">@Html.DisplayFor(model => model.SaleDate)</div>
+        <div class="col-sm-2"><label>Buyer Email</label></div>
+        <div class="col-sm-2">@Model.BuyerEmail.EmailAddress</div>
+    </div>
+    <div class="row">
+        <div class="col-sm-2"><label>Number of Items</label></div>
+        <div class="col-sm-2">@Html.DisplayFor(model => model.NumberOfItems)</div>
+    </div>
+    <div class="row">
+        <div class="col-sm-2"><label>Number of Sellers</label></div>
+        <div class="col-sm-2">@Html.DisplayFor(model => model.NumberOfSellers)</div>
+    </div>
+</div>
+<hr />
+
+<h4>Monetary Details</h4>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-2"><label>Overall Value</label></div>
+        <div class="col-sm-3">@string.Format("$ {0:0.00}", Model.TotalValue)</div>
+        <div class="col-sm-2"><label>HobbyDB Fees</label></div>
+        <div class="col-sm-2">@string.Format("$ {0:0.00}", Model.HobbyDBFees)</div>
+    </div>
+    <div class="row">
+        <div class="col-sm-2"><label>Items Value</label></div>
+        <div class="col-sm-2">@string.Format("$ {0:0.00}", Model.ItemCost)</div>
+    </div>
+    <div class="row">
+        <div class="col-sm-2"><label>Shipping Cost</label></div>
+        <div class="col-sm-2">@string.Format("$ {0:0.00}", Model.ShippingCost)</div>
+    </div>
+    <div class="row">
+        <div class="col-sm-2"><label>PayPal Fees</label></div>
+        <div class="col-sm-2">@string.Format("$ {0:0.00}", Model.PayPalFees)</div>
+    </div>
+</div>
+<hr />
+
+<h4>Seller Details</h4>
+<div class="container">
+    @foreach (var transaction in Model.Transactions)
+    {
+        <div class="row">
+            <div class="col-sm-2"><label>Username</label></div>
+            <div class="col-sm-3">@transaction.Seller.HDBUserName</div>
+            <div class="col-sm-2"><label>Tracking #</label></div>
+            <div class="col-sm-2">@transaction.ShippingRecord.TrackingNumber</div>
+        </div>
+        <div class="row">
+            <div class="col-sm-2"><label>Name</label></div>
+            <div class="col-sm-3">@string.Format("{0} {1}",transaction.Seller.FirstName, transaction.Seller.LastName)</div>
+        </div>
+        <div class="row">
+            <div class="col-sm-2"><label>Email</label></div>
+            <div class="col-sm-3">@transaction.Seller.PreferredEmail.EmailAddress</div>
+            <div class="col-sm-2"><label>Payout</label></div>
+            <div class="col-sm-2">@string.Format("$ {0:0.00}", transaction.Payout)</div>        
+        </div>
+        <div class="row">
+            <div class="col-sm-2"><label>PayPal</label></div>
+            <div class="col-sm-3">@transaction.Seller.PayPalId.EmailAddress</div>
+        </div>
+        <div class="row">
+            <div class="col-sm-2"><label>Item Cost</label></div>
+            <div class="col-sm-2">@string.Format("$ {0:0.00}", transaction.ItemCosts)</div>
+        </div>
+        <div class="row">
+            <div class="col-sm-2"><label>Shipping Cost</label></div>
+            <div class="col-sm-2">@string.Format("$ {0:0.00}", transaction.ShippingCost)</div>
+        </div>
+    }
+</div>
+<hr />
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
+    @*@Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |*@
+    @Html.ActionLink("Back to Carts", "Index")
 </p>

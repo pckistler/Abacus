@@ -20,10 +20,14 @@ namespace Abacus.Controllers
         public async Task<ActionResult> Index()
         {
             var logs = db.LogRecords.Where(l => l.RecordType == Utilities.RecordType.New && l.Guid == typeof(Cart).GUID).OrderByDescending(l=>l.DateTime).Take(15);
-            var xxx = logs.Select(l => db.Carts.FirstOrDefault(c => c.Id == l.RecordId));
+            var list = logs.Select(l => db.Carts.FirstOrDefault(c => c.Id == l.RecordId));
             //var tmp = db.Carts.Where(c => logs.Any(l => l.RecordId == c.Id)).ToList() ;
-            var carts = db.Carts.Include(c => c.Buyer).Include(c => c.BuyerEmail);
-            return View(await xxx.ToListAsync());
+            //var carts = db.Carts.Include(c => c.Buyer).Include(c => c.BuyerEmail);
+
+            CartIndexVM ciVM = new CartIndexVM();
+            ciVM.Carts = await list.ToListAsync();
+            ciVM.SearchOptions = new SelectList(Cart.SearchOptionNames, "Key", "Value");
+            return View(ciVM);
         }
 
         // GET: Carts/Details/5
@@ -101,6 +105,26 @@ namespace Abacus.Controllers
                 if (cartVM.CartAmount < cartVM.PayPalAmount)
                 {
                     ModelState.AddModelError(nameof(cartVM.PayPalAmount), "The PayPal fees cannot be larger than the total for the cart");
+                    error = true;
+                }
+                if (cartVM.SellerItemsTotal <= 0)
+                {
+                    ModelState.AddModelError(nameof(cartVM.SellerItemsTotal), "The Seller's Total Items Cost must be larger than 0");
+                    error = true;
+                }
+                if (cartVM.SellerItemsTotal > cartVM.ItemsAmount)
+                {
+                    ModelState.AddModelError(nameof(cartVM.SellerItemsTotal), "The Seller's Total Items Cost cannot be larger than the Total Value of Items");
+                    error = true;
+                }
+                if (cartVM.SellerShippingTotal < 0)
+                {
+                    ModelState.AddModelError(nameof(cartVM.SellerItemsTotal), "The Seller's Total Shipping Cost cannot be negative");
+                    error = true;
+                }
+                if (cartVM.SellerShippingTotal > cartVM.ShippingAmount)
+                {
+                    ModelState.AddModelError(nameof(cartVM.SellerItemsTotal), "The Seller's Total Shipping Cost cannot be larger than the total shipping amount for the cart");
                     error = true;
                 }
                 if (error)
@@ -377,7 +401,8 @@ namespace Abacus.Controllers
                 ur = new ViewModel.HobbyDBUser(user);
             }            
 
-            return PartialView("_HobbyDBUser", ur);
+            var tmp = PartialView("_HobbyDBUser", ur);
+            return tmp;
         }
 
         protected override void Dispose(bool disposing)
@@ -387,6 +412,101 @@ namespace Abacus.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        public string SearchOptions()
+        {
+            var searchType = Request.Params["type"];
+            string result = string.Empty;
+            switch(searchType)
+            {
+                case nameof(Cart.SearchOptions.BuyerEmail):
+                    {
+                        var list = db.UserRecords.Where(u => (u.UserType & UserRecord.UserTypes.Buyer) == UserRecord.UserTypes.Buyer).Select(r => new { r.PreferredEmail.EmailAddress, r.Id, }).OrderBy(o => o.EmailAddress);
+                        result = "<select class=\"form-control\" data-val=\"true\" data-val-number=\"The field BuyerId must be a number.\" data-val-required=\"The BuyerId field is required.\" id=\"" + searchType + "\" name=\"" + searchType + "\">";
+                        var duplicates = new List<string>();
+                        foreach (var item in list)
+                        {
+                            if (!duplicates.Contains(item.EmailAddress))
+                            {
+                                result += string.Format("<option value = \"{0}\" >{1}</ option >", item.Id, item.EmailAddress);
+                                duplicates.Add(item.EmailAddress);
+                            }
+                        }
+                        result += "</select>";
+                        return result;
+                    }        
+                case nameof(Cart.SearchOptions.BuyerName):
+                    break;
+                case nameof(Cart.SearchOptions.BuyerUsername):
+                    {
+                        var list = db.UserRecords.Where(u => (u.UserType & UserRecord.UserTypes.Buyer) == UserRecord.UserTypes.Buyer).Select(r => new { r.HDBUserName, r.Id, }).OrderBy(o => o.HDBUserName);
+                        result = "<select class=\"form-control\" data-val=\"true\"  id=\"" + searchType + "\" name=\"" + searchType + "\">";
+                        foreach (var item in list)
+                        {
+                            result += string.Format("<option value = \"{0}\" >{1}</ option >", item.Id, item.HDBUserName);
+                        }
+                        result += "</select>";
+                        return result;
+                    }
+                case nameof(Cart.SearchOptions.CartNumber):
+                case nameof(Cart.SearchOptions.Date):
+                case nameof(Cart.SearchOptions.SellerName):
+                    break;
+                case nameof(Cart.SearchOptions.SellerUsername):
+                    {
+                        var list = db.UserRecords.Where(u => (u.UserType & UserRecord.UserTypes.Seller) == UserRecord.UserTypes.Seller).Select(r => new { r.HDBUserName, r.Id, }).OrderBy(o => o.HDBUserName);
+                        result = "<select class=\"form-control\" data-val=\"true\"  id=\"" + searchType + "\" name=\"" + searchType + "\">";
+                        foreach (var item in list)
+                        {
+                            result += string.Format("<option value = \"{0}\" >{1}</ option >", item.Id, item.HDBUserName);
+                        }
+                        result += "</select>";
+                        return result;
+                    }                    
+            }
+
+            return "<label>"+searchType+"</label>";
+        }
+
+        public ActionResult ProcessSearch()
+        {
+            var searchType = Request.Params["type"];
+            //var data = Request.Params["value"];
+            string result = string.Empty;
+            switch (searchType)
+            {
+                case nameof(Cart.SearchOptions.BuyerEmail):
+                    {
+                        int data = Int32.Parse(Request.Params["value"]);
+                        //var logs = db.LogRecords.Where(l => l.RecordType == Utilities.RecordType.New && l.Guid == typeof(Cart).GUID).OrderByDescending(l => l.DateTime).Take(15);
+                        var carts = db.Carts.Where(c => c.BuyerEmailId == data).OrderByDescending(r => r.Id);
+                        return PartialView("_CartList", carts.ToList());
+                    }
+                case nameof(Cart.SearchOptions.BuyerName):
+                    break;
+                case nameof(Cart.SearchOptions.BuyerUsername):
+                    {
+                        int data = Int32.Parse(Request.Params["value"]);
+                        //var logs = db.LogRecords.Where(l => l.RecordType == Utilities.RecordType.New && l.Guid == typeof(Cart).GUID).OrderByDescending(l => l.DateTime).Take(15);
+                        var carts = db.Carts.Where(c => c.BuyerId == data).OrderByDescending(r => r.Id).ToList();
+                        var tmp =  PartialView("_CartList", carts);
+                        return tmp;
+                    }
+                case nameof(Cart.SearchOptions.CartNumber):
+                case nameof(Cart.SearchOptions.Date):
+                case nameof(Cart.SearchOptions.SellerName):
+                    break;
+                case nameof(Cart.SearchOptions.SellerUsername):
+                    {
+                        int data = Int32.Parse(Request.Params["value"]);
+                        //var logs = db.LogRecords.Where(l => l.RecordType == Utilities.RecordType.New && l.Guid == typeof(Cart).GUID).OrderByDescending(l => l.DateTime).Take(15);
+                        var carts = db.Carts.Where(c => c.Transactions.Any(t => t.SellerId == data)).OrderByDescending(r=>r.Id);
+                        return PartialView("_CartList", carts.ToList());
+                    }
+            }
+
+            return null;
         }
     }
 }

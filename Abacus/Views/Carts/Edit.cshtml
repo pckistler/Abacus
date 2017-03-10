@@ -32,13 +32,13 @@
         @Html.HiddenFor(model => model.ShippingRecordId)
 
         <div class="form-group">
-            @Html.LabelFor(model => model.CartNumber, htmlAttributes: new { @class = "control-label col-md-3" })
-            <div class="col-md-3">
+            @Html.LabelFor(model => model.CartNumber, htmlAttributes: new { @class = "control-label col-sm-3" })
+            <div class="col-sm-3">
                 @Html.EditorFor(model => model.CartNumber, new { htmlAttributes = new { @class = "form-control", tabindex = tabIndex } })
                 @Html.ValidationMessageFor(model => model.CartNumber, "", new { @class = "text-danger", })
             </div>
-            <label class="control-label col-md-1">Buyer</label>
-            <div class="col-md-3" id="buyer_dropdown">
+            <label class="control-label col-sm-1">Buyer</label>
+            <div class="col-sm-3" id="buyer_dropdown">
                 @{
                     ViewBag.DropDownType = true;
                     ViewBag.tabIndex = 5;
@@ -46,27 +46,27 @@
                 @Html.Partial("_UpdateDropdown", Model)
                 @Html.ValidationMessageFor(model => model.BuyerId, "", new { @class = "text-danger" })
             </div>
-            <button type="button" class="btn dialog-newUser col-md-1" tabindex="6" data-id="0" data-usertype="buyer" data-toggle="modal" data-target="#dialog-newUser">New</button>
+            @*<button type="button" class="btn dialog-newUser col-sm-1" tabindex="6" data-id="0" data-usertype="buyer" data-toggle="modal" data-target="#dialog-newUser">New</button>*@
         </div>
         <div class="form-group">
-            @Html.LabelFor(model => model.SaleDate, htmlAttributes: new { @class = "control-label col-md-3" })
-            <div class="col-md-3">
+            @Html.LabelFor(model => model.SaleDate, htmlAttributes: new { @class = "control-label col-sm-3" })
+            <div class="col-sm-3">
                 @Html.EditorFor(model => model.SaleDate, new { htmlAttributes = new { @class = "form-control", tabindex = ++tabIndex } })
                 @Html.ValidationMessageFor(model => model.SaleDate, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.NumberOfItems, htmlAttributes: new { @class = "control-label col-md-3" })
-            <div class="col-md-3">
+            @Html.LabelFor(model => model.NumberOfItems, htmlAttributes: new { @class = "control-label col-sm-3" })
+            <div class="col-sm-3">
                 @Html.EditorFor(model => model.NumberOfItems, new { htmlAttributes = new { @class = "form-control", tabindex = ++tabIndex } })
                 @Html.ValidationMessageFor(model => model.NumberOfItems, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.NumberOfSellers, htmlAttributes: new { @class = "control-label col-md-3" })
-            <div class="col-md-3">
+            @Html.LabelFor(model => model.NumberOfSellers, htmlAttributes: new { @class = "control-label col-sm-3" })
+            <div class="col-sm-3">
                 @Html.EditorFor(model => model.NumberOfSellers, new { htmlAttributes = new { @class = "form-control", tabindex = ++tabIndex } })
                 @Html.ValidationMessageFor(model => model.NumberOfSellers, "", new { @class = "text-danger" })
             </div>
@@ -79,41 +79,41 @@
             tabIndex = 10;
         }
         <div class="form-group">
-            @Html.LabelFor(model => model.CartAmount, htmlAttributes: new { @class = "control-label col-md-3" })
-            <div class="col-md-3">
+            @Html.LabelFor(model => model.CartAmount, htmlAttributes: new { @class = "control-label col-sm-3" })
+            <div class="col-sm-3">
                 @Html.EditorFor(model => model.CartAmount, new { htmlAttributes = new { @class = "form-control", tabindex = tabIndex++ } })
             </div>
-            <div class="col-md-6">
+            <div class="col-sm-6">
                 @Html.ValidationMessageFor(model => model.CartAmount, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.ItemsAmount, htmlAttributes: new { @class = "control-label col-md-3" })
-            <div class="col-md-3">
+            @Html.LabelFor(model => model.ItemsAmount, htmlAttributes: new { @class = "control-label col-sm-3" })
+            <div class="col-sm-3">
                 @Html.EditorFor(model => model.ItemsAmount, new { htmlAttributes = new { @class = "form-control", tabindex = tabIndex++ } })
             </div>
-            <div class="col-md-6">
+            <div class="col-sm-6">
                 @Html.ValidationMessageFor(model => model.ItemsAmount, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.ShippingAmount, htmlAttributes: new { @class = "control-label col-md-3" })
-            <div class="col-md-3">
+            @Html.LabelFor(model => model.ShippingAmount, htmlAttributes: new { @class = "control-label col-sm-3" })
+            <div class="col-sm-3">
                 @Html.EditorFor(model => model.ShippingAmount, new { htmlAttributes = new { @class = "form-control", tabindex = tabIndex++ } })
             </div>
-            <div class="col-md-6">
+            <div class="col-sm-6">
                 @Html.ValidationMessageFor(model => model.ShippingAmount, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.PayPalAmount, htmlAttributes: new { @class = "control-label col-md-3" })
-            <div class="col-md-3">
+            @Html.LabelFor(model => model.PayPalAmount, htmlAttributes: new { @class = "control-label col-sm-3" })
+            <div class="col-sm-3">
                 @Html.EditorFor(model => model.PayPalAmount, new { htmlAttributes = new { @class = "form-control", tabindex = tabIndex++ } })
             </div>
-            <div class="col-md-6">
+            <div class="col-sm-6">
                 @Html.ValidationMessageFor(model => model.PayPalAmount, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -125,13 +125,13 @@
             tabIndex = 20;
         }
         <div class="form-group">
-            @Html.LabelFor(model => model.SellerId, htmlAttributes: new { @class = "control-label col-md-3", style = "text-align:left" })
-            @Html.LabelFor(model => model.SellerItemsTotal, htmlAttributes: new { @class = "control-label col-md-3", style = "text-align:left" })
-            @Html.LabelFor(model => model.SellerShippingTotal, htmlAttributes: new { @class = "control-label col-md-3", style = "text-align:left" })
-            @Html.LabelFor(model => model.TrackingNumber, htmlAttributes: new { @class = "control-label col-md-3", style = "text-align:left" })
+            @Html.LabelFor(model => model.SellerId, htmlAttributes: new { @class = "control-label col-sm-3", style = "text-align:left" })
+            @Html.LabelFor(model => model.SellerItemsTotal, htmlAttributes: new { @class = "control-label col-sm-3", style = "text-align:left" })
+            @Html.LabelFor(model => model.SellerShippingTotal, htmlAttributes: new { @class = "control-label col-sm-3", style = "text-align:left" })
+            @Html.LabelFor(model => model.TrackingNumber, htmlAttributes: new { @class = "control-label col-sm-3", style = "text-align:left" })
         </div>
         <div class="form-group">
-            <div class="col-md-2" id="seller_dropdown">
+            <div class="col-sm-2" id="seller_dropdown">
                 @{
                     ViewBag.DropDownType = false;
                     ViewBag.tabIndex = tabIndex++;
@@ -139,16 +139,16 @@
                 @Html.Partial("_UpdateDropdown")
                 @Html.ValidationMessageFor(model => model.SellerId, "", new { @class = "text-danger" })
             </div>
-            <button type="button" class="btn dialog-newUser col-md-1" tabindex="@tabIndex" data-id="0" data-usertype="seller" data-toggle="modal" data-target="#dialog-newUser">New</button>
-            <div class="col-md-3">
+            @*<button type="button" class="btn dialog-newUser col-sm-1" tabindex="@tabIndex" data-id="0" data-usertype="seller" data-toggle="modal" data-target="#dialog-newUser">New</button>*@
+            <div class="col-sm-3">
                 @Html.EditorFor(model => model.SellerItemsTotal, new { htmlAttributes = new { @class = "form-control", tabindex = ++tabIndex } })
                 @Html.ValidationMessageFor(model => model.SellerItemsTotal, "", new { @class = "text-danger" })
             </div>
-            <div class="col-md-3">
+            <div class="col-sm-3">
                 @Html.EditorFor(model => model.SellerShippingTotal, new { htmlAttributes = new { @class = "form-control", tabindex = ++tabIndex } })
                 @Html.ValidationMessageFor(model => model.SellerShippingTotal, "", new { @class = "text-danger" })
             </div>
-            <div class="col-md-3">
+            <div class="col-sm-3">
                 @Html.EditorFor(model => model.TrackingNumber, new { htmlAttributes = new { @class = "form-control", tabindex = ++tabIndex } })
                 @Html.ValidationMessageFor(model => model.TrackingNumber, "", new { @class = "text-danger" })
             </div>
@@ -158,7 +158,7 @@
             tabIndex++;
         }
         <div class="form-group">
-            <div class="col-md-offset-10 col-md-12">
+            <div class="col-sm-offset-10 col-sm-12">
                 <input type="submit" value="Save" class="btn btn-default" />
             </div>
         </div>

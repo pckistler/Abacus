@@ -49,6 +49,32 @@ namespace Abacus.Models
         [Display(Name = "Total PayPal Fees")]
         public double PayPalFees { get; set; }
 
+        public double HobbyDBFees
+        {
+            get { return ItemCost * .07 + PayPalFees; }
+        }
         public virtual ICollection<TransactionRecord> Transactions { get; set; }
+
+        public enum SearchOptions
+        {
+            CartNumber,
+            SellerName,
+            SellerUsername,
+            BuyerName,
+            BuyerUsername,
+            BuyerEmail,
+            Date
+        }
+
+        public static Dictionary<SearchOptions, string> SearchOptionNames = new Dictionary<SearchOptions, string>()
+        {
+            { SearchOptions.BuyerEmail, "Buyer email" },
+            { SearchOptions.BuyerName, "Buyer name" },
+            { SearchOptions.BuyerUsername, "Buyer username" },
+            { SearchOptions.CartNumber, "Cart number" },
+            { SearchOptions.Date, "Date" },
+            { SearchOptions.SellerName, "Seller name" },
+            { SearchOptions.SellerUsername, "Seller username" }
+        };
     }
 }

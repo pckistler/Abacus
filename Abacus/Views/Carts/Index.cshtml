@@ -1,68 +1,56 @@
-﻿@model IEnumerable<Abacus.Models.Cart>
+﻿@model Abacus.ViewModel.CartIndexVM
 
 @{
     ViewBag.Title = "Index";
 }
-
+<script>
+    function SearchOptionChange(option) {
+        if (option == "")
+        {
+            document.getElementById("cart_search_criteria").innerHTML = "";
+            return;
+        }
+        xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                document.getElementById("cart_search_criteria").innerHTML = this.responseText;
+            }
+        };
+        xhttp.open("GET", "/Carts/SearchOptions?type=" + option, true);
+        xhttp.send();
+    }
+    function ExecuteSearch() {
+        var option = document.getElementById("SearchOptions").value;
+        if (option != "") {
+            var data = document.getElementById(option).value;
+            if (data == "")
+                return;
+            xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("CartListing").innerHTML = this.responseText;
+                }
+                else {
+                    document.getElementById("CartListing").innerHTML = "";
+                }
+            };
+            xhttp.open("GET", "/Carts/ProcessSearch?type=" + option+"&value="+data, true);
+            xhttp.send();
+        }
+    }
+</script>
 <h2>Carts</h2>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-@Html.Partial("_CartList", Model)
+<div class="container">
+    <div class="row">
+        <div class="col-sm-2">@Html.ActionLink("New Cart", "Create")</div>
+        <div class="col-sm-3">@Html.DropDownList("SearchOptions", Model.SearchOptions, htmlAttributes: new { @class = "form-control", onchange = "SearchOptionChange(this.value)" })</div>
+        <div class="col-sm-3" id="cart_search_criteria"></div>
+        <div ><button type="button" class="btn editor-container col-sm-1" data-id="0" data-usertype="buyer" onclick="ExecuteSearch()" data-toggle="modal" data-target="#editor-container">Search</button></div>
+    </div>
+</div>
+<hr/>
+<div id="CartListing">
+    @Html.Partial("_CartList", Model.Carts)
+</div>
 
-@*<table class="table">
-    <tr>
-        <th>
-            Seller 
-        </th>
-                <th>
-            Buyer
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.CartNumber)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.SaleDate)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.NumberOfItems)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.TotalValue)
-        </th>
-
-        <th></th>
-    </tr>
-
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @if (item.Transactions.Count > 0)
-            {
-                @item.Transactions.First().Seller.HDBUserName;
-            }
-        </td>        
-        <td>
-            @Html.DisplayFor(modelItem => item.Buyer.HDBUserName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.CartNumber)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.SaleDate)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.NumberOfItems)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.TotalValue)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-        </td>
-    </tr>
-}
-</table>*@

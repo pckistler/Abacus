@@ -13,8 +13,8 @@
     <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Abucus</RootNamespace>
-    <AssemblyName>Abucus</AssemblyName>
+    <RootNamespace>Abacus</RootNamespace>
+    <AssemblyName>Abacus</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
@@ -220,6 +220,14 @@
     <Compile Include="Migrations\201702240523535_LogRecords.Designer.cs">
       <DependentUpon>201702240523535_LogRecords.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201703100618323_payout.cs" />
+    <Compile Include="Migrations\201703100618323_payout.Designer.cs">
+      <DependentUpon>201703100618323_payout.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703100713512_Payout2.cs" />
+    <Compile Include="Migrations\201703100713512_Payout2.Designer.cs">
+      <DependentUpon>201703100713512_Payout2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Address.cs" />
@@ -230,6 +238,7 @@
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\LogRecord.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\Payout.cs" />
     <Compile Include="Models\ShippingCompany.cs" />
     <Compile Include="Models\ShippingRecord.cs" />
     <Compile Include="Models\State.cs" />
@@ -239,6 +248,7 @@
     <Compile Include="Models\Utilities.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="ViewModel\CartIndexVM.cs" />
     <Compile Include="ViewModel\CartVM.cs" />
     <Compile Include="ViewModel\HobbyDBUser.cs" />
   </ItemGroup>
@@ -371,6 +381,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201702240523535_LogRecords.resx">
       <DependentUpon>201702240523535_LogRecords.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703100618323_payout.resx">
+      <DependentUpon>201703100618323_payout.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703100713512_Payout2.resx">
+      <DependentUpon>201703100713512_Payout2.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

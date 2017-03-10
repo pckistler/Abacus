@@ -27,5 +27,14 @@ namespace Abacus.Models
         public int ShippingRecordId { get; set; }
         [ForeignKey("ShippingRecordId")]
         public virtual ShippingRecord ShippingRecord { get; set; }
+
+        public double Payout
+        {
+            get
+            {
+                double paypal = 0.3 + .029 * (ItemCosts + ShippingCost);
+                return ItemCosts - (.07 * ItemCosts + paypal) + ShippingCost;
+            }
+        }
     }
 }

@@ -43,5 +43,6 @@ namespace Abacus.Models
 
         public DbSet<TransactionRecord> TransactionRecords { get; set; }
         public DbSet<Cart> Carts { get; set; }
+        public DbSet<Payout> PayOuts{ get; set; }
     }
 }

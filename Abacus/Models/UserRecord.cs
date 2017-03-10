@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -42,6 +43,10 @@ namespace Abacus.Models
 
         [Display(Name="User type")]
         public UserTypes UserType { get; set; } = UserTypes.None;
+
+        public string PhoneNumber { get; set; }
+
+        public virtual ICollection<Payout> Payouts { get; set; }
 
         public enum UserTypes
         {
