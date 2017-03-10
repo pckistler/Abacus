@@ -4,6 +4,14 @@
     ViewBag.Title = "Index";
 }
 <script>
+    function ToggleSearchBar() {
+        var ctl = document.getElementById("SearchBar");
+        if (ctl.style.visibility === 'hidden') {
+            ctl.style.visibility = 'visible';
+        } else {
+            ctl.style.visibility = 'hidden';
+        }
+    }
     function SearchOptionChange(option) {
         if (option == "")
         {
@@ -39,14 +47,20 @@
         }
     }
 </script>
-<h2>Carts</h2>
-
 <div class="container">
+    
+
+
     <div class="row">
-        <div class="col-sm-2">@Html.ActionLink("New Cart", "Create")</div>
+        <div class="col-sm-2"><h2>Carts</h2></div>
+        @*<div class="col-sm-2">@Html.ActionLink("New Cart", "Create")</div>*@
+        <div class="col-sm-2"><a href="/Carts/Create"><img height="30" src="~/Images/cart_add.png" alt="Create New Cart" /></a></div>
+        <div class="col-sm-2"><img height="20" onclick="ToggleSearchBar()" src="~/Images/search.jpg" /></div>
+    </div>
+    <div class="row" id="SearchBar" style="visibility:hidden">
         <div class="col-sm-3">@Html.DropDownList("SearchOptions", Model.SearchOptions, htmlAttributes: new { @class = "form-control", onchange = "SearchOptionChange(this.value)" })</div>
         <div class="col-sm-3" id="cart_search_criteria"></div>
-        <div ><button type="button" class="btn editor-container col-sm-1" data-id="0" data-usertype="buyer" onclick="ExecuteSearch()" data-toggle="modal" data-target="#editor-container">Search</button></div>
+        <div><button type="button" class="btn editor-container col-sm-1" data-id="0" data-usertype="buyer" onclick="ExecuteSearch()" data-toggle="modal" data-target="#editor-container">Search</button></div>
     </div>
 </div>
 <hr/>
