@@ -228,6 +228,14 @@
     <Compile Include="Migrations\201703100713512_Payout2.Designer.cs">
       <DependentUpon>201703100713512_Payout2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201703130308561_Cart fees change.cs" />
+    <Compile Include="Migrations\201703130308561_Cart fees change.Designer.cs">
+      <DependentUpon>201703130308561_Cart fees change.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201703130325313_Change TransactionRecord fees.cs" />
+    <Compile Include="Migrations\201703130325313_Change TransactionRecord fees.Designer.cs">
+      <DependentUpon>201703130325313_Change TransactionRecord fees.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Address.cs" />
@@ -251,6 +259,7 @@
     <Compile Include="ViewModel\CartIndexVM.cs" />
     <Compile Include="ViewModel\CartVM.cs" />
     <Compile Include="ViewModel\HobbyDBUser.cs" />
+    <Compile Include="ViewModel\TransactionVM.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-theme.css" />
@@ -369,6 +378,9 @@
     <Content Include="Views\Carts\_UpdateDropdown.cshtml" />
     <Content Include="Views\Carts\_CartList.cshtml" />
     <Content Include="Views\Carts\_Cart.cshtml" />
+    <Content Include="Views\Carts\_TransactionDlg.cshtml" />
+    <Content Include="Views\Carts\_TransactionList.cshtml" />
+    <Content Include="Views\Carts\_TransactionListItem.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -389,6 +401,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201703100713512_Payout2.resx">
       <DependentUpon>201703100713512_Payout2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703130308561_Cart fees change.resx">
+      <DependentUpon>201703130308561_Cart fees change.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703130325313_Change TransactionRecord fees.resx">
+      <DependentUpon>201703130325313_Change TransactionRecord fees.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

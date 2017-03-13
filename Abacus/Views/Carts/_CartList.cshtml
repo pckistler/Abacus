@@ -26,7 +26,7 @@
         {
             //string txt = string.Format(format, Html.ActionLink(Model.ElementAt(ii + 5).CartNumber.ToString(), "Edit", new { id = Model.ElementAt(ii + 5).Id }), Model.ElementAt(ii).TotalValue);
             string txt = string.Format(format, Model.ElementAt(ii + 5).CartNumber, Model.ElementAt(ii + 5).Id, Model.ElementAt(ii).TotalValue);
-            <div class="col-sm-8">
+            <div class="col-sm-4">
                 <ul>
                     <li>
                         <label>@Html.Raw(txt)</label>
@@ -36,8 +36,9 @@
         }
         @if (ii + 10 < totalCount)
         {
-            string txt = string.Format(format, Html.ActionLink(Model.ElementAt(ii + 10).CartNumber.ToString(), "Edit", new { id = Model.ElementAt(ii + 10).Id }), Model.ElementAt(ii).TotalValue);
-            <div class="col-sm-12">
+            //string txt = string.Format(format, Html.ActionLink(Model.ElementAt(ii + 10).CartNumber.ToString(), "Edit", new { id = Model.ElementAt(ii + 10).Id }), Model.ElementAt(ii).TotalValue);
+            string txt = string.Format(format, Model.ElementAt(ii + 10).CartNumber, Model.ElementAt(ii + 10).Id, Model.ElementAt(ii).TotalValue);
+            <div class="col-sm-4">
                 <ul>
                     <li>
                         <label>@Html.Raw(txt)</label>

@@ -39,7 +39,14 @@ namespace Abacus.ViewModel
                 ShippingRecordId = tr.Id;
                 TrackingNumber = tr.ShippingRecord.TrackingNumber;
             }
+
+            if (cart.Transactions != null && cart.Transactions.Count > 0)
+            {
+                m_Transactions.AddRange(cart.Transactions);
+            }
         }
+
+        private List<TransactionRecord> m_Transactions = new List<TransactionRecord>();
         public Models.Cart Cart
         {
             get
@@ -93,6 +100,27 @@ namespace Abacus.ViewModel
                 return list;
             }
         }
+        public List<TransactionVM> m_TransactionVMs = new List<TransactionVM>();
+        public List<TransactionVM> TransactionVMs
+        {
+            set
+            {
+                m_TransactionVMs = value;
+            }
+            get
+            {
+                if (m_TransactionVMs.Count == 0)
+                {
+                    foreach (var item in m_Transactions)
+                    {
+                        TransactionVM tvm = new TransactionVM(item);
+                        m_TransactionVMs.Add(tvm);
+                    }
+                }
+                return m_TransactionVMs;            
+            }
+        }
+
         [Key]
         public int Id { get; set; } = 0;
 

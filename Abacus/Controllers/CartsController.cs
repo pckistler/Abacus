@@ -59,6 +59,8 @@ namespace Abacus.Controllers
             ViewBag.BuyerId = cart.Buyers;
             ViewBag.SellerId = cart.Sellers;
 
+            Session.Add("Transactions", new List<TransactionVM>());
+
             return View(cart);
         }
 
@@ -67,10 +69,12 @@ namespace Abacus.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "Id,CartNumber,SaleDate,NumberOfItems,NumberOfSellers,BuyerId,BuyerEmailId,CartAmount,ItemsAmount,ShippingAmount,PayPalAmount,SellerId,SellerItemsTotal,SellerShippingTotal,TrackingNumber")] CartVM cartVM)
+        public ActionResult Create([Bind(Include = "Id,CartNumber,SaleDate,NumberOfItems,BuyerId,BuyerEmailId,CartAmount,ItemsAmount,ShippingAmount")] CartVM cartVM)
         {
+            cartVM.TransactionVMs = Session["Transactions"] as List<TransactionVM>;
+
             if (ModelState.IsValid)
-            {
+            {                
                 bool error = false;
                 if (cartVM.CartAmount <= 0)
                 {
@@ -107,26 +111,26 @@ namespace Abacus.Controllers
                     ModelState.AddModelError(nameof(cartVM.PayPalAmount), "The PayPal fees cannot be larger than the total for the cart");
                     error = true;
                 }
-                if (cartVM.SellerItemsTotal <= 0)
-                {
-                    ModelState.AddModelError(nameof(cartVM.SellerItemsTotal), "The Seller's Total Items Cost must be larger than 0");
-                    error = true;
-                }
-                if (cartVM.SellerItemsTotal > cartVM.ItemsAmount)
-                {
-                    ModelState.AddModelError(nameof(cartVM.SellerItemsTotal), "The Seller's Total Items Cost cannot be larger than the Total Value of Items");
-                    error = true;
-                }
-                if (cartVM.SellerShippingTotal < 0)
-                {
-                    ModelState.AddModelError(nameof(cartVM.SellerItemsTotal), "The Seller's Total Shipping Cost cannot be negative");
-                    error = true;
-                }
-                if (cartVM.SellerShippingTotal > cartVM.ShippingAmount)
-                {
-                    ModelState.AddModelError(nameof(cartVM.SellerItemsTotal), "The Seller's Total Shipping Cost cannot be larger than the total shipping amount for the cart");
-                    error = true;
-                }
+                //if (cartVM.SellerItemsTotal <= 0)
+                //{
+                //    ModelState.AddModelError(nameof(cartVM.SellerItemsTotal), "The Seller's Total Items Cost must be larger than 0");
+                //    error = true;
+                //}
+                //if (cartVM.SellerItemsTotal > cartVM.ItemsAmount)
+                //{
+                //    ModelState.AddModelError(nameof(cartVM.SellerItemsTotal), "The Seller's Total Items Cost cannot be larger than the Total Value of Items");
+                //    error = true;
+                //}
+                //if (cartVM.SellerShippingTotal < 0)
+                //{
+                //    ModelState.AddModelError(nameof(cartVM.SellerItemsTotal), "The Seller's Total Shipping Cost cannot be negative");
+                //    error = true;
+                //}
+                //if (cartVM.SellerShippingTotal > cartVM.ShippingAmount)
+                //{
+                //    ModelState.AddModelError(nameof(cartVM.SellerItemsTotal), "The Seller's Total Shipping Cost cannot be larger than the total shipping amount for the cart");
+                //    error = true;
+                //}
                 if (error)
                 {
                     var list = db.UserRecords.OrderBy(u => u.HDBUserName).ToList();
@@ -149,54 +153,61 @@ namespace Abacus.Controllers
                 };
                 cart.Buyer = db.UserRecords.SingleOrDefault(r => r.Id == cartVM.BuyerId);
                 cart.BuyerEmailId = cart.Buyer.PreferredEmailId;
-                LogRecord lrCart = new LogRecord()
-                {
-                    DateTime = DateTime.Now,
-                    RecordType = Utilities.RecordType.New,
-                    Guid = typeof(Cart).GUID
-                };
+                cart.ComputeFees();
 
-                ShippingRecord sr = new ShippingRecord()
-                {
-                    ShippingCompanyId = db.ShippingCompanies.FirstOrDefault(s => s.Name == "Unknown").Id,
-                    TrackingNumber = cartVM.TrackingNumber
-                };
-                LogRecord lrShippingRecord = new LogRecord()
-                {
-                    DateTime = DateTime.Now,
-                    RecordType = Utilities.RecordType.New,
-                    Guid = typeof(ShippingRecord).GUID
-                };
-                db.ShippingRecords.Add(sr);
                 db.Carts.Add(cart);
                 db.SaveChanges();
-
-                TransactionRecord tr = new TransactionRecord()
-                {
-                    SellerId = cartVM.SellerId,
-                    ItemCosts = cartVM.SellerItemsTotal,
-                    ShippingCost = cartVM.SellerShippingTotal,
-                    ShippingRecordId = sr.Id,
-                    CartId = cart.Id
-                };
-                LogRecord lrTransaction = new LogRecord()
+                LogRecord cartLR = new LogRecord()
                 {
                     DateTime = DateTime.Now,
                     RecordType = Utilities.RecordType.New,
-                    Guid = typeof(TransactionRecord).GUID
+                    Guid = typeof(Cart).GUID,
+                    RecordId = cart.Id
                 };
-                db.TransactionRecords.Add(tr);
+                db.LogRecords.Add(cartLR);
                 db.SaveChanges();
 
-                lrCart.RecordId = cart.Id;
-                lrShippingRecord.RecordId = sr.Id;
-                lrTransaction.RecordId = tr.Id;
-                db.LogRecords.Add(lrCart);
-                db.LogRecords.Add(lrShippingRecord);
-                db.LogRecords.Add(lrTransaction);
-                db.SaveChanges();
+                ShippingCompany shipCompany = db.ShippingCompanies.FirstOrDefault(s => s.Name == "Unknown");
 
-                await db.SaveChangesAsync();
+                foreach (var tr in cartVM.TransactionVMs)
+                {
+                    ShippingRecord sr = new ShippingRecord()
+                    {
+                        ShippingCompanyId = shipCompany.Id,
+                        TrackingNumber = cartVM.TrackingNumber
+                    };
+                    sr.TrackingNumber = tr.TrackingNumber;
+                    db.ShippingRecords.Add(sr);
+                    db.SaveChanges();
+
+                    TransactionRecord rec = tr.TransactionRecord;
+                    rec.ComputeFees();
+                    rec.CartId = cart.Id;
+                    rec.ShippingRecordId = sr.Id;
+                    rec.ShippingRecord = sr;
+                    db.TransactionRecords.Add(rec);
+                    db.SaveChanges();
+
+                    LogRecord shippingLog = new LogRecord()
+                    {
+                        DateTime = DateTime.Now,
+                        RecordType = Utilities.RecordType.New,
+                        Guid = typeof(ShippingRecord).GUID,
+                        RecordId = sr.Id
+                    };
+                    db.LogRecords.Add(shippingLog);
+
+                    LogRecord transactionLog = new LogRecord()
+                    {
+                        DateTime = DateTime.Now,
+                        RecordType = Utilities.RecordType.New,
+                        Guid = typeof(TransactionRecord).GUID,
+                        RecordId = rec.Id                        
+                    };
+                    db.LogRecords.Add(transactionLog);
+                    db.SaveChanges();
+                }
+
                 return RedirectToAction("Index");
             }
 
@@ -405,6 +416,85 @@ namespace Abacus.Controllers
             return tmp;
         }
 
+        public ActionResult TransactionDialogContents()
+        {
+            int id = 0;
+            TransactionVM tr = new TransactionVM();
+            if (Int32.TryParse(Request.Params["Id"], out id))
+            {
+                TransactionRecord user = db.TransactionRecords.SingleOrDefault(u => u.Id == id);
+                if (user != null)
+                    tr = new TransactionVM(user);
+            }
+            else
+            {
+                Guid g = Guid.Empty;
+                if (Guid.TryParse(Request.Params["Id"], out g))
+                {
+                    var transactions = Session["Transactions"] as List<TransactionVM>;
+                    if (transactions != null)
+                    {
+                        var item = transactions.Find(i => i.Id == g);
+                        if (item != null)
+                        {
+                            tr = item;
+                            tr.UpdateTargetId = string.Format("XAct{0}", tr.Id);
+                        }
+                    }                    
+                }
+            }
+
+            var list = db.UserRecords.OrderBy(u => u.HDBUserName).ToList();
+            tr.Sellers = new SelectList(list.Where(u => (u.UserType & UserRecord.UserTypes.Seller) == UserRecord.UserTypes.Seller), "Id", "HDBUserName");
+            var pv = PartialView("_TransactionDlg", tr);
+            return pv;
+        }
+
+        [HttpPost]
+        public ActionResult CartTransaction(Abacus.ViewModel.TransactionVM xact)
+        {
+            var list = Session["Transactions"] as List<TransactionVM>;
+            if (list != null)
+            {
+                var seller = db.UserRecords.Find(xact.SellerId);
+                xact.SellerName = seller.HDBUserName;
+
+                var item = list.Find(i => i.Id == xact.Id);
+                if (item != null)
+                {
+                    item.SellerId = xact.SellerId;
+                    item.SellerName = xact.SellerName;
+                    item.ItemsTotal = xact.ItemsTotal;
+                    item.ShippingTotal = xact.ShippingTotal;
+                    item.TrackingNumber = xact.TrackingNumber;
+                    return PartialView("_TransactionListItem", item);
+                }
+                else
+                {
+                    list.Add(xact);
+                }
+            }
+            return PartialView("_TransactionList", list);
+        }
+
+        [HttpGet]
+        public ActionResult DeleteTransaction()
+        {
+            var list = Session["Transactions"] as List<TransactionVM>;
+            if (list != null && list.Count > 0)
+            {
+                Guid g = Guid.Empty;
+                if (Guid.TryParse(Request.Params["Id"], out g))
+                {
+                    var item = list.Find(i => i.Id == g);
+                    if (item != null)
+                    {
+                        list.Remove(item);
+                    }
+                }                
+            }
+            return PartialView("_TransactionList", list);
+        }
         protected override void Dispose(bool disposing)
         {
             if (disposing)

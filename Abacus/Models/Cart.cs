@@ -49,11 +49,17 @@ namespace Abacus.Models
         [Display(Name = "Total PayPal Fees")]
         public double PayPalFees { get; set; }
 
-        public double HobbyDBFees
-        {
-            get { return ItemCost * .07 + PayPalFees; }
-        }
+        public double HobbyDBFees { get; set; }
+        //{
+        //    get { return ItemCost * .07 + PayPalFees; }
+        //}
         public virtual ICollection<TransactionRecord> Transactions { get; set; }
+
+        public void ComputeFees()
+        {
+            PayPalFees = 0.30 + .029 * (ItemCost + ShippingCost);
+            HobbyDBFees = ItemCost * .07 + PayPalFees;
+        }
 
         public enum SearchOptions
         {
