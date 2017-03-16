@@ -124,7 +124,7 @@ namespace Abacus.ViewModel
         [Key]
         public int Id { get; set; } = 0;
 
-        [Range(0, int.MaxValue)]
+       // [Range(0, int.MaxValue)]
         [Display(Name = "Cart")]
         public int CartNumber { get; set; }
 

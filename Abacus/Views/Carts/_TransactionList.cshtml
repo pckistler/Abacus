@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<Abacus.ViewModel.TransactionVM>
 
 <div class="container">
-    <table class="table">
+    <table class="table" id="TransactionListTable">
         <thead>
             <tr>
                 <th></th> @*I have no idea why I need to add another column, problem for another day*@
@@ -12,7 +12,7 @@
                 <th></th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="TransactionListBody">
             @foreach (var item in Model)
             {
                 <tr class="row" id="@string.Format("XAct{0}",item.Id)">

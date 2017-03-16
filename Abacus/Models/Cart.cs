@@ -55,9 +55,9 @@ namespace Abacus.Models
         //}
         public virtual ICollection<TransactionRecord> Transactions { get; set; }
 
-        public void ComputeFees()
+        public void ComputeFees(int numSellers)
         {
-            PayPalFees = 0.30 + .029 * (ItemCost + ShippingCost);
+            PayPalFees = 0.30 * numSellers + .029 * (ItemCost + ShippingCost);
             HobbyDBFees = ItemCost * .07 + PayPalFees;
         }
 

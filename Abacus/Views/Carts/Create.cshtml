@@ -1,185 +1,9 @@
 ﻿@model Abacus.ViewModel.CartVM
-<script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.js")" type="text/javascript"></script>
 @{
-    ViewBag.Title = "Create";
-    var tabIndex = 1;
-    var value = "0.0";
+    ViewBag.Title = "Create New";
 }
 
-<script>
-    $(document).ready(function () {
-        document.getElementById("CartNumber").focus();
-    });
-
-    function ComputeFees() {
-        var itemCost = 1.0;
-        var shippingCost = 1.0;
-
-        itemCost = document.getElementById("ItemsAmount").value * 1.0;
-        shippingCost = document.getElementById("ShippingAmount").value * 1.0;
-
-        var payPalFees = 0.30 + .029 * (itemCost + shippingCost);
-        document.getElementById("PayPalFees").innerText = "$ " + payPalFees.toFixed(2);
-
-        var hobbyDBFees = 0.07 * itemCost * payPalFees;
-        document.getElementById("hobbyDBFees").innerText = "$ " + hobbyDBFees.toFixed(2);
-    }
-
-</script>
-
-
-
-<h2>Create New Cart</h2>
-<div class="modal" id="editor-container" tabindex="-1" role="dialog" aria-labelledby="editor-title">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content" id="editor-content-container"></div>
-    </div>
-</div>
-
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
-
-    <div class="form-horizontal">
-        <hr />
-        <h4>Cart details</h4>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.CartNumber, htmlAttributes: new { @class = "control-label col-sm-3" })
-            <div class="col-sm-3">
-                @Html.EditorFor(model => model.CartNumber, new { htmlAttributes = new { @class = "form-control", tabindex = tabIndex } })
-                @Html.ValidationMessageFor(model => model.CartNumber, "", new { @class = "text-danger", })
-            </div>
-            <label class="control-label col-sm-1">Buyer</label>
-            <div class="col-sm-3" id="buyer_dropdown">
-                @{
-                    ViewBag.DropDownType = true;
-                    ViewBag.tabIndex = 5;
-                }
-                @Html.Partial("_UpdateDropdown", Model)
-                @Html.ValidationMessageFor(model => model.BuyerId, "", new { @class = "text-danger" })
-            </div>
-            <button type="button" class="btn editor-container col-sm-1" tabindex="6" data-id="0" data-usertype="buyer" data-toggle="modal" data-target="#editor-container">New</button>
-        </div>
-        <div class="form-group">
-            @Html.LabelFor(model => model.SaleDate, htmlAttributes: new { @class = "control-label col-sm-3" })
-            <div class="col-sm-3">
-                @Html.EditorFor(model => model.SaleDate, new { htmlAttributes = new { @class = "form-control", tabindex = ++tabIndex } })
-                @Html.ValidationMessageFor(model => model.SaleDate, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.NumberOfItems, htmlAttributes: new { @class = "control-label col-sm-3" })
-            <div class="col-sm-3">
-                @Html.EditorFor(model => model.NumberOfItems, new { htmlAttributes = new { @class = "form-control", tabindex = ++tabIndex } })
-                @Html.ValidationMessageFor(model => model.NumberOfItems, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        @*<div class="form-group">
-            @Html.LabelFor(model => model.NumberOfSellers, htmlAttributes: new { @class = "control-label col-sm-3" })
-            <div class="col-sm-3">
-                @Html.EditorFor(model => model.NumberOfSellers, new { htmlAttributes = new { @class = "form-control", tabindex = ++tabIndex } })
-                @Html.ValidationMessageFor(model => model.NumberOfSellers, "", new { @class = "text-danger" })
-            </div>
-        </div>*@
-        <hr />
-
-
-        <h4>Monetary details</h4>
-        @{
-            tabIndex = 10;
-        }
-        <div class="form-group">
-            @Html.LabelFor(model => model.CartAmount, htmlAttributes: new { @class = "control-label col-sm-3" })
-            <div class="col-sm-3">
-                @{ value = string.Format("{0:0.00}", Model.CartAmount);}
-                <input class="form-control text-box single-line" data-val="true" data-val-number="The field Total Amount in Cart must be a number." data-val-required="The Total Amount in Cart field is required." id="@nameof(Model.CartAmount)" name="@nameof(Model.CartAmount)" tabindex="@tabIndex" type="number" value="@value" step="0.01" min="0.0">
-                @{ tabIndex++;}
-                @Html.ValidationMessageFor(model => model.CartAmount, "", new { @class = "text-danger" })
-            </div>
-            <label class="control-label col-sm-3">hobbyDB Fees</label>
-            <label class="control-label  col-sm-1" id="hobbyDBFees"></label>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.ItemsAmount, htmlAttributes: new { @class = "control-label col-sm-3" })
-            <div class="col-sm-3">
-                @{ value = string.Format("{0:0.00}", Model.ItemsAmount);}
-                <input class="form-control text-box single-line" data-val="true" onchange="ComputeFees()" data-val-number="The field Total Value of Items must be a number." data-val-required="The Total Value of Items field is required." id="@nameof(Model.ItemsAmount)" name="@nameof(Model.ItemsAmount)" tabindex="@tabIndex" type="number" value="@value" step="0.01" min="0.0">
-                @{ tabIndex++;}
-                @Html.ValidationMessageFor(model => model.ItemsAmount, "", new { @class = "text-danger" })
-            </div>
-            <label class="control-label col-sm-3">PayPal Fees</label>
-            <label class="control-label col-sm-1" id="PayPalFees"></label>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.ShippingAmount, htmlAttributes: new { @class = "control-label col-sm-3" })
-            <div class="col-sm-3">
-                @{ value = string.Format("{0:0.00}", Model.ShippingAmount);}
-                <input class="form-control text-box single-line" data-val="true" onchange="ComputeFees()" data-val-number="The field Total Shipping Costs must be a number." data-val-required="The Total Shipping Costs field is required." id="@nameof(Model.ShippingAmount)" name="@nameof(Model.ShippingAmount)" tabindex="@tabIndex" type="number" value="@value" step="0.01" min="0.0">
-                @{ tabIndex++;}
-            </div>
-            <div class="col-sm-6">
-                @Html.ValidationMessageFor(model => model.ShippingAmount, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        @*<div class="form-group">
-            @Html.LabelFor(model => model.PayPalAmount, htmlAttributes: new { @class = "control-label col-sm-3" })
-            <div class="col-sm-3">
-                @{ value = string.Format("{0:0.00}", Model.PayPalAmount);}
-                <input class="form-control text-box single-line" data-val="true" data-val-number="The field Total PayPal Fees must be a number." data-val-required="The Total PayPal Fees field is required." id="@nameof(Model.PayPalAmount)" name="@nameof(Model.PayPalAmount)" tabindex="@tabIndex" type="number" value="@value" step="0.01" min="0.0">
-                @{ tabIndex++;}
-            </div>
-            <div class="col-sm-6">
-                @Html.ValidationMessageFor(model => model.PayPalAmount, "", new { @class = "text-danger" })
-            </div>
-        </div>*@
-        <hr />
-
-
-        @{
-            tabIndex = 20;
-        }
-        <div class="row">
-            <h4 class="col-sm-2">Seller details</h4>
-            <button type="button" class="btn btn-transaction-dialog col-sm-2" data-id="0" data-toggle="modal" data-target="#transaction-dialog-container">New Seller</button>
-            <button type="button" class="btn editor-container col-sm-offset-6 col-sm-2" tabindex="@tabIndex" data-id="0" data-usertype="seller" data-toggle="modal" data-target="#editor-container">New hobbyDB User</button>
-        </div>
-        
-        <div class="clearfix" id="cart_transaction_list">
-            @if (Model.TransactionVMs.Count > 0)
-            {
-                @Html.Partial("_TransactionList", Model.TransactionVMs);
-            }
-        </div>      
-
-        @{
-            tabIndex++;
-        }
-        <div class="form-group">
-            <br/>
-            <div class="col-sm-offset-11 col-sm-12">
-                <input type="submit" value="Save" class="btn btn-default" tabindex="@tabIndex++" />
-            </div>
-        </div>
-    </div>
-}
-
-
-
-<div>
-    @Html.ActionLink("Back to List", "Index", null, new { tabindex = tabIndex++ })
-</div>
-
-<div class="modal" id="transaction-dialog" tabindex="-1" role="dialog" aria-labelledby="editor-title">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content" id="transaction-dialog-content"></div>
-    </div>
-</div>
+@Html.Partial("_NewEdit")
 
 @section scripts
 {
@@ -236,12 +60,13 @@
             //    url: url,
             //    cache: false,
             //    success: function (data) {
-            //        $('#cart_transaction_list').html(data);                    
+            //        $('#cart_transaction_list').html(data);
             //    }
             xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
-                    document.getElementById("cart_transaction_list").innerHTML = this.responseText;                   
+                    document.getElementById("cart_transaction_list").innerHTML = this.responseText;
+                    ComputeFees();
                 }
             };
             xhttp.open("GET", url, true);
@@ -260,15 +85,6 @@
                         $('#transaction-dialog').modal('show');
                     }
                 });
-                //xhttp = new XMLHttpRequest();
-                //xhttp.onreadystatechange = function () {
-                //    if (this.readyState == 4 && this.status == 200) {
-                //        document.getElementById("transaction-dialog-content").innerHTML = this.responseText;
-                //        $('#transaction-dialog').modal('show');
-                //    }
-                //};
-                //xhttp.open("GET", url, true);
-                //xhttp.send();
             });
 
             //$('#transaction-dialog').on('shown.bs.modal', function () {
@@ -281,6 +97,7 @@
         });
         function successTransaction(data, status, xhr) {
             $('#transaction-dialog').modal('hide');
+            ComputeFees();
         }
 
         function failureTransaction(xhr, status, error) {
@@ -288,7 +105,6 @@
         }
     </script>
 }
-
 
 @*@section Scripts {
         @Scripts.Render("~/bundles/jqueryval")

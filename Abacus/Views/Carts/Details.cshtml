@@ -7,7 +7,8 @@
 <div class="container">
     <div class="row">
         <div class="col-sm-11"><h2>Cart # @Model.CartNumber</h2></div>
-        <div class="col-sm-1"><h2>@Html.ActionLink("Edit", "Edit", new { id = Model.Id })</h2></div>
+        @*<div class="col-sm-1"><h2>@Html.ActionLink("Edit", "Edit", new { id = Model.Id })</h2></div>*@
+        <a href="/Carts/Edit?Id=@Model.Id" class="btn btn-info" role="button">Edit</a>
     </div>
 </div>
 <hr />

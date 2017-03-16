@@ -10,10 +10,27 @@
 @for (int ii = 0; ii < 5; ii++)
 {
     <div class="row">
-        @if (ii < totalCount)
+     @if (ii < totalCount)
+     {
+         var item = Model.ElementAt(ii);
+         if (item != null)
+         {
+            string txt = string.Format(format, item.CartNumber, item.Id, item.TotalValue);
+            <div class="col-sm-4">
+                <ul>
+                    <li>
+                        <label>@Html.Raw(txt)</label>
+                    </li>
+                </ul>
+            </div>
+         }
+     }
+    @if (ii + 5 < totalCount)
+    {
+        var item = Model.ElementAt(ii+5);
+        if (item != null)
         {
-            //string txt = string.Format(format, Html.ActionLink(Model.ElementAt(ii + 0).CartNumber.ToString(), "Edit", new { id = Model.ElementAt(ii + 0).Id }), Model.ElementAt(ii).TotalValue);
-            string txt = string.Format(format, Model.ElementAt(ii + 0).CartNumber, Model.ElementAt(ii + 0).Id, Model.ElementAt(ii).TotalValue);
+            string txt = string.Format(format, item.CartNumber, item.Id, item.TotalValue);
             <div class="col-sm-4">
                 <ul>
                     <li>
@@ -22,29 +39,21 @@
                 </ul>
             </div>
         }
-        @if (ii + 5 < totalCount)
-        {
-            //string txt = string.Format(format, Html.ActionLink(Model.ElementAt(ii + 5).CartNumber.ToString(), "Edit", new { id = Model.ElementAt(ii + 5).Id }), Model.ElementAt(ii).TotalValue);
-            string txt = string.Format(format, Model.ElementAt(ii + 5).CartNumber, Model.ElementAt(ii + 5).Id, Model.ElementAt(ii).TotalValue);
-            <div class="col-sm-4">
-                <ul>
-                    <li>
-                        <label>@Html.Raw(txt)</label>
-                    </li>
-                </ul>
-            </div>
-        }
+    }
         @if (ii + 10 < totalCount)
         {
-            //string txt = string.Format(format, Html.ActionLink(Model.ElementAt(ii + 10).CartNumber.ToString(), "Edit", new { id = Model.ElementAt(ii + 10).Id }), Model.ElementAt(ii).TotalValue);
-            string txt = string.Format(format, Model.ElementAt(ii + 10).CartNumber, Model.ElementAt(ii + 10).Id, Model.ElementAt(ii).TotalValue);
-            <div class="col-sm-4">
-                <ul>
-                    <li>
-                        <label>@Html.Raw(txt)</label>
-                    </li>
-                </ul>
-            </div>
+            var item = Model.ElementAt(ii + 10);
+            if (item != null)
+            {
+                string txt = string.Format(format, item.CartNumber, item.Id, item.TotalValue);
+                <div class="col-sm-4">
+                    <ul>
+                        <li>
+                            <label>@Html.Raw(txt)</label>
+                        </li>
+                    </ul>
+                </div>
+            }
         }
     </div>
 }

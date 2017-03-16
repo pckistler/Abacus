@@ -63,5 +63,17 @@ namespace Abacus.ViewModel
         public string TrackingNumber { get; set; }
 
         public string UpdateTargetId { get; set; } = "cart_transaction_list";
+
+        public static List<TransactionVM> Transactions(IEnumerable<TransactionRecord> records)
+        {
+            List<TransactionVM> list = new List<TransactionVM>();
+            foreach (var item in records)
+            {
+                list.Add(new TransactionVM(item));
+            }
+            return list;
+        }
     }
+
+
 }

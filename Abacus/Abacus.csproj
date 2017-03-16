@@ -381,6 +381,7 @@
     <Content Include="Views\Carts\_TransactionDlg.cshtml" />
     <Content Include="Views\Carts\_TransactionList.cshtml" />
     <Content Include="Views\Carts\_TransactionListItem.cshtml" />
+    <Content Include="Views\Carts\_NewEdit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

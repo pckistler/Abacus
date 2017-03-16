@@ -58,6 +58,8 @@ namespace Abacus.Controllers
             cart.Sellers = new SelectList(list.Where(u => (u.UserType & UserRecord.UserTypes.Seller) == UserRecord.UserTypes.Seller), "Id", "HDBUserName");
             ViewBag.BuyerId = cart.Buyers;
             ViewBag.SellerId = cart.Sellers;
+            ViewBag.Buyers = cart.Buyers;
+            ViewBag.Sellers = cart.Sellers;
 
             Session.Add("Transactions", new List<TransactionVM>());
 
@@ -69,7 +71,7 @@ namespace Abacus.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,CartNumber,SaleDate,NumberOfItems,BuyerId,BuyerEmailId,CartAmount,ItemsAmount,ShippingAmount")] CartVM cartVM)
+        public async Task<ActionResult> Create([Bind(Include = "Id,CartNumber,SaleDate,NumberOfItems,BuyerId,BuyerEmailId,CartAmount,ItemsAmount,ShippingAmount")] CartVM cartVM)
         {
             cartVM.TransactionVMs = Session["Transactions"] as List<TransactionVM>;
 
@@ -153,10 +155,10 @@ namespace Abacus.Controllers
                 };
                 cart.Buyer = db.UserRecords.SingleOrDefault(r => r.Id == cartVM.BuyerId);
                 cart.BuyerEmailId = cart.Buyer.PreferredEmailId;
-                cart.ComputeFees();
+                cart.ComputeFees(cartVM.TransactionVMs.Count);
 
                 db.Carts.Add(cart);
-                db.SaveChanges();
+                await db.SaveChangesAsync();
                 LogRecord cartLR = new LogRecord()
                 {
                     DateTime = DateTime.Now,
@@ -165,47 +167,48 @@ namespace Abacus.Controllers
                     RecordId = cart.Id
                 };
                 db.LogRecords.Add(cartLR);
-                db.SaveChanges();
+                await db.SaveChangesAsync();
 
                 ShippingCompany shipCompany = db.ShippingCompanies.FirstOrDefault(s => s.Name == "Unknown");
 
                 foreach (var tr in cartVM.TransactionVMs)
                 {
-                    ShippingRecord sr = new ShippingRecord()
-                    {
-                        ShippingCompanyId = shipCompany.Id,
-                        TrackingNumber = cartVM.TrackingNumber
-                    };
-                    sr.TrackingNumber = tr.TrackingNumber;
-                    db.ShippingRecords.Add(sr);
-                    db.SaveChanges();
+                    await AddTransaction(tr, cart.Id, shipCompany);
+                    //ShippingRecord sr = new ShippingRecord()
+                    //{
+                    //    ShippingCompanyId = shipCompany.Id,
+                    //    TrackingNumber = cartVM.TrackingNumber
+                    //};
+                    //sr.TrackingNumber = tr.TrackingNumber;
+                    //db.ShippingRecords.Add(sr);
+                    //db.SaveChanges();
 
-                    TransactionRecord rec = tr.TransactionRecord;
-                    rec.ComputeFees();
-                    rec.CartId = cart.Id;
-                    rec.ShippingRecordId = sr.Id;
-                    rec.ShippingRecord = sr;
-                    db.TransactionRecords.Add(rec);
-                    db.SaveChanges();
+                    //TransactionRecord rec = tr.TransactionRecord;
+                    //rec.ComputeFees();
+                    //rec.CartId = cart.Id;
+                    //rec.ShippingRecordId = sr.Id;
+                    //rec.ShippingRecord = sr;
+                    //db.TransactionRecords.Add(rec);
+                    //db.SaveChanges();
 
-                    LogRecord shippingLog = new LogRecord()
-                    {
-                        DateTime = DateTime.Now,
-                        RecordType = Utilities.RecordType.New,
-                        Guid = typeof(ShippingRecord).GUID,
-                        RecordId = sr.Id
-                    };
-                    db.LogRecords.Add(shippingLog);
+                    //LogRecord shippingLog = new LogRecord()
+                    //{
+                    //    DateTime = DateTime.Now,
+                    //    RecordType = Utilities.RecordType.New,
+                    //    Guid = typeof(ShippingRecord).GUID,
+                    //    RecordId = sr.Id
+                    //};
+                    //db.LogRecords.Add(shippingLog);
 
-                    LogRecord transactionLog = new LogRecord()
-                    {
-                        DateTime = DateTime.Now,
-                        RecordType = Utilities.RecordType.New,
-                        Guid = typeof(TransactionRecord).GUID,
-                        RecordId = rec.Id                        
-                    };
-                    db.LogRecords.Add(transactionLog);
-                    db.SaveChanges();
+                    //LogRecord transactionLog = new LogRecord()
+                    //{
+                    //    DateTime = DateTime.Now,
+                    //    RecordType = Utilities.RecordType.New,
+                    //    Guid = typeof(TransactionRecord).GUID,
+                    //    RecordId = rec.Id                        
+                    //};
+                    //db.LogRecords.Add(transactionLog);
+                    //db.SaveChanges();
                 }
 
                 return RedirectToAction("Index");
@@ -226,16 +229,18 @@ namespace Abacus.Controllers
             {
                 return HttpNotFound();
             }
-            //ViewBag.BuyerId = new SelectList(db.UserRecords, "Id", "HDBUserName", cart.BuyerId);
-            //ViewBag.BuyerEmailId = new SelectList(db.Emails, "Id", "EmailAddress", cart.BuyerEmailId);
 
             CartVM cartVM = new CartVM(cart);
+            cartVM.TransactionVMs = TransactionVM.Transactions(cart.Transactions);
+
             var list = db.UserRecords.OrderBy(u => u.HDBUserName).ToList();
             cartVM.Buyers = new SelectList(list.Where(u => (u.UserType & UserRecord.UserTypes.Buyer) == UserRecord.UserTypes.Buyer), "Id", "HDBUserName");
             cartVM.Sellers = new SelectList(list.Where(u => (u.UserType & UserRecord.UserTypes.Seller) == UserRecord.UserTypes.Seller), "Id", "HDBUserName");
             ViewBag.BuyerId = cartVM.Buyers;
             ViewBag.SellerId = cartVM.Sellers;
 
+            Session.Remove("Transactions");
+            Session.Add("Transactions", cartVM.TransactionVMs);
 
             return View(cartVM);
         }
@@ -246,31 +251,153 @@ namespace Abacus.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit([Bind] CartVM cartVM)
-        //public async Task<ActionResult> Edit([Bind(Include = "Id,CartNumber,SaleDate,NumberOfItems,NumberOfSellers,BuyerId,BuyerEmailId,CartAmount,ItemsAmount,ShippingAmount,PayPalAmount,SellerId,SellerItemsTotal,SellerShippingTotal,TrackingNumber")] CartVM cartVM)
         {
+            cartVM.TransactionVMs = Session["Transactions"] as List<TransactionVM>;
+
             if (ModelState.IsValid)
             {
-                Cart cart = cartVM.Cart;
-                TransactionRecord tr = cartVM.Transactions.ElementAtOrDefault(0);
+                bool error = false;
+                if (cartVM.CartAmount <= 0)
+                {
+                    ModelState.AddModelError(nameof(cartVM.CartAmount), "The value in the cart must be larger than 0");
+                    error = true;
+                }
+                if (cartVM.TransactionVMs == null || cartVM.TransactionVMs.Count ==0 )
+                {
+                    ModelState.AddModelError("NewSellerButton", "There must be at least 1 seller defined for the cart");
+                    error = true;
+                }
+                double itemsCost = cartVM.TransactionVMs.Sum(t => t.ItemsTotal);
+                if (cartVM.ItemsAmount != itemsCost)
+                {
+                    ModelState.AddModelError(nameof(cartVM.ItemsAmount), string.Format("The {0}, ${1:0.00}, must equal the sum of the seller Items, ${2:0.00}", nameof(cartVM.ItemsAmount), cartVM.ItemsAmount, itemsCost));
+                    error = true;
+                }
+                double shipCost = cartVM.TransactionVMs.Sum(t => t.ShippingTotal);
+                if (cartVM.ShippingAmount != shipCost)
+                {
+                    ModelState.AddModelError(nameof(cartVM.ShippingAmount), string.Format("The {0}, ${1:0.00}, must equal the sum of the seller shipping costs, ${2:0.00}", nameof(cartVM.ShippingAmount), cartVM.ShippingAmount, shipCost));
+                    error = true;
+                }
+                List<int> sellers = cartVM.TransactionVMs.Select(t => t.SellerId).ToList();
+                if (sellers.Distinct().Count() != sellers.Count)
+                {
+                    ModelState.AddModelError("cart_transaction_list", "The list of sellers contains one or more duplicated sellers");
+                    error = true;
+                }
+                if (error)
+                {
+                    var list = db.UserRecords.OrderBy(u => u.HDBUserName).ToList();
+                    cartVM.Buyers = new SelectList(list.Where(u => (u.UserType & UserRecord.UserTypes.Buyer) == UserRecord.UserTypes.Buyer), "Id", "HDBUserName");
+                    cartVM.Sellers = new SelectList(list.Where(u => (u.UserType & UserRecord.UserTypes.Seller) == UserRecord.UserTypes.Seller), "Id", "HDBUserName");
+                    return View(cartVM);
+                }
 
+                var existingTransactions = db.TransactionRecords.Where(r => r.CartId == cartVM.Id).ToList();
+                Cart cart = cartVM.Cart;
+                cart.ComputeFees(cartVM.TransactionVMs.Count);
                 db.Entry(cart).State = EntityState.Modified;
                 await db.SaveChangesAsync();
 
-                if (tr != null)
+                // Delete any transactions that have been removed
+                List<int> deletedItems = new List<int>();
+                foreach (var item in existingTransactions)
                 {
-                    db.Entry(tr).State = EntityState.Modified;
-                    tr.CartId = cart.Id;
-                    await db.SaveChangesAsync();
-                }                
-                //await db.SaveChangesAsync();
-                return RedirectToAction("Index");
+                    if (!cartVM.TransactionVMs.Any(t => t.TransactionRecordId == item.Id))
+                    {
+                        deletedItems.Add(item.Id);
+                    }
+                }
+                foreach (int id in deletedItems)
+                {
+                    TransactionRecord delTr = await db.TransactionRecords.FindAsync(id);
+                    db.TransactionRecords.Remove(delTr);
+                }
+
+                // Add any new transactions
+                List<int> newItems = new List<int>();
+                foreach (var item in cartVM.TransactionVMs)
+                {
+                    if (!existingTransactions.Any(t => t.Id == item.TransactionRecordId))
+                        newItems.Add(item.TransactionRecordId);
+                }
+                foreach (int id in newItems)
+                {
+                    var tr = cartVM.TransactionVMs.Find(r => r.TransactionRecordId == id);
+                    await AddTransaction(tr, cart.Id, null);
+                    cartVM.TransactionVMs.Remove(tr);
+                }
+                foreach (var item in cartVM.TransactionVMs)
+                {
+                    TransactionRecord tr = existingTransactions.Find(r=>r.Id == item.TransactionRecordId);
+                    if (tr != null)
+                    {
+                        tr.ItemCosts = item.ItemsTotal;
+                        tr.ShippingCost = item.ShippingTotal;
+                        tr.SellerId = item.SellerId;
+                        tr.ShippingRecord.TrackingNumber = item.TrackingNumber;
+                        tr.ComputeFees();
+                        db.Entry(tr).State = EntityState.Modified;
+                        await db.SaveChangesAsync();
+                    }
+                }
+                    //TransactionRecord tr = cartVM.Transactions.ElementAtOrDefault(0);
+
+                    //if (tr != null)
+                    //{
+                    //    db.Entry(tr).State = EntityState.Modified;
+                    //    tr.CartId = cart.Id;
+                    //    await db.SaveChangesAsync();
+                    //}                
+                    //await db.SaveChangesAsync();
+                    return RedirectToAction("Index");
             }
             //ViewBag.BuyerId = new SelectList(db.UserRecords, "Id", "HDBUserName", cart.BuyerId);
             //ViewBag.BuyerEmailId = new SelectList(db.Emails, "Id", "EmailAddress", cart.BuyerEmailId);
             return View(cartVM);
         }
 
+        private async Task AddTransaction(TransactionVM tr, int cartId, ShippingCompany shipCompany)
+        {
+            if (shipCompany == null)
+                shipCompany = db.ShippingCompanies.FirstOrDefault(s => s.Name == "Unknown");
 
+            ShippingRecord sr = new ShippingRecord()
+            {
+                ShippingCompanyId = shipCompany.Id, 
+                TrackingNumber = tr.TrackingNumber
+            };            
+            db.ShippingRecords.Add(sr);
+            await db.SaveChangesAsync();
+
+            TransactionRecord rec = tr.TransactionRecord;
+            rec.ComputeFees();
+            rec.CartId = cartId;
+            rec.ShippingRecordId = sr.Id;
+            rec.ShippingRecord = sr;
+            db.TransactionRecords.Add(rec);
+            await db.SaveChangesAsync();
+
+            LogRecord shippingLog = new LogRecord()
+            {
+                DateTime = DateTime.Now,
+                RecordType = Utilities.RecordType.New,
+                Guid = typeof(ShippingRecord).GUID,
+                RecordId = sr.Id
+            };
+            db.LogRecords.Add(shippingLog);
+
+            LogRecord transactionLog = new LogRecord()
+            {
+                DateTime = DateTime.Now,
+                RecordType = Utilities.RecordType.New,
+                Guid = typeof(TransactionRecord).GUID,
+                RecordId = rec.Id
+            };
+            db.LogRecords.Add(transactionLog);
+            await db.SaveChangesAsync();
+
+        }
 
         // GET: Carts/Delete/5
         public async Task<ActionResult> Delete(int? id)
