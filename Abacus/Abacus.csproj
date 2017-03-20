@@ -390,6 +390,7 @@
     <Content Include="Views\Users\_DeleteDlg.cshtml" />
     <Content Include="Views\Users\_List.cshtml" />
     <Content Include="Views\Users\_ListItem.cshtml" />
+    <Content Include="Views\Users\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

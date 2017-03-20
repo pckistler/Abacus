@@ -87,6 +87,28 @@ namespace Abacus
                 roleManager.Create(role);
             }
 
+            // creating Creating Manager role    
+            if (!roleManager.RoleExists("Disabled"))
+            {
+                var role = new Microsoft.AspNet.Identity.EntityFramework.IdentityRole();
+                role.Name = "Disabled";
+                roleManager.Create(role);
+
+                var user = new ApplicationUser();
+                user.UserName = "Bob";
+                //user.Email = "andrew@hobbydb.com";
+                var userPWD = "bob";
+
+                var chkUser = UserManager.Create(user, userPWD);
+
+                //Add default User to Role Admin   
+                if (chkUser.Succeeded)
+                {
+                    var result1 = UserManager.AddToRole(user.Id, "Disabled");
+
+                }
+            }
+
         }
     }
 }

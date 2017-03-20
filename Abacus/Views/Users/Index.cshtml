@@ -6,42 +6,16 @@
 
 @if (ViewBag.displayMenu == "Yes")
 {
-    <h2>Welcome @User.Identity.Name. From here you can manage users and thier access.</h2>
+    <h2>Manage users</h2>
     @*<h3>
         @Html.ActionLink("Manage Role", "Index", "Role")
     </h3>*@
-    @Html.ActionLink("Create", "Create");
+    @Html.ActionLink("Create", "Create", null, new { @class = "btn btn-default" })    
     if (Model.Count() > 0)
     {
         @Html.Partial("_List", Model);
     }
-    @*<table class="table">
-        <thead>
-            <tr>
-                <th class="col-sm-2">
-                    User Name
-                </th>
-                <th class="col-sm-2">
-                    Role
-                </th>
-                <th class="col-sm-2">
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var user in Model)
-            {
-                <tr id="@user.Id">
-                    <td class="col-sm-2">@user.UserName</td>
-                    <td class="col-sm-2">@user.Role</td>
-                    <td class="col-sm-2">Reset PWD, Edit, 
-                        <button type="button" class="btn" onclick="DeleteUser('@user.Id')">Delete</button>
-                    </td>
-                </tr>
-            }
-        </tbody>
 
-    </table>*@
 }
 else
 {

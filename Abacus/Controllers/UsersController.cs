@@ -13,7 +13,7 @@ using System.Web.Mvc;
 
 namespace Abacus.Controllers
 {
-    [Authorize]
+    [Authorize(Roles ="Admin")]
     public class UsersController : Controller
     {
         private ApplicationSignInManager m_SignInManager;
@@ -188,7 +188,63 @@ namespace Abacus.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
+        //
+        // GET: /Account/Register
+        public ActionResult Edit(string Id)
+        {
+            var user = UserManager.Users.SingleOrDefault(u => u.Id == Id);
+            UserVM userVM = new UserVM()
+            {
+                Id = user.Id,
+                UserName = user.UserName,
+                Password = user.PasswordHash,
+                ConfirmPassword = user.PasswordHash
+            };
+            var role = db.Roles.First(r=>r.Name=="Disabled");
+            if (user.Roles.Count > 0)
+                role = db.Roles.Find(user.Roles.ElementAt(0).RoleId);
+            userVM.Role = role.Id;
+
+            ViewBag.Name = new SelectList(db.Roles.ToList(), "Id", "Name");
+            return View(userVM);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Edit(UserVM model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = UserManager.Users.SingleOrDefault(u => u.Id == model.Id);
+                if (user.UserName != model.UserName)
+                {
+                    user.UserName = model.UserName;
+                    await UserManager.UpdateAsync(user);
+                }
+                var role = db.Roles.First(r => r.Name == "Disabled");
+                if (user.Roles.Count > 0)
+                    role = db.Roles.Find(model.Role);
+                if (! await UserManager.IsInRoleAsync(user.Id, role.Name))
+                {
+                    if (user.Roles.Count > 0)
+                    {
+                        var name = db.Roles.Find(user.Roles.ElementAt(0).RoleId).Name;
+                        await UserManager.RemoveFromRolesAsync(user.Id, name);
+                    }
+                    await UserManager.AddToRoleAsync(user.Id, role.Name);
+                }
+                if (!string.IsNullOrEmpty(model.Password))
+                {
+                    await UserManager.RemovePasswordAsync(user.Id);
+                    await UserManager.AddPasswordAsync(user.Id, model.Password);
+                }
+                return RedirectToAction("Index", "Users");
+            }
+
+            // If we got this far, something failed, redisplay form
+            return View(model);
+        }
+
         public ActionResult DeleteDialogContents()
         {
             string id = Guid.Empty.ToString();
