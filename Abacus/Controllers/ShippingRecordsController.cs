@@ -11,6 +11,7 @@ using Abacus.Models;
 
 namespace Abacus.Controllers
 {
+    [Authorize]
     public class ShippingRecordsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();

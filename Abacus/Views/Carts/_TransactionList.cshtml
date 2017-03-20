@@ -3,8 +3,7 @@
 <div class="container">
     <table class="table" id="TransactionListTable">
         <thead>
-            <tr>
-                <th></th> @*I have no idea why I need to add another column, problem for another day*@
+            <tr>                
                 <th>Seller</th>
                 <th>Item Total</th>
                 <th>Shipping Total</th>
@@ -15,7 +14,7 @@
         <tbody id="TransactionListBody">
             @foreach (var item in Model)
             {
-                <tr class="row" id="@string.Format("XAct{0}",item.Id)">
+                <tr id="@string.Format("XAct{0}",item.Id)">
                     @Html.Partial("_TransactionListItem", item)
                 </tr>
             }

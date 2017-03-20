@@ -12,6 +12,7 @@ using Abacus.ViewModel;
 
 namespace Abacus.Controllers
 {
+    [Authorize]
     public class CartsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();

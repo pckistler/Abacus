@@ -208,6 +208,7 @@
     <Compile Include="Controllers\ShippingRecordsController.cs" />
     <Compile Include="Controllers\StatesController.cs" />
     <Compile Include="Controllers\TransactionRecordsController.cs" />
+    <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Controllers\UserRecordsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -259,6 +260,7 @@
     <Compile Include="ViewModel\CartIndexVM.cs" />
     <Compile Include="ViewModel\CartVM.cs" />
     <Compile Include="ViewModel\HobbyDBUser.cs" />
+    <Compile Include="ViewModel\ManageUsersListVM.cs" />
     <Compile Include="ViewModel\TransactionVM.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -382,6 +384,12 @@
     <Content Include="Views\Carts\_TransactionList.cshtml" />
     <Content Include="Views\Carts\_TransactionListItem.cshtml" />
     <Content Include="Views\Carts\_NewEdit.cshtml" />
+    <Content Include="Views\Manage\List.cshtml" />
+    <Content Include="Views\Users\Index.cshtml" />
+    <Content Include="Views\Users\Create.cshtml" />
+    <Content Include="Views\Users\_DeleteDlg.cshtml" />
+    <Content Include="Views\Users\_List.cshtml" />
+    <Content Include="Views\Users\_ListItem.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
