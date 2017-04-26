@@ -1,0 +1,9 @@
+﻿@model Abacus.ViewModel.UserVM
+
+<td>@Html.ActionLink(Model.UserName, "Edit", new { Id = Model.Id })</td>
+<td>@Model.Role</td>
+<td>
+    @Html.ActionLink("Edit", "Edit", new { Id = Model.Id }, new { @class = "btn btn-default" })
+    @*<button type="button" class="btn" onclick="EditUser('@Model.Id')">Edit</button>*@
+    <button type="button" class="btn btn-default" onclick="DeleteUser('@Model.Id')">Delete</button>
+</td>

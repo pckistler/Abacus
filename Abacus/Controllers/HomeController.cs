@@ -10,7 +10,8 @@ namespace Abacus.Controllers
     {
         public ActionResult Index()
         {
-            return View();
+            return Redirect("Carts");
+            //return View();
         }
 
         public ActionResult About()

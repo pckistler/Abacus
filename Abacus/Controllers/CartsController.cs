@@ -532,9 +532,9 @@ namespace Abacus.Controllers
             int value, id = 0;
             if (Int32.TryParse(Request.Params["Id"], out value))
                 id = value;
-            bool isBuyer = string.Compare(Request.Params["UserType"], "buyer") == 0;
-
-            HobbyDBUser ur = new ViewModel.HobbyDBUser() { IsNewRecord = (id == 0), Id = id, IsBuyer = isBuyer, IsSeller = !isBuyer };
+            bool isBuyer = string.Compare(Request.Params["UserType"], "buyer", true) == 0;
+            bool isSeller = string.Compare(Request.Params["UserType"], "seller", true) == 0;
+            HobbyDBUser ur = new ViewModel.HobbyDBUser() { IsNewRecord = (id == 0), Id = id, IsBuyer = isBuyer, IsSeller = isSeller };
             if (id > 0)
             {
                 UserRecord user = db.UserRecords.SingleOrDefault(u => u.Id == id);

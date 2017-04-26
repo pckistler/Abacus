@@ -1,0 +1,60 @@
+﻿@model Abacus.ViewModel.UserVM
+@{
+    ViewBag.Title = "Delete";
+}
+
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Delete User</h4>
+    </div>
+    <div class="modal-body" id="DeleteDlgForm">
+        @using (Ajax.BeginForm("DeleteConfirmed", "Users", FormMethod.Post, new AjaxOptions
+        {
+            InsertionMode = InsertionMode.Replace,
+            HttpMethod = "POST",
+            OnSuccess = "successDelete",
+            OnFailure = "failureDelete"
+        }, new { id = "DeleteDlg" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(model => model.Id)
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <div class="col-sm-3">
+                        @Html.LabelFor(model => model.UserName)
+                    </div>
+
+                    <div class="col-sm-4">
+                        @Html.DisplayFor(model => model.UserName)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-3">
+                        @Html.LabelFor(model => model.Role)
+                    </div>
+
+                    <div class="col-sm-4">
+                        @Html.DisplayFor(model => model.Role)
+                    </div>
+                </div>
+                <hr />
+                <div class="form-group">
+                    <div class="col-sm-4 col-sm-offset-4">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        <button type="submit" id="approve-btn" class="btn btn-default btn-danger">Delete</button>
+                    </div>
+                </div>
+            </div>
+        }
+            </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        $('#approve-btn').click(function () {
+            $('#DeleteDlg').modal('hide');
+        });
+    });
+</script>
+
+

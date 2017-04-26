@@ -17,9 +17,9 @@ namespace Abacus.Models
         public int Id { get; set; }
 
         [StringLength(64)]
-        [Display(Name ="HobbyDB Name")]
+        [Display(Name ="hobbyDB Name")]
         public string HDBUserName { get; set; }
-        [Display(Name="HobbyDB Id")]
+        [Display(Name="hobbyDB Id")]
         public int HDBUserId { get; set; }
 
         [Display(Name = "First name")]

@@ -1,0 +1,97 @@
+﻿@model IEnumerable<Abacus.ViewModel.UserVM>
+@{
+    ViewBag.Title = "Index";
+}
+<script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.js")" type="text/javascript"></script>
+
+@if (ViewBag.displayMenu == "Yes")
+{
+    <h2>Manage users</h2>
+    @*<h3>
+        @Html.ActionLink("Manage Role", "Index", "Role")
+    </h3>*@
+    @Html.ActionLink("Create", "Create", null, new { @class = "btn btn-default" })    
+    if (Model.Count() > 0)
+    {
+        @Html.Partial("_List", Model);
+    }
+
+}
+else
+{
+    <h2>  Welcome <strong>@ViewBag.Name</strong> :) .We will add user module soon </h2>
+}
+<div class="modal" id="delete-dialog" tabindex="-1" role="dialog" aria-labelledby="editor-title">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" id="delete-dialog-content"></div>
+    </div>
+</div>
+@section scripts
+{
+    <script type="text/javascript">
+
+        
+        function DeleteUser(xId) {
+            var url = "/Users/DeleteDialogContents?Id=" + xId;
+            //$.ajax({
+            //    url: url,
+            //    cache: false,
+            //    success: function (data) {
+            //        $('#delete-dialog-content').html(data);
+            //        $('#delete-dialog').modal('show');
+            //    }
+            //});
+            xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    //document.getElementById("cart_transaction_list").innerHTML = this.responseText;
+                    //ComputeFees();
+                    $('#delete-dialog-content').html(this.responseText);
+                    $('#delete-dialog').modal('show');
+                }
+            };
+            xhttp.open("GET", url, true);
+            xhttp.send();
+        }
+
+        $(function () {
+            $('.btn-delete-dialog').click(function () {
+                var pid = $(this).attr('data-id');
+                var url = "DeleteDialogContents?Id=" + pid;
+                //$.ajax({
+                //    url: url,
+                //    cache: false,
+                //    success: function (data) {
+                //        $('#delete-dialog-content').html(data);
+                //        $('#delete-dialog').modal('show');
+                //    }
+                //});
+                xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function () {
+                    if (this.readyState == 4 && this.status == 200) {
+                        //document.getElementById("cart_transaction_list").innerHTML = this.responseText;
+                        //ComputeFees();
+                    }
+                };
+                xhttp.open("GET", url, true);
+                xhttp.send();
+            });
+
+            //$('#transaction-dialog').on('shown.bs.modal', function () {
+            //    jQuery.validator.unobtrusive.parse($(this));
+            //})
+
+            $('#delete-dialog').on('hidden.bs.modal', function () {
+                $(this).removeData('bs.modal');
+            });
+        });
+        function successDelete(data, status, xhr) {
+            $('#delete-dialog').modal('hide');
+            window.location.reload(false);
+        }
+
+        function failureDelete(xhr, status, error) {
+            $('#delete-dialog').modal('show');
+        }
+    </script>
+}

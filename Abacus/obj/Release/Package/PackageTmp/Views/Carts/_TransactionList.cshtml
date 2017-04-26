@@ -1,0 +1,23 @@
+﻿@model IEnumerable<Abacus.ViewModel.TransactionVM>
+
+<div class="container">
+    <table class="table" id="TransactionListTable">
+        <thead>
+            <tr>                
+                <th>Seller</th>
+                <th>Item Total</th>
+                <th>Shipping Total</th>
+                <th>Tracking Number</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody id="TransactionListBody">
+            @foreach (var item in Model)
+            {
+                <tr id="@string.Format("XAct{0}",item.Id)">
+                    @Html.Partial("_TransactionListItem", item)
+                </tr>
+            }
+        </tbody>
+</table>
+</div>

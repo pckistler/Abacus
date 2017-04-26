@@ -1,0 +1,21 @@
+﻿@model IEnumerable<Abacus.ViewModel.UserVM>
+
+<div class="container">
+    <table class="table" id="UserListTable">
+        <thead>
+            <tr>
+                <th>User name</th>
+                <th>Role</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody id="UserListBody">
+            @foreach (var item in Model)
+            {
+                <tr id="@string.Format("User{0}",item.Id)">
+                    @Html.Partial("_ListItem", item)
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

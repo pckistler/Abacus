@@ -47,12 +47,12 @@ namespace Abacus.ViewModel
         public int Id { get; set; }
 
         [Required]
-        [Display(Name = "HobbyDB User Name")]
+        [Display(Name = "hobbyDB User Name")]
         public string HobbyDBUserName { get; set; }
 
         [Required]
         [Range(1,int.MaxValue)]
-        [Display(Name = "HobbyDB User Id")]
+        [Display(Name = "hobbyDB User Id")]
         public int HobbyDBUserId { get; set; }
 
         [Required]
