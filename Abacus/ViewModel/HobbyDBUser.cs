@@ -9,11 +9,14 @@ namespace Abacus.ViewModel
     public class HobbyDBUser
     {
         public HobbyDBUser()
-        {                
+        {
+            Dialog = new DialogStuff();  
         }
 
         public HobbyDBUser(Models.UserRecord user)
         {
+            Dialog = new DialogStuff();
+
             Id = user.Id;
             HobbyDBUserName = user.HDBUserName;
             HobbyDBUserId = user.HDBUserId;
@@ -78,5 +81,18 @@ namespace Abacus.ViewModel
         public bool IsSeller{ get; set; }
 
         public bool IsNewRecord { get; set; }
+
+        public DialogStuff Dialog { get; private set; }
+
+        public class DialogStuff
+        {
+            public string Title { get; set; }
+            public string Controller { get; set; }
+            public string Method { get; set; }
+            public string Target { get; set; }
+            public string SuccessMethod { get; set; }
+            public string FailureMethod { get; set; }
+        }
+
     }
 }

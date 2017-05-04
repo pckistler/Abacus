@@ -115,26 +115,7 @@ namespace Abacus.Controllers
                     ModelState.AddModelError(nameof(cartVM.PayPalAmount), "The PayPal fees cannot be larger than the total for the cart");
                     error = true;
                 }
-                //if (cartVM.SellerItemsTotal <= 0)
-                //{
-                //    ModelState.AddModelError(nameof(cartVM.SellerItemsTotal), "The Seller's Total Items Cost must be larger than 0");
-                //    error = true;
-                //}
-                //if (cartVM.SellerItemsTotal > cartVM.ItemsAmount)
-                //{
-                //    ModelState.AddModelError(nameof(cartVM.SellerItemsTotal), "The Seller's Total Items Cost cannot be larger than the Total Value of Items");
-                //    error = true;
-                //}
-                //if (cartVM.SellerShippingTotal < 0)
-                //{
-                //    ModelState.AddModelError(nameof(cartVM.SellerItemsTotal), "The Seller's Total Shipping Cost cannot be negative");
-                //    error = true;
-                //}
-                //if (cartVM.SellerShippingTotal > cartVM.ShippingAmount)
-                //{
-                //    ModelState.AddModelError(nameof(cartVM.SellerItemsTotal), "The Seller's Total Shipping Cost cannot be larger than the total shipping amount for the cart");
-                //    error = true;
-                //}
+               
                 if (error)
                 {
                     var list = db.UserRecords.OrderBy(u => u.HDBUserName).ToList();
@@ -175,42 +156,7 @@ namespace Abacus.Controllers
 
                 foreach (var tr in cartVM.TransactionVMs)
                 {
-                    await AddTransaction(tr, cart.Id, shipCompany);
-                    //ShippingRecord sr = new ShippingRecord()
-                    //{
-                    //    ShippingCompanyId = shipCompany.Id,
-                    //    TrackingNumber = cartVM.TrackingNumber
-                    //};
-                    //sr.TrackingNumber = tr.TrackingNumber;
-                    //db.ShippingRecords.Add(sr);
-                    //db.SaveChanges();
-
-                    //TransactionRecord rec = tr.TransactionRecord;
-                    //rec.ComputeFees();
-                    //rec.CartId = cart.Id;
-                    //rec.ShippingRecordId = sr.Id;
-                    //rec.ShippingRecord = sr;
-                    //db.TransactionRecords.Add(rec);
-                    //db.SaveChanges();
-
-                    //LogRecord shippingLog = new LogRecord()
-                    //{
-                    //    DateTime = DateTime.Now,
-                    //    RecordType = Utilities.RecordType.New,
-                    //    Guid = typeof(ShippingRecord).GUID,
-                    //    RecordId = sr.Id
-                    //};
-                    //db.LogRecords.Add(shippingLog);
-
-                    //LogRecord transactionLog = new LogRecord()
-                    //{
-                    //    DateTime = DateTime.Now,
-                    //    RecordType = Utilities.RecordType.New,
-                    //    Guid = typeof(TransactionRecord).GUID,
-                    //    RecordId = rec.Id                        
-                    //};
-                    //db.LogRecords.Add(transactionLog);
-                    //db.SaveChanges();
+                    await AddTransaction(tr, cart.Id, shipCompany);                    
                 }
 
                 return RedirectToAction("Index");
@@ -518,31 +464,40 @@ namespace Abacus.Controllers
             cart.BuyerId = userRecordId;
             cart.SellerId = userRecordId;
             var list = db.UserRecords.OrderBy(u=>u.HDBUserName).ToList();
-            var isBuyer = Request.Params["DropDownTarget"] == "buyer_dropdown";
-            ViewBag.DropDownType = isBuyer;
-            ViewBag.tabIndex = isBuyer ? 5: 20;
-            cart.Buyers = new SelectList(list.Where(u => (u.UserType & UserRecord.UserTypes.Buyer) == UserRecord.UserTypes.Buyer), "Id", "HDBUserName");
-            cart.Sellers = new SelectList(list.Where(u => (u.UserType & UserRecord.UserTypes.Seller) == UserRecord.UserTypes.Seller), "Id", "HDBUserName");
+            if (hdbUser.IsBuyer)
+            {
+                ViewBag.DropDownType = true;
+                ViewBag.tabIndex = 5;
+                cart.Buyers = new SelectList(list.Where(u => (u.UserType & UserRecord.UserTypes.Buyer) == UserRecord.UserTypes.Buyer), "Id", "HDBUserName");
 
-            return PartialView("_UpdateDropdown", cart);
+                return PartialView("_UpdateDropdown", cart);
+            }
+            return new ContentResult();
         }
 
-        public ActionResult ViewHobbyDBUser()
+        public ActionResult HobbyDBUserDialog()
         {
             int value, id = 0;
             if (Int32.TryParse(Request.Params["Id"], out value))
                 id = value;
             bool isBuyer = string.Compare(Request.Params["UserType"], "buyer", true) == 0;
             bool isSeller = string.Compare(Request.Params["UserType"], "seller", true) == 0;
-            HobbyDBUser ur = new ViewModel.HobbyDBUser() { IsNewRecord = (id == 0), Id = id, IsBuyer = isBuyer, IsSeller = isSeller };
+
+            HobbyDBUser ur = new ViewModel.HobbyDBUser() { IsNewRecord = (id == 0), Id = id, IsBuyer = isBuyer, IsSeller = isSeller };            
+            
             if (id > 0)
             {
                 UserRecord user = db.UserRecords.SingleOrDefault(u => u.Id == id);
                 ur = new ViewModel.HobbyDBUser(user);
-            }            
+            }
+            ur.Dialog.Controller = Request.Params["dlgCtrl"];
+            ur.Dialog.Method = Request.Params["dlgMethod"];
+            ur.Dialog.SuccessMethod = Request.Params["dlgSuccess"];
+            ur.Dialog.FailureMethod = Request.Params["dlgFailure"];
+            ur.Dialog.Target = Request.Params["dlgTarget"];
+            ur.Dialog.Title = Request.Params["dlgTitle"];
 
-            var tmp = PartialView("_HobbyDBUser", ur);
-            return tmp;
+            return PartialView("_HobbyDBUser", ur);
         }
 
         public ActionResult TransactionDialogContents()
@@ -654,9 +609,10 @@ namespace Abacus.Controllers
                         }
                         result += "</select>";
                         return result;
-                    }        
+                    }
+                case nameof(Cart.SearchOptions.SellerName):
                 case nameof(Cart.SearchOptions.BuyerName):
-                    break;
+                    return "<input class=\"form-control text-box single-line\" data-val=\"true\" id=\"" + searchType + "\" name=\"" + searchType + "\" type=\"text\" >";
                 case nameof(Cart.SearchOptions.BuyerUsername):
                     {
                         var list = db.UserRecords.Where(u => (u.UserType & UserRecord.UserTypes.Buyer) == UserRecord.UserTypes.Buyer).Select(r => new { r.HDBUserName, r.Id, }).OrderBy(o => o.HDBUserName);
@@ -669,8 +625,8 @@ namespace Abacus.Controllers
                         return result;
                     }
                 case nameof(Cart.SearchOptions.CartNumber):
+                    return "<input class=\"form-control text-box single-line valid\" data-val=\"true\" data-val-number=\"The field Cart must be a number.\" data-val-required=\"The Cart field is required.\" id=\"" + searchType + "\" name=\"" + searchType + "\" type=\"number\">";
                 case nameof(Cart.SearchOptions.Date):
-                case nameof(Cart.SearchOptions.SellerName):
                     break;
                 case nameof(Cart.SearchOptions.SellerUsername):
                     {
@@ -691,35 +647,46 @@ namespace Abacus.Controllers
         public ActionResult ProcessSearch()
         {
             var searchType = Request.Params["type"];
-            //var data = Request.Params["value"];
             string result = string.Empty;
             switch (searchType)
             {
                 case nameof(Cart.SearchOptions.BuyerEmail):
                     {
                         int data = Int32.Parse(Request.Params["value"]);
-                        //var logs = db.LogRecords.Where(l => l.RecordType == Utilities.RecordType.New && l.Guid == typeof(Cart).GUID).OrderByDescending(l => l.DateTime).Take(15);
                         var carts = db.Carts.Where(c => c.BuyerEmailId == data).OrderByDescending(r => r.Id);
                         return PartialView("_CartList", carts.ToList());
                     }
                 case nameof(Cart.SearchOptions.BuyerName):
-                    break;
+                    {
+                        string data = Request.Params["value"];
+                        var carts = db.Carts.Where(c => c.Buyer.FirstName.Contains(data) || c.Buyer.LastName.Contains(data)).OrderByDescending(r => r.Id);
+                        return PartialView("_CartList", carts.ToList());
+                    }
                 case nameof(Cart.SearchOptions.BuyerUsername):
                     {
                         int data = Int32.Parse(Request.Params["value"]);
-                        //var logs = db.LogRecords.Where(l => l.RecordType == Utilities.RecordType.New && l.Guid == typeof(Cart).GUID).OrderByDescending(l => l.DateTime).Take(15);
                         var carts = db.Carts.Where(c => c.BuyerId == data).OrderByDescending(r => r.Id).ToList();
                         var tmp =  PartialView("_CartList", carts);
                         return tmp;
                     }
                 case nameof(Cart.SearchOptions.CartNumber):
+                    {
+                        string data = Request.Params["value"];
+                        var carts = db.Carts.Where(c => c.CartNumber.ToString().Contains(data)).OrderByDescending(r => r.Id).ToList();
+                        var tmp = PartialView("_CartList", carts);
+                        return tmp;
+                    }
                 case nameof(Cart.SearchOptions.Date):
-                case nameof(Cart.SearchOptions.SellerName):
                     break;
+                case nameof(Cart.SearchOptions.SellerName):
+                    {
+                        string data = Request.Params["value"];
+                        var carts = db.Carts.Where(c => c.Transactions.Any(t=>t.Seller.FirstName.Contains(data) || t.Seller.LastName.Contains(data))).OrderByDescending(r => r.Id);
+                        return PartialView("_CartList", carts.ToList());
+                    }
                 case nameof(Cart.SearchOptions.SellerUsername):
                     {
                         int data = Int32.Parse(Request.Params["value"]);
-                        //var logs = db.LogRecords.Where(l => l.RecordType == Utilities.RecordType.New && l.Guid == typeof(Cart).GUID).OrderByDescending(l => l.DateTime).Take(15);
                         var carts = db.Carts.Where(c => c.Transactions.Any(t => t.SellerId == data)).OrderByDescending(r=>r.Id);
                         return PartialView("_CartList", carts.ToList());
                     }

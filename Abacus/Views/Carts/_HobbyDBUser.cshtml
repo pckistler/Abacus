@@ -5,7 +5,11 @@
     if (Model.IsNewRecord)
     { action = "Create "; }
 
-    var updateTarget = "";
+    var controller = ""+Request.Params["Controller"];
+    if (controller == null || controller == "")
+    { controller = "Carts"; }
+
+    var updateTarget = Request.Params["UpdateTarget"];
     var title = action + " ";// hobbyDB ";
     if ((Model.IsBuyer == Model.IsSeller ))//|| Model.Id > 0)
     { title += "Buyer / Seller"; }
@@ -87,22 +91,22 @@
 <div class="modal-content">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">@title</h4>
+        <h4 class="modal-title">@Model.Dialog.Title</h4>
     </div>
     <div class="modal-body" id="HobbyDBUserForm">
-        @using (Ajax.BeginForm("HobbyDBUser", "Carts", FormMethod.Post, new AjaxOptions
+        @using (Ajax.BeginForm(Model.Dialog.Method, Model.Dialog.Controller, FormMethod.Post, new AjaxOptions
         {
             InsertionMode = InsertionMode.Replace,
             HttpMethod = "POST",
-            UpdateTargetId = updateTarget,
-            OnSuccess = "success",
-            OnFailure = "failure"
-        }, new { target = Model.IsBuyer, id = "HobbyDBUserDlg" }))
+            UpdateTargetId = Model.Dialog.Target,
+            OnSuccess = Model.Dialog.SuccessMethod,
+            OnFailure = Model.Dialog.FailureMethod
+        }))
         {
             @Html.AntiForgeryToken()
             @Html.HiddenFor(model => model.Id)
 
-            <input data-val="true" data-val-number="The field Id must be a number." data-val-required="The Id field is required." id="DropDownTarget" name="DropDownTarget" type="hidden" value="@updateTarget">
+            @*<input data-val="true" data-val-number="The field Id must be a number." data-val-required="The Id field is required." id="DropDownTarget" name="DropDownTarget" type="hidden" value="@updateTarget">*@
 
 
             <div class="form-horizontal">
