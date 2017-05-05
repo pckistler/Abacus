@@ -1,0 +1,35 @@
+﻿@model IEnumerable<Abacus.Models.UserRecord>
+
+<table class="table">    
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.HDBUserName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LastName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HDBUserId)
+            </th>
+
+            <th></th>
+        </tr>
+    </thead>
+
+    @foreach (var item in Model)
+    {
+        var rowId = "row" + item.Id;
+        var userId = "user" + item.Id;
+
+        <tr id=@rowId name=@rowId>
+            @Html.Partial("_UserListItem", item)
+        </tr>
+    }
+</table>
