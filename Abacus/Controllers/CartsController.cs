@@ -82,7 +82,7 @@ namespace Abacus.Controllers
                 bool error = false;
                 if (cartVM.CartAmount <= 0)
                 {
-                    ModelState.AddModelError(nameof(cartVM.CartAmount), "The value in the cart must be larger than 0");
+                    ModelState.AddModelError(nameof(cartVM.CartAmount), "The overall value must be larger than 0");
                     error = true;
                 }
                 if (cartVM.ItemsAmount <= 0)
@@ -102,17 +102,17 @@ namespace Abacus.Controllers
                 }
                 if (cartVM.CartAmount < cartVM.ItemsAmount)
                 {
-                    ModelState.AddModelError(nameof(cartVM.ItemsAmount), "The value of items cannot be larger than the total for the cart");
+                    ModelState.AddModelError(nameof(cartVM.ItemsAmount), "The value of items cannot be larger than the overall value for the cart");
                     error = true;
                 }
                 if (cartVM.CartAmount < cartVM.ShippingAmount)
                 {
-                    ModelState.AddModelError(nameof(cartVM.ShippingAmount), "The shipping amount cannot be larger than the total for the cart");
+                    ModelState.AddModelError(nameof(cartVM.ShippingAmount), "The shipping amount cannot be larger than the overall value for the cart");
                     error = true;
                 }
                 if (cartVM.CartAmount < cartVM.PayPalAmount)
                 {
-                    ModelState.AddModelError(nameof(cartVM.PayPalAmount), "The PayPal fees cannot be larger than the total for the cart");
+                    ModelState.AddModelError(nameof(cartVM.PayPalAmount), "The PayPal fees cannot be larger than the overall value for the cart");
                     error = true;
                 }
                
@@ -207,7 +207,7 @@ namespace Abacus.Controllers
                 bool error = false;
                 if (cartVM.CartAmount <= 0)
                 {
-                    ModelState.AddModelError(nameof(cartVM.CartAmount), "The value in the cart must be larger than 0");
+                    ModelState.AddModelError(nameof(cartVM.CartAmount), "The overall value in the cart must be larger than 0");
                     error = true;
                 }
                 if (cartVM.TransactionVMs == null || cartVM.TransactionVMs.Count ==0 )
@@ -215,6 +215,17 @@ namespace Abacus.Controllers
                     ModelState.AddModelError("NewSellerButton", "There must be at least 1 seller defined for the cart");
                     error = true;
                 }
+                if (cartVM.CartAmount < cartVM.ItemsAmount)
+                {
+                    ModelState.AddModelError(nameof(cartVM.ItemsAmount), "The value of items cannot be larger than the overall value for the cart");
+                    error = true;
+                }
+                if (cartVM.CartAmount < cartVM.ShippingAmount)
+                {
+                    ModelState.AddModelError(nameof(cartVM.ShippingAmount), "The shipping amount cannot be larger than the overall value for the cart");
+                    error = true;
+                }
+
                 double itemsCost = cartVM.TransactionVMs.Sum(t => t.ItemsTotal);
                 if (cartVM.ItemsAmount != itemsCost)
                 {

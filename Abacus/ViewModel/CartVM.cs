@@ -124,7 +124,8 @@ namespace Abacus.ViewModel
         [Key]
         public int Id { get; set; } = 0;
 
-       // [Range(0, int.MaxValue)]
+        // [Range(0, int.MaxValue)]
+        [RegularExpression(@"[1-9][0-9]*", ErrorMessage="Must be a whole number and cannot start with 0")]
         [Display(Name = "Cart")]
         public int CartNumber { get; set; }
 
@@ -133,6 +134,7 @@ namespace Abacus.ViewModel
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime SaleDate { get; set; }
 
+        [RegularExpression(@"[1-9][0-9]*", ErrorMessage = "Must be a whole number")]
         [Display(Name = "Number of Items")]
         public int NumberOfItems { get; set; }
 
