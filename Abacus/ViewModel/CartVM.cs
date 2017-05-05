@@ -144,7 +144,7 @@ namespace Abacus.ViewModel
         public virtual Models.UserRecord Buyer { get; set; }
         public System.Web.Mvc.SelectList Buyers { get; set; }
 
-        [Display(Name = "Total Amout in Cart")]
+        [Display(Name = "Overall Value")]
         [DataType(DataType.Currency)]
         public double CartAmount { get; set; }
         [Display(Name = "Total Value of Items")]

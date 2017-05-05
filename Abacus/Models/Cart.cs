@@ -39,7 +39,7 @@ namespace Abacus.Models
         [ForeignKey("BuyerEmailId")]
         public virtual Email BuyerEmail { get; set; }
 
-        [Display(Name = "Total Amout in Cart")]
+        [Display(Name = "Overall value")]
         [DataType(DataType.Currency)]
         public double TotalValue { get; set; }
         [Display(Name = "Total Value of Items")]

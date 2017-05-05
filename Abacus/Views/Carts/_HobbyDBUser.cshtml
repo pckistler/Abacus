@@ -26,6 +26,10 @@
     ViewBag.ListType = Model.IsBuyer;
 
 }
+<script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.js")" type="text/javascript"></script>
+
 <script>
     $(document).ready(function () {
         document.getElementById("HobbyDBUserName").focus();
@@ -109,7 +113,7 @@
             @*<input data-val="true" data-val-number="The field Id must be a number." data-val-required="The Id field is required." id="DropDownTarget" name="DropDownTarget" type="hidden" value="@updateTarget">*@
 
 
-            <div class="form-horizontal">
+            <div class="form-horizontal">                
                 <div class="form-group">
                     @Html.LabelFor(model => model.HobbyDBUserName, htmlAttributes: new { @class = "control-label col-sm-4" })
                     <div class="col-sm-8">
@@ -170,6 +174,8 @@
                         @Html.ValidationMessageFor(model => model.IsSeller, "", new { @class = "text-danger" })
                     </div>
                 </div>
+
+                
 
                 <div class="form-group">
                     <div class="col-sm-4 col-sm-offset-4">

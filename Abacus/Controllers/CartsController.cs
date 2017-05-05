@@ -403,7 +403,7 @@ namespace Abacus.Controllers
                     error = false;
                 }
                 if (error)
-                    return PartialView("_HobbyDBUser", hdbUser);
+                    return View(); // PartialView("_HobbyDBUser", hdbUser);
 
                 UserRecord user = db.UserRecords.SingleOrDefault(u => u.HDBUserId == hdbUser.HobbyDBUserId || string.Compare(u.HDBUserName, hdbUser.HobbyDBUserName, true) == 0);
                 if (user != null)
@@ -417,11 +417,11 @@ namespace Abacus.Controllers
                     {
                         ModelState.AddModelError(nameof(hdbUser.HobbyDBUserName), "User with the specified User Id already exists");
                     }
-                    return PartialView("_HobbyDBUser", hdbUser);
+                    return View();// PartialView("_HobbyDBUser", hdbUser);
                 }
 
                 if (error)
-                    return PartialView("_HobbyDBUser", hdbUser);
+                    return View();// PartialView("_HobbyDBUser", hdbUser);
 
                 if (hdbUser.Id == 0)
                 {
