@@ -457,6 +457,7 @@ namespace Abacus.Controllers
                         HDBUserId = hdbUser.HobbyDBUserId,
                         LastName = hdbUser.LastName,
                         FirstName = hdbUser.FirstName,
+                        PhoneNumber = hdbUser.PhoneNumber,
                         UserType = (hdbUser.IsBuyer ? UserRecord.UserTypes.Buyer : 0) | (hdbUser.IsSeller ? UserRecord.UserTypes.Seller : UserRecord.UserTypes.None),
                         PreferredEmailId = preferredEmail.Id,
                         PayPalEmailId = payPalEmail.Id
@@ -486,6 +487,7 @@ namespace Abacus.Controllers
             return new ContentResult();
         }
 
+        
         public ActionResult HobbyDBUserDialog()
         {
             int value, id = 0;

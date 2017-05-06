@@ -22,6 +22,7 @@ namespace Abacus.ViewModel
             HobbyDBUserId = user.HDBUserId;
             FirstName = user.FirstName;
             LastName = user.LastName;
+            PhoneNumber = user.PhoneNumber;
             Email = user.PreferredEmail.EmailAddress;
             PayPalEmail = user.PayPalId.EmailAddress;
             IsBuyer = (user.UserType & Models.UserRecord.UserTypes.Buyer) == Models.UserRecord.UserTypes.Buyer;
@@ -39,7 +40,8 @@ namespace Abacus.ViewModel
                     HDBUserId =HobbyDBUserId,
                     HDBUserName = HobbyDBUserName,
                     FirstName = FirstName,
-                    LastName = LastName,                    
+                    LastName = LastName,           
+                    PhoneNumber = PhoneNumber,                             
                 };
                 ur.UserType = (IsBuyer ? Models.UserRecord.UserTypes.Buyer : 0) | (IsSeller ? Models.UserRecord.UserTypes.Seller : 0);
                 return ur;
@@ -80,6 +82,9 @@ namespace Abacus.ViewModel
         [Display(Name = "Seller")]
         public bool IsSeller{ get; set; }
 
+        [RegularExpression(@"[0-9\-]*", ErrorMessage = "Phone number can only contain digits and dashes")]
+        [Display(Name ="Phone number")]
+        public string PhoneNumber { get; set; }
         public bool IsNewRecord { get; set; }
 
         public DialogStuff Dialog { get; private set; }

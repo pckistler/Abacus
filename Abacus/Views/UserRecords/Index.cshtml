@@ -44,11 +44,12 @@
                     "&dlgCtrl=" + ctl +
                     "&dlgMethod=" + method +
                     "&dlgSuccess=" + successMethod +
-                    "&dlgFailure=" + failMethod;
+                    "&dlgFailure=" + failMethod +
+                    "&dlgTime="+Date.now().toString(); // HACK, This should keep the page from being cached
                 $.ajax({
                     url: url,
                     cache: false,
-                    success: function (data) {
+                    success: function (data) {                        
                         $('#editor-content-user_record').html(data);
                         $('#editor-user_record').modal('show');
                     }
@@ -64,7 +65,7 @@
             });
         });
 
-        function success(data, status, xhr) {
+        function success(data, status, xhr) {            
             $('#editor-user_record').modal('hide');
         }
 

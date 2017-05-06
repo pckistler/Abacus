@@ -204,6 +204,7 @@ namespace Abacus.Controllers
                         HDBUserId = hdbUser.HobbyDBUserId,
                         LastName = hdbUser.LastName,
                         FirstName = hdbUser.FirstName,
+                        PhoneNumber = hdbUser.PhoneNumber,
                         UserType = (hdbUser.IsBuyer ? UserRecord.UserTypes.Buyer : 0) | (hdbUser.IsSeller ? UserRecord.UserTypes.Seller : UserRecord.UserTypes.None),
                         PreferredEmailId = preferredEmail.Id,
                         PayPalEmailId = payPalEmail.Id
@@ -222,6 +223,7 @@ namespace Abacus.Controllers
                     ur.HDBUserId = hdbUser.HobbyDBUserId;
                     ur.FirstName = hdbUser.FirstName;
                     ur.LastName = hdbUser.LastName;
+                    ur.PhoneNumber = hdbUser.PhoneNumber;
                     ur.UserType = (hdbUser.IsBuyer ? UserRecord.UserTypes.Buyer : UserRecord.UserTypes.None) | (hdbUser.IsSeller ? UserRecord.UserTypes.Seller : UserRecord.UserTypes.None);
                     ur.PayPalEmailId = payPalEmail.Id;
                     ur.PreferredEmailId = preferredEmail.Id;
