@@ -237,6 +237,10 @@
     <Compile Include="Migrations\201703130325313_Change TransactionRecord fees.Designer.cs">
       <DependentUpon>201703130325313_Change TransactionRecord fees.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201705060549431_NumberOfItems for Transactions.cs" />
+    <Compile Include="Migrations\201705060549431_NumberOfItems for Transactions.Designer.cs">
+      <DependentUpon>201705060549431_NumberOfItems for Transactions.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Address.cs" />
@@ -424,6 +428,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201703130325313_Change TransactionRecord fees.resx">
       <DependentUpon>201703130325313_Change TransactionRecord fees.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705060549431_NumberOfItems for Transactions.resx">
+      <DependentUpon>201705060549431_NumberOfItems for Transactions.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

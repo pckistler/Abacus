@@ -172,3 +172,4 @@ C:\Users\Peter_2\Documents\Visual Studio 2015\Projects\Abacus\Abacus\obj\Debug\A
 C:\Users\Peter_2\Documents\Visual Studio 2015\Projects\Abacus\Abacus\obj\Debug\Abacus.csprojResolveAssemblyReference.cache
 C:\Users\Peter_2\Documents\Visual Studio 2015\Projects\Abacus\Abacus\obj\Debug\Abacus.Migrations.Cartfeeschange.resources
 C:\Users\Peter_2\Documents\Visual Studio 2015\Projects\Abacus\Abacus\obj\Debug\Abacus.Migrations.ChangeTransactionRecordfees.resources
+C:\Users\Peter_2\Documents\Visual Studio 2015\Projects\Abacus\Abacus\obj\Debug\Abacus.Migrations.NumberOfItemsforTransactions.resources

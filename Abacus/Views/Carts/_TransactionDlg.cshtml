@@ -40,6 +40,17 @@
                 </div>
 
                 <div class="form-group">
+                    <label class="control-label col-sm-5" for="@nameof(Model.NumItems)">Total Items Cost (in $)</label>
+                    @*@Html.LabelFor(model => model.ItemsTotal, htmlAttributes: new { @class = "control-label col-sm-4" })*@
+                    <div class="col-sm-7">
+                        @{ value = string.Format("{0}", (Model.NumItems == 0?1:Model.NumItems));}
+                        <input class="form-control text-box single-line" data-val="true" data-val-number="Must be a whole number" data-val-required="The field is required." id="@nameof(Model.NumItems)" name="@nameof(Model.NumItems)" type="number" value="@value" step="1" min="1">
+                        @*@Html.EditorFor(model => model.ItemsTotal, new { htmlAttributes = new { @class = "form-control" } })*@
+                        @Html.ValidationMessageFor(model => model.ItemsTotal, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
                     <label class="control-label col-sm-5" for="@nameof(Model.ItemsTotal)">Total Items Cost (in $)</label>
                     @*@Html.LabelFor(model => model.ItemsTotal, htmlAttributes: new { @class = "control-label col-sm-4" })*@
                     <div class="col-sm-7">

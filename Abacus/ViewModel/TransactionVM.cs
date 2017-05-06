@@ -22,6 +22,7 @@ namespace Abacus.ViewModel
             ItemsTotal = tr.ItemCosts;
             ShippingTotal = tr.ShippingCost;
             TrackingNumber = tr.ShippingRecord.TrackingNumber;
+            NumItems = tr.NumOfItems;
         }
 
         public TransactionRecord TransactionRecord
@@ -31,6 +32,7 @@ namespace Abacus.ViewModel
                 TransactionRecord rec = new TransactionRecord()
                 {
                     Id = TransactionRecordId,
+                    NumOfItems = NumItems,
                     SellerId = SellerId,
                     ItemCosts = ItemsTotal,
                     ShippingCost = ShippingTotal                     
@@ -50,6 +52,10 @@ namespace Abacus.ViewModel
         public string SellerName { get; set; }
 
         public System.Web.Mvc.SelectList Sellers { get; set; }
+
+        [RegularExpression(@"[1-9][0-9]*", ErrorMessage = "Must be a whole number")]
+        [Display(Name = "Number of items")]
+        public int NumItems { get; set; }
 
         [Display(Name = "Total Items Cost")]
         [DataType(DataType.Currency)]

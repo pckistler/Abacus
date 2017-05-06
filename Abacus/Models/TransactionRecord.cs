@@ -32,6 +32,8 @@ namespace Abacus.Models
         public double HobbyDBFees { get; set; }
         public double PayOut { get; set; }
 
+        public int NumOfItems { get; set; }
+
         public void ComputeFees()
         {
             PayPalFees = 0.3 + .029 * (ItemCosts + ShippingCost);

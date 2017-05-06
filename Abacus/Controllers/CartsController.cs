@@ -295,6 +295,7 @@ namespace Abacus.Controllers
                         tr.ShippingCost = item.ShippingTotal;
                         tr.SellerId = item.SellerId;
                         tr.ShippingRecord.TrackingNumber = item.TrackingNumber;
+                        tr.NumOfItems = item.NumItems;
                         tr.ComputeFees();
                         db.Entry(tr).State = EntityState.Modified;
                         await db.SaveChangesAsync();
@@ -560,6 +561,7 @@ namespace Abacus.Controllers
                 if (item != null)
                 {
                     item.SellerId = xact.SellerId;
+                    item.NumItems = xact.NumItems;
                     item.SellerName = xact.SellerName;
                     item.ItemsTotal = xact.ItemsTotal;
                     item.ShippingTotal = xact.ShippingTotal;

@@ -72,24 +72,26 @@
         <div class="row">
             <div class="col-sm-2"><label>Email</label></div>
             <div class="col-sm-3">@transaction.Seller.PreferredEmail.EmailAddress</div>
-            <div class="col-sm-2"><label>Payout</label></div>
-            <div class="col-sm-2">@string.Format("$ {0:0.00}", transaction.PayOut)</div>        
+            <div class="col-sm-2"><label># Items</label></div>
+            <div class="col-sm-2">@string.Format("$ {0}", transaction.NumOfItems)</div>
         </div>
         <div class="row">
             <div class="col-sm-2"><label>PayPal</label></div>
             <div class="col-sm-3">@transaction.Seller.PayPalId.EmailAddress</div>
-            <div class="col-sm-2"><label>hobbyDB Fees</label></div>
-            <div class="col-sm-2">@string.Format("$ {0:0.00}", transaction.HobbyDBFees)</div>    
+            <div class="col-sm-2"><label>Payout</label></div>
+            <div class="col-sm-2">@string.Format("$ {0:0.00}", transaction.PayOut)</div>
         </div>
         <div class="row">
             <div class="col-sm-2"><label>Item Cost</label></div>
             <div class="col-sm-3">@string.Format("$ {0:0.00}", transaction.ItemCosts)</div>
-            <div class="col-sm-2"><label>PayPal Fees</label></div>
-            <div class="col-sm-2">@string.Format("$ {0:0.00}", transaction.PayPalFees)</div>    
+            <div class="col-sm-2"><label>hobbyDB Fees</label></div>
+            <div class="col-sm-2">@string.Format("$ {0:0.00}", transaction.HobbyDBFees)</div>
         </div>
         <div class="row">
             <div class="col-sm-2"><label>Shipping Cost</label></div>
-            <div class="col-sm-2">@string.Format("$ {0:0.00}", transaction.ShippingCost)</div>
+            <div class="col-sm-3">@string.Format("$ {0:0.00}", transaction.ShippingCost)</div>
+            <div class="col-sm-2"><label>PayPal Fees</label></div>
+            <div class="col-sm-2">@string.Format("$ {0:0.00}", transaction.PayPalFees)</div>
         </div>
         <br/>
     }
