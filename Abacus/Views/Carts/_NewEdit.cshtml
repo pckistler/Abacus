@@ -73,7 +73,7 @@
                 @Html.Partial("_UpdateDropdown", Model)
                 @Html.ValidationMessageFor(model => model.BuyerId, "", new { @class = "text-danger" })
             </div>
-            <button type="button" class="btn editor-container col-sm-1" tabindex="6" data-id="0" data-usertype="buyer" data-dlg_target="buyer_dropdown" data-title="New hobbyDB Buyer" data-toggle="modal" data-target="#editor-container">New</button>
+            <button type="button" class="btn editor-container col-sm-2" tabindex="6" data-id="0" data-usertype="buyer" data-dlg_target="buyer_dropdown" data-title="New hobbyDB Buyer" data-toggle="modal" data-target="#editor-container">Add New Buyer</button>
         </div>
         <div class="form-group">
             @Html.LabelFor(model => model.SaleDate, htmlAttributes: new { @class = "control-label col-sm-3" })
@@ -160,8 +160,8 @@
         }
         <div class="row">
             <h4 class="col-sm-2">Seller details</h4>
-            <button type="button" class="btn btn-transaction-dialog col-sm-2" data-id="0" data-toggle="modal" data-target="#transaction-dialog-container" id="NewSellerButton">New Seller</button>
-            <button type="button" class="btn editor-container col-sm-offset-6 col-sm-2" tabindex="@tabIndex" data-title="New hobbyDB Seller" data-id="0" data-usertype="seller" data-toggle="modal" data-target="#editor-container">New hobbyDB User</button>
+            <button type="button" class="btn btn-transaction-dialog col-sm-2" data-id="0" data-toggle="modal" data-target="#transaction-dialog-container" id="NewSellerButton">Add Seller</button>
+            <button type="button" class="btn editor-container col-sm-offset-6 col-sm-2" tabindex="@tabIndex" data-title="New hobbyDB Seller" data-id="0" data-usertype="seller" data-toggle="modal" data-target="#editor-container">Add New Seller</button>
         </div>
 
         <div class="clearfix" id="cart_transaction_list">
