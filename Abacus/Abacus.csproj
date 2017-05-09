@@ -241,6 +241,10 @@
     <Compile Include="Migrations\201705060549431_NumberOfItems for Transactions.Designer.cs">
       <DependentUpon>201705060549431_NumberOfItems for Transactions.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201705090451322_Added User Notes.cs" />
+    <Compile Include="Migrations\201705090451322_Added User Notes.Designer.cs">
+      <DependentUpon>201705090451322_Added User Notes.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Address.cs" />
@@ -402,6 +406,7 @@
     <Content Include="Views\Users\Edit.cshtml" />
     <Content Include="Views\UserRecords\_UserList.cshtml" />
     <Content Include="Views\UserRecords\_UserListItem.cshtml" />
+    <Content Include="Views\UserRecords\_Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -431,6 +436,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201705060549431_NumberOfItems for Transactions.resx">
       <DependentUpon>201705060549431_NumberOfItems for Transactions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705090451322_Added User Notes.resx">
+      <DependentUpon>201705090451322_Added User Notes.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

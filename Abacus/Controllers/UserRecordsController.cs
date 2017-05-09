@@ -13,6 +13,7 @@ using Abacus.ViewModel;
 namespace Abacus.Controllers
 {
     [Authorize]
+    [Authorize(Roles = "Admin,User")]
     public class UserRecordsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -129,6 +130,25 @@ namespace Abacus.Controllers
             db.UserRecords.Remove(userRecord);
             await db.SaveChangesAsync();
             return RedirectToAction("Index");
+        }
+
+        public ActionResult UserDetails(int Id)
+        {
+            var user = db.UserRecords.FirstOrDefault(u => u.Id == Id);
+            if (user != null)
+            {
+                return PartialView("_Details", user);
+            }
+            return View();
+        }
+        public ActionResult UserCarts(int Id)
+        {
+            var items = db.Carts.Where(c=>c.Transactions.Any(u=>u.SellerId == Id)).OrderByDescending(c=>c.SaleDate).ToList();
+            if (items != null)
+            {
+                return PartialView("../Carts/_CartList", items);
+            }
+            return View();
         }
 
         [HttpPost]

@@ -1,0 +1,86 @@
+﻿@model Abacus.Models.UserRecord
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+
+        <dt>
+            @Html.DisplayNameFor(model => model.FirstName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FirstName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LastName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LastName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.HDBUserName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.HDBUserName)
+        </dd>
+
+
+
+        <dt>
+            @Html.DisplayNameFor(model => model.HDBUserId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.HDBUserId)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.UserType)
+        </dt>
+
+        <dd>
+            @{
+                string userType = string.Empty;
+                if ((Model.UserType & Abacus.Models.UserRecord.UserTypes.Buyer) == Abacus.Models.UserRecord.UserTypes.Buyer)
+                {
+                    userType = "Buyer";
+                }
+                if ((Model.UserType & Abacus.Models.UserRecord.UserTypes.Seller) == Abacus.Models.UserRecord.UserTypes.Seller)
+                {
+                    if (userType != string.Empty) { userType += ", "; }
+                    userType += "Seller";
+                }
+                @userType
+            }
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PhoneNumber)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PhoneNumber)
+        </dd>
+
+        <dt>
+            PayPal Email
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PayPalId.EmailAddress)
+        </dd>
+
+        <dt>
+            Email
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PreferredEmail.EmailAddress)
+        </dd>
+
+    </dl>
+</div>

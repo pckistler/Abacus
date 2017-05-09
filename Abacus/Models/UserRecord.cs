@@ -30,10 +30,12 @@ namespace Abacus.Models
         public string LastName{ get; set; }
 
         public int PayPalEmailId { get; set; }
+        [Display(Name = "PayPal Email")]
         [ForeignKey("PayPalEmailId")]
         public virtual Email PayPalId { get; set; }
 
         public int PreferredEmailId { get; set; }
+        [Display(Name = "Email")]
         [ForeignKey("PreferredEmailId")]
         public virtual Email PreferredEmail { get; set; }
 
@@ -47,6 +49,8 @@ namespace Abacus.Models
         public string PhoneNumber { get; set; }
 
         public virtual ICollection<Payout> Payouts { get; set; }
+
+        public string Notes { get; set; }
 
         public enum UserTypes
         {
