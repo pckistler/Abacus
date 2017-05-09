@@ -34,62 +34,62 @@
     $(document).ready(function () {
         document.getElementById("HobbyDBUserName").focus();
     });
-
-    $('#HobbyDBUserDlg').bootstrapValidator({
-        container: '#messages',
-        feedbackIcons: {
-            valid: 'glyphicon glyphicon-ok',
-            invalid: 'glyphicon glyphicon-remove',
-            validating: 'glyphicon glyphicon-refresh'
-        },
-        fields: {
-            HobbyDBUserName: {
-                validators: {
-                    notEmpty: {
-                        message: 'The hobbyDB user name is required and cannot be empty'
-                    }
-                }
-            },
-            HobbyDBUserId: {
-                validators: {
-                    notEmpty: {
-                        message: 'The hobbyDB user id is required and cannot be empty'
-                    }
-                }
-            },
-            Email: {
-                validators: {
-                    notEmpty: {
-                        message: 'The email address is required and cannot be empty'
-                    },
-                    emailAddress: {
-                        message: 'The email address is not valid'
-                    }
-                }
-            },
-            PayPalEmail: {
-                validators: {
-                    notEmpty: {
-                        message: 'The title is required and cannot be empty'
-                    },
-                    emailAddress: {
-                        message: 'The email address is not valid'
-                    }
-                }
-            },
-            content: {
-                validators: {
-                    notEmpty: {
-                        message: 'The content is required and cannot be empty'
-                    },
-                    stringLength: {
-                        max: 500,
-                        message: 'The content must be less than 500 characters long'
-                    }
-                }
-            }
-        }
-    });
+    
+    //$('#HobbyDBUserDlg').bootstrapValidator({
+    //    container: '#messages',
+    //    feedbackIcons: {
+    //        valid: 'glyphicon glyphicon-ok',
+    //        invalid: 'glyphicon glyphicon-remove',
+    //        validating: 'glyphicon glyphicon-refresh'
+    //    },
+    //    fields: {
+    //        HobbyDBUserName: {
+    //            validators: {
+    //                notEmpty: {
+    //                    message: 'The hobbyDB user name is required and cannot be empty'
+    //                }
+    //            }
+    //        },
+    //        HobbyDBUserId: {
+    //            validators: {
+    //                notEmpty: {
+    //                    message: 'The hobbyDB user id is required and cannot be empty'
+    //                }
+    //            }
+    //        },
+    //        Email: {
+    //            validators: {
+    //                notEmpty: {
+    //                    message: 'The email address is required and cannot be empty'
+    //                },
+    //                emailAddress: {
+    //                    message: 'The email address is not valid'
+    //                }
+    //            }
+    //        },
+    //        PayPalEmail: {
+    //            validators: {
+    //                notEmpty: {
+    //                    message: 'The title is required and cannot be empty'
+    //                },
+    //                emailAddress: {
+    //                    message: 'The email address is not valid'
+    //                }
+    //            }
+    //        },
+    //        content: {
+    //            validators: {
+    //                notEmpty: {
+    //                    message: 'The content is required and cannot be empty'
+    //                },
+    //                stringLength: {
+    //                    max: 500,
+    //                    message: 'The content must be less than 500 characters long'
+    //                }
+    //            }
+    //        }
+    //    }
+    //});
 </script>
 
 <div class="modal-content">
@@ -109,9 +109,23 @@
         {
             @Html.AntiForgeryToken()
             @Html.HiddenFor(model => model.Id)
+            @Html.HiddenFor(model => model.Dialog.Title)
+            @Html.HiddenFor(model => model.Dialog.Controller)
+            @Html.HiddenFor(model => model.Dialog.Method)
+            @Html.HiddenFor(model => model.Dialog.Target)
+            @Html.HiddenFor(model => model.Dialog.SuccessMethod)
+            @Html.HiddenFor(model => model.Dialog.FailureMethod)
 
             @*<input data-val="true" data-val-number="The field Id must be a number." data-val-required="The Id field is required." id="DropDownTarget" name="DropDownTarget" type="hidden" value="@updateTarget">*@
 
+            @*<div class="col-sm-8">
+                <input class="form-control text-box single-line" data-val="true" data-val-required="The hobbyDB User Name field is required." id="HobbyDBUserName" name="HobbyDBUserName" type="text" value="">
+                <span class="field-validation-valid text-danger" data-valmsg-for="HobbyDBUserName" data-valmsg-replace="true"></span>
+            </div>
+            <div class="col-sm-8">
+                <input class="form-control text-box single-line input-validation-error" data-val="true" data-val-required="The hobbyDB User Name field is required." id="HobbyDBUserName" name="HobbyDBUserName" type="text" value="" aria-required="true" aria-describedby="HobbyDBUserName-error" aria-invalid="true">
+                <span class="text-danger field-validation-error" data-valmsg-for="HobbyDBUserName" data-valmsg-replace="true"><span id="HobbyDBUserName-error" class="">The hobbyDB User Name field is required.</span></span>
+            </div>*@
 
             <div class="form-horizontal">                
                 <div class="form-group">
@@ -203,6 +217,8 @@
 
 <script type="text/javascript">
     $(function () {
+        $.validator.unobtrusive.parse("#form0");
+
         $('#approve-btn').click(function () {
             $('#modal-container').modal('hide');
         });

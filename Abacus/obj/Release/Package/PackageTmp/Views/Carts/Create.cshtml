@@ -13,7 +13,21 @@
             $('.editor-container').click(function () {
                 var pid = $(this).attr('data-id');
                 var defType = $(this).attr('data-usertype');
-                var url = "ViewHobbyDBUser?Id=" + pid + "&UserType=" + defType;
+                var title = $(this).attr('data-title');
+                var target = $(this).attr('data-dlg_target');
+                var ctl = "Carts";
+                var method = "HobbyDBUser";
+                var successMethod = "success";
+                var failMethod = "failure";
+                //var url = "HobbyDBUserDialog?Id=" + pid + "&UserType=" + defType;
+                var url = "HobbyDBUserDialog?Id=" + pid +
+                            "&UserType=" + defType +
+                            "&dlgTitle=" + title +
+                            "&dlgTarget=" + target +
+                            "&dlgCtrl=" + ctl +
+                            "&dlgMethod=" + method +
+                            "&dlgSuccess=" + successMethod +
+                            "&dlgFailure=" + failMethod;
                 $.ajax({
                     url: url,
                     cache: false,

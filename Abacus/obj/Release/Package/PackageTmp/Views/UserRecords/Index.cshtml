@@ -1,5 +1,5 @@
 ﻿@model IEnumerable<Abacus.Models.UserRecord>
-
+<script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.js")" type="text/javascript"></script>
 @{
     ViewBag.Title = "Index";
 }
@@ -13,77 +13,13 @@
 
 <p>
     @*@Html.ActionLink("Create New", "Create")*@
-    <a class="btn editor-user_record" data-id="0" data-toggle="modal" data-target="#editor-user_record">Add Buyer / Seller</a>
+    <a class="btn editor-user_record" data-id="0" data-toggle="modal" data-target="#editor-user_record" data-title="Create Buyer / Seller" data-dlg_target="user_listing" id="AddUser" name="AddUser">Add Buyer / Seller</a>
 </p>
-<table class="table">
-    <tr>
 
-        <th>
-            @Html.DisplayNameFor(model => model.HDBUserName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.FirstName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.LastName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.UserType)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.HDBUserId)
-        </th>
+<div id="user_listing">
+    @Html.Partial("_UserList", Model)
+</div>
 
-<th></th>
-    </tr>
-
-@foreach (var item in Model) {
-    <tr>
-
-        <td>
-            @{ 
-                string dataUserType = string.Empty;
-                if (item.UserType == Abacus.Models.UserRecord.UserTypes.Buyer ||
-                    item.UserType == Abacus.Models.UserRecord.UserTypes.Seller)
-                {
-                    dataUserType = "data-usertype=" + item.UserType.ToString();
-                }
-            <a class="btn editor-user_record" data-id="@item.Id" data-toggle="modal" @dataUserType data-target="#editor-user_record">@item.HDBUserName</a>
-            }
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.FirstName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.LastName)
-        </td>
-        <td>
-            @{ 
-                string userType = string.Empty;
-                if ((item.UserType & Abacus.Models.UserRecord.UserTypes.Buyer) == Abacus.Models.UserRecord.UserTypes.Buyer)
-                {
-                    userType = "Buyer";
-                }
-                if ((item.UserType & Abacus.Models.UserRecord.UserTypes.Seller) == Abacus.Models.UserRecord.UserTypes.Seller)
-                {
-                    if (userType != string.Empty) { userType += ", "; }
-                    userType += "Seller";
-                }
-                @userType
-            }
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.HDBUserId)
-        </td>
-        <td>
-            @*@Html.ActionLink("Edit", "Edit", new { id=item.Id }) |*@
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-        </td>
-    </tr>
-}
-
-</table>
 @section scripts
 {
 
@@ -93,11 +29,27 @@
             $('.editor-user_record').click(function () {
                 var pid = $(this).attr('data-id');
                 var defType = $(this).attr('data-usertype');
-                var url = "/Carts/ViewHobbyDBUser?Id=" + pid + "&UserType=" + defType;
+                var id = $(this).attr('id');
+                var title = $(this).attr('data-title');
+                var target = $(this).attr('data-dlg_target');
+                var ctl = "UserRecords";
+                var method = "HobbyDBUser";
+                var successMethod = "success";
+                var failMethod = "failure";
+                //var target = if (id[0]=='') ? 
+                var url = "/Carts/HobbyDBUserDialog?Id=" + pid +
+                    "&UserType=" + defType +
+                    "&dlgTitle=" + title +
+                    "&dlgTarget=" + target +
+                    "&dlgCtrl=" + ctl +
+                    "&dlgMethod=" + method +
+                    "&dlgSuccess=" + successMethod +
+                    "&dlgFailure=" + failMethod +
+                    "&dlgTime="+Date.now().toString(); // HACK, This should keep the page from being cached
                 $.ajax({
                     url: url,
                     cache: false,
-                    success: function (data) {
+                    success: function (data) {                        
                         $('#editor-content-user_record').html(data);
                         $('#editor-user_record').modal('show');
                     }
@@ -113,7 +65,7 @@
             });
         });
 
-        function success(data, status, xhr) {
+        function success(data, status, xhr) {            
             $('#editor-user_record').modal('hide');
         }
 

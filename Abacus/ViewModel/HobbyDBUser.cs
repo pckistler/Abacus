@@ -56,7 +56,7 @@ namespace Abacus.ViewModel
         public string HobbyDBUserName { get; set; }
 
         [Required]
-        [Range(1,int.MaxValue)]
+        [RegularExpression(@"[1-9][0-9]*", ErrorMessage = "Must be a whole number")]
         [Display(Name = "hobbyDB User Id")]
         public int HobbyDBUserId { get; set; }
 

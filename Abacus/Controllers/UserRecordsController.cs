@@ -20,7 +20,7 @@ namespace Abacus.Controllers
         // GET: UserRecords
         public async Task<ActionResult> Index()
         {
-            var userRecords = db.UserRecords.Include(u => u.PayPalId).Include(u => u.PreferredEmail);
+            var userRecords = db.UserRecords.OrderBy(u=>u.HDBUserName).Include(u => u.PayPalId).Include(u => u.PreferredEmail);
             return View(await userRecords.ToListAsync());
         }
 

@@ -6,6 +6,9 @@
     });
 </script>
 
+@{ 
+    var value = "0.0";
+}
 <div class="modal-content">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -29,30 +32,47 @@
 
             <div class="form-horizontal">
                 <div class="form-group">
-                    @Html.LabelFor(model => model.SellerId, htmlAttributes: new { @class = "control-label col-sm-4" })
-                    <div class="col-sm-8">
+                    @Html.LabelFor(model => model.SellerId, htmlAttributes: new { @class = "control-label col-sm-5" })
+                    <div class="col-sm-7">
                         @Html.DropDownListFor(m => m.SellerId, Model.Sellers, htmlAttributes: new { @class = "form-control"})
                         @Html.ValidationMessageFor(model => model.SellerId, "", new { @class = "text-danger" })
                     </div>
                 </div>
 
                 <div class="form-group">
-                    @Html.LabelFor(model => model.ItemsTotal, htmlAttributes: new { @class = "control-label col-sm-4" })
-                    <div class="col-sm-8">
-                        @Html.EditorFor(model => model.ItemsTotal, new { htmlAttributes = new { @class = "form-control" } })
+                    <label class="control-label col-sm-5" for="@nameof(Model.NumItems)">Total Items Cost (in $)</label>
+                    @*@Html.LabelFor(model => model.ItemsTotal, htmlAttributes: new { @class = "control-label col-sm-4" })*@
+                    <div class="col-sm-7">
+                        @{ value = string.Format("{0}", (Model.NumItems == 0?1:Model.NumItems));}
+                        <input class="form-control text-box single-line" data-val="true" data-val-number="Must be a whole number" data-val-required="The field is required." id="@nameof(Model.NumItems)" name="@nameof(Model.NumItems)" type="number" value="@value" step="1" min="1">
+                        @*@Html.EditorFor(model => model.ItemsTotal, new { htmlAttributes = new { @class = "form-control" } })*@
+                        @Html.ValidationMessageFor(model => model.ItemsTotal, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-sm-5" for="@nameof(Model.ItemsTotal)">Total Items Cost (in $)</label>
+                    @*@Html.LabelFor(model => model.ItemsTotal, htmlAttributes: new { @class = "control-label col-sm-4" })*@
+                    <div class="col-sm-7">
+                        @{ value = string.Format("{0:0.00}", Model.ItemsTotal);}
+                        <input class="form-control text-box single-line" data-val="true" data-val-number="Must be a decimal." data-val-required="The field is required." id="@nameof(Model.ItemsTotal)" name="@nameof(Model.ItemsTotal)" type="number" value="@value" step="0.01" min="0.0">
+                        @*@Html.EditorFor(model => model.ItemsTotal, new { htmlAttributes = new { @class = "form-control" } })*@
                         @Html.ValidationMessageFor(model => model.ItemsTotal, "", new { @class = "text-danger" })
                     </div>
                 </div>
                 <div class="form-group">
-                    @Html.LabelFor(model => model.ShippingTotal, htmlAttributes: new { @class = "control-label col-sm-4" })
-                    <div class="col-sm-8">
-                        @Html.EditorFor(model => model.ShippingTotal, new { htmlAttributes = new { @class = "form-control" } })
+                    <label class="control-label col-sm-5" for="@nameof(Model.ShippingTotal)">Total Shipping Cost (in $)</label>
+                    @*@Html.LabelFor(model => model.ShippingTotal, htmlAttributes: new { @class = "control-label col-sm-4" })*@
+                    <div class="col-sm-7">
+                        @{ value = string.Format("{0:0.00}", Model.ShippingTotal);}
+                        <input class="form-control text-box single-line" data-val="true" data-val-number="Must be a decimal." data-val-required="The field is required." id="@nameof(Model.ShippingTotal)" name="@nameof(Model.ShippingTotal)" type="number" value="@value" step="0.01" min="0.0">
+                        @*@Html.EditorFor(model => model.ShippingTotal, new { htmlAttributes = new { @class = "form-control" } })*@
                         @Html.ValidationMessageFor(model => model.ShippingTotal, "", new { @class = "text-danger" })
                     </div>
                 </div>
                 <div class="form-group">
-                    @Html.LabelFor(model => model.TrackingNumber, htmlAttributes: new { @class = "control-label col-sm-4" })
-                    <div class="col-sm-8">
+                    @Html.LabelFor(model => model.TrackingNumber, htmlAttributes: new { @class = "control-label col-sm-5" })
+                    <div class="col-sm-7">
                         @Html.EditorFor(model => model.TrackingNumber, new { htmlAttributes = new { @class = "form-control" } })
                         @Html.ValidationMessageFor(model => model.TrackingNumber, "", new { @class = "text-danger" })
                     </div>
