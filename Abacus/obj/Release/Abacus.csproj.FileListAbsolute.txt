@@ -88,3 +88,4 @@ C:\Users\Peter_2\Documents\Visual Studio 2015\Projects\Abacus\Abacus\obj\Release
 C:\Users\Peter_2\Documents\Visual Studio 2015\Projects\Abacus\Abacus\obj\Release\Abacus.dll
 C:\Users\Peter_2\Documents\Visual Studio 2015\Projects\Abacus\Abacus\obj\Release\Abacus.pdb
 C:\Users\Peter_2\Documents\Visual Studio 2015\Projects\Abacus\Abacus\obj\Release\Abacus.Migrations.NumberOfItemsforTransactions.resources
+C:\Users\Peter_2\Documents\Visual Studio 2015\Projects\Abacus\Abacus\obj\Release\Abacus.Migrations.AddedUserNotes.resources

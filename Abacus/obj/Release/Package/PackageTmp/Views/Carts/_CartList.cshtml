@@ -3,7 +3,7 @@
 @{
     int totalCount = Model.Count();
     //string format = "Cart {0} ($ {1})";
-    string format = "Cart <a href='/Carts/Details?Id={1}'>{0}</a> ($ {2})";
+    string format = "<a href='/Carts/Details?Id={1}'>Cart {0}</a> ($ {2})";
 }
 
 
@@ -40,21 +40,21 @@
             </div>
         }
     }
-        @if (ii + 10 < totalCount)
+    @if (ii + 10 < totalCount)
+    {
+        var item = Model.ElementAt(ii + 10);
+        if (item != null)
         {
-            var item = Model.ElementAt(ii + 10);
-            if (item != null)
-            {
-                string txt = string.Format(format, item.CartNumber, item.Id, item.TotalValue);
-                <div class="col-sm-4">
-                    <ul>
-                        <li>
-                            <label>@Html.Raw(txt)</label>
-                        </li>
-                    </ul>
-                </div>
-            }
+            string txt = string.Format(format, item.CartNumber, item.Id, item.TotalValue);
+            <div class="col-sm-4">
+                <ul>
+                    <li>
+                        <label>@Html.Raw(txt)</label>
+                    </li>
+                </ul>
+            </div>
         }
+    }
     </div>
 }
 

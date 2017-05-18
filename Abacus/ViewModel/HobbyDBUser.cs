@@ -6,14 +6,14 @@ using System.Web;
 
 namespace Abacus.ViewModel
 {
-    public class HobbyDBUser
+    public class HobbyDBUserVM
     {
-        public HobbyDBUser()
+        public HobbyDBUserVM()
         {
             Dialog = new DialogStuff();  
         }
 
-        public HobbyDBUser(Models.UserRecord user)
+        public HobbyDBUserVM(Models.UserRecord user)
         {
             Dialog = new DialogStuff();
 

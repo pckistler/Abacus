@@ -1,0 +1,14 @@
+﻿@model Abacus.Models.Payout
+
+@{ 
+    var payout = string.Format("PayOut{0}", Model.Id);
+}
+<td>@Html.DisplayFor(model => model.Date)</td>
+<td class=" text-right">@string.Format("$ {0:0.00}", Model.Amount)</td>
+
+<td>
+    <button type="button" class="btn col-sm-offset-1" onclick="EditPayout('@Model.Id')">Edit</button>
+    <button type="button" class="btn" onclick="DeletePayout('@Model.Id')">Delete</button>
+    @*<button type="button" class="btn btn-payout-dialog" data-id="@Model.Id" data-toggle="modal" 
+            data-target="@payout" id="NewPayoutButton">Add Payout</button>*@
+</td>

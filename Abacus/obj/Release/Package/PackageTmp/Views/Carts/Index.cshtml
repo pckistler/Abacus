@@ -8,6 +8,7 @@
         var ctl = document.getElementById("SearchBar");
         if (ctl.style.visibility === 'hidden') {
             ctl.style.visibility = 'visible';
+            SearchOptionChange(document.getElementById("SearchOptions").value);
         } else {
             ctl.style.visibility = 'hidden';
         }

@@ -37,7 +37,7 @@ namespace Abacus.Controllers
             {
                 return HttpNotFound();
             }
-            return View(userRecord);
+            return View(new Abacus.ViewModel.UserRecordVM(userRecord));
         }
 
         // GET: UserRecords/Create
@@ -151,8 +151,122 @@ namespace Abacus.Controllers
             return View();
         }
 
+
+        public ActionResult NotesDlgContent(int Id)
+        {
+            var user = db.UserRecords.FirstOrDefault(u => u.Id == Id);
+            if (user == null)
+                return View();
+
+            return PartialView("_NotesDlg", user);
+        }
+
+
         [HttpPost]
-        public ActionResult HobbyDBUser(HobbyDBUser hdbUser)
+        public ActionResult Notes(UserRecord ur)
+        {
+            var user = db.UserRecords.FirstOrDefault(u => u.Id == ur.Id);
+            if (user == null)
+                return View();
+            user.Notes = ur.Notes;
+            db.SaveChanges();
+            return new ContentResult() { Content = ur.Notes };
+        }
+        
+        public ActionResult PayoutAmount(int id)
+        {
+            var items = db.PayOuts.Where(c => c.SellerId == id).OrderByDescending(c => c.Date).ToList();
+            if (items == null)
+                return new ContentResult() { Content = "$0.00" };
+            return new ContentResult() { Content = string.Format("$ {0:0.00}",items.Sum(p=>p.Amount)) };
+        }
+
+        public ActionResult UserPayouts(int Id)
+        {
+            var items = db.PayOuts.Where(c => c.SellerId == Id).OrderByDescending(c => c.Date).ToList();
+            if (items != null)
+            {
+                return PartialView("_Payout", items);
+            }
+            return View();
+        }
+        public ActionResult PayoutDlgContent(int Id)
+        {
+            var payout = db.PayOuts.FirstOrDefault(c => c.Id == Id);
+            PayoutVM payoutVM = new PayoutVM();
+            if (payout != null)
+                payoutVM = new PayoutVM(payout);
+
+            payoutVM.UserId = Int32.Parse(Request.Params["UserId"]);
+            payoutVM.Dialog.UpdateTarget =Request.Params["UpdateTarget"];
+            return PartialView("_PayoutDlg", payoutVM);
+        }
+
+        [HttpPost]
+        public ActionResult Payout(PayoutVM payoutVM)
+        {
+            if (!ModelState.IsValid)
+                return View();
+            if (payoutVM.Id == 0)
+            {
+                Payout payout = new Models.Payout()
+                {
+                    Date = payoutVM.Date,
+                    Amount = payoutVM.Amount,
+                    SellerId = payoutVM.UserId
+                };
+                db.PayOuts.Add(payout);
+                db.SaveChanges();
+
+                var items = db.PayOuts.Where(c => c.SellerId == payoutVM.UserId).OrderByDescending(c => c.Date).ToList();
+                return PartialView("_Payout", items);
+            }
+            else
+            {
+                Payout payout = db.PayOuts.FirstOrDefault(p => p.Id == payoutVM.Id);
+                if (payout != null)
+                {
+                    payout.Date = payoutVM.Date;
+                    payout.Amount = payoutVM.Amount;
+                    db.SaveChanges();
+                    return PartialView("_PayoutListItem", payout);
+                }
+            }
+            return View();
+        }
+
+        public ActionResult DeletePayoutDlgContent(int Id)
+        {
+            var payout = db.PayOuts.FirstOrDefault(c => c.Id == Id);
+            PayoutVM payoutVM = new PayoutVM();
+            if (payout != null)
+                payoutVM = new PayoutVM(payout);
+
+            payoutVM.UserId = Int32.Parse(Request.Params["UserId"]);
+            payoutVM.Dialog.UpdateTarget = Request.Params["UpdateTarget"];
+            return PartialView("_DeletePayoutDlg", payoutVM);
+        }
+
+        [HttpPost]
+        public ActionResult DeletePayout(PayoutVM payoutVM)
+        {
+            if (!ModelState.IsValid)
+                return View();
+            if (payoutVM.Id != 0)
+            {
+                Payout payout = db.PayOuts.FirstOrDefault(p => p.Id == payoutVM.Id);
+                if (payout != null)
+                {
+                    db.PayOuts.Remove(payout);
+                    db.SaveChanges();
+                    return new ContentResult() { Content = string.Format("PayOut{0}",payout.Id) };// PartialView("_PayoutListItem", payout);
+                }
+            }
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult HobbyDBUser(HobbyDBUserVM hdbUser)
         {
             int userRecordId = 0;
             if (ModelState.IsValid)

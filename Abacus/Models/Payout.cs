@@ -18,6 +18,7 @@ namespace Abacus.Models
         [ForeignKey("SellerId")]
         public virtual UserRecord Seller { get; set; }
 
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime Date { get; set; }
 
         public double Amount { get; set; }

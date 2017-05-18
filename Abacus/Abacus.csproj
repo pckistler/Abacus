@@ -271,9 +271,11 @@
     <Compile Include="Utility\Matching\OrCriteria.cs" />
     <Compile Include="ViewModel\CartIndexVM.cs" />
     <Compile Include="ViewModel\CartVM.cs" />
+    <Compile Include="ViewModel\PayoutVM.cs" />
     <Compile Include="ViewModel\HobbyDBUser.cs" />
     <Compile Include="ViewModel\ManageUsersListVM.cs" />
     <Compile Include="ViewModel\TransactionVM.cs" />
+    <Compile Include="ViewModel\UserRecordVM.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-theme.css" />
@@ -407,6 +409,12 @@
     <Content Include="Views\UserRecords\_UserList.cshtml" />
     <Content Include="Views\UserRecords\_UserListItem.cshtml" />
     <Content Include="Views\UserRecords\_Details.cshtml" />
+    <Content Include="Views\UserRecords\_NotesDlg.cshtml" />
+    <Content Include="Views\UserRecords\_PayoutList.cshtml" />
+    <Content Include="Views\UserRecords\_PayoutListItem.cshtml" />
+    <Content Include="Views\UserRecords\_Payout.cshtml" />
+    <Content Include="Views\UserRecords\_PayoutDlg.cshtml" />
+    <Content Include="Views\UserRecords\_DeletePayoutDlg.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

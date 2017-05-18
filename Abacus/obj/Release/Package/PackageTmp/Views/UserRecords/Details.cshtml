@@ -1,95 +1,81 @@
-﻿@model Abacus.Models.UserRecord
+﻿@model Abacus.ViewModel.UserRecordVM
 
 @{
     ViewBag.Title = "Details";
 }
+<script>
+    function DisplayDetails() {        
+        xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            var ctrl = document.getElementById("dynamicContent");
+            if (this.readyState == 4 && this.status == 200) {
+                ctrl.innerHTML = this.responseText;
+            }
+            else {
+                ctrl.innerHTML = "";
+            }
+        };
+        xhttp.open("GET", "/UserRecords/UserDetails?Id=@Model.Id", true);
+        xhttp.send();
+    }
+    function DisplayCarts() {
+        xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            var ctrl = document.getElementById("dynamicContent");
+            if (this.readyState == 4 && this.status == 200) {
+                ctrl.innerHTML = this.responseText;
+            }
+            else {
+                ctrl.innerHTML = "";
+            }
+        };
+        xhttp.open("GET", "/UserRecords/UserCarts?Id=@Model.Id", true);
+        xhttp.send();
+    }
+</script>
 
 <h2>Buyer / Seller Details</h2>
+@{ 
+    var amount = Model.Carts.Sum(c => c.Transactions.Where(t => t.SellerId == Model.Id).Sum(x=>x.PayOut));
+    var sAmount = string.Format("$ {0:0.00}", amount);
+    amount = Model.Payouts.Sum(p=>p.Amount);
+    var pAmount = string.Format("$ {0:0.00}", amount);
+}
+<table class="table">
+    <tr>
+        <td class="col-sm-1">Name</td>
+        <td class="col-sm-2">@Model.FirstName @Model.LastName</td>
+        <td class="col-sm-1">Sales</td>
+        <td class="col-sm-1">@sAmount</td>
+        <td class="col-sm-1" rowspan="2">Notes</td>
+        <td class="col-sm-5" rowspan="2">@Model.Notes</td>
+    </tr>
+    <tr>
+        <td class="col-sm-1">hobbyDB</td>
+        <td class="col-sm-2">@Model.hobbyDBUserName</td>
+        <td class="col-sm-1">Payout</td>
+        <td class="col-sm-1">@pAmount</td>    
+    </tr>
+</table>     
 
-<div>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.HDBUserName)
-        </dt>
+<button type="button" class="btn btn-default" onclick="DisplayDetails()">Details</button>
+@{ 
+    string disabledCarts = "";
+    if (Model.Carts.Count == 0)
+    { disabledCarts = "disabled=\"disabled\""; }
+}
+<button type="button" class="btn btn-default" @disabledCarts onclick="DisplayCarts()">Carts</button>
+@{
+    string disabledPayouts = "";
+    if (Model.Payouts.Count == 0)
+    { disabledPayouts = "disabled=\"disabled\""; }
+}
+<button type="button" class="btn btn-default" @disabledPayouts onclick="DisplayPayOuts()">Pay Outs</button>
 
-        <dd>
-            @Html.DisplayFor(model => model.HDBUserName)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.FirstName)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.FirstName)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.LastName)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.LastName)
-        </dd>
-
-
-        <dt>
-            @Html.DisplayNameFor(model => model.UserType)
-        </dt>
-
-        <dd>
-
-            @{
-                string userType = string.Empty;
-                if ((Model.UserType & Abacus.Models.UserRecord.UserTypes.Buyer) == Abacus.Models.UserRecord.UserTypes.Buyer)
-                {
-                    userType = "Buyer";
-                }
-                if ((Model.UserType & Abacus.Models.UserRecord.UserTypes.Seller) == Abacus.Models.UserRecord.UserTypes.Seller)
-                {
-                    if (userType != string.Empty) { userType += ", "; }
-                    userType += "Seller";
-                }
-                @userType
-            }
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.PhoneNumber)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.PhoneNumber)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.PayPalId.EmailAddress)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.PayPalId.EmailAddress)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.PreferredEmail.EmailAddress)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.PreferredEmail.EmailAddress)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.HDBUserId)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.HDBUserId)
-        </dd>
-
-
-    </dl>
+<div id="dynamicContent">
+   
 </div>
+<br/>
 <p>
     @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
     @Html.ActionLink("Back to List", "Index")

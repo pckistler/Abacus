@@ -1,10 +1,14 @@
-﻿@model Abacus.Models.UserRecord
-
+﻿@model Abacus.ViewModel.UserRecordVM
+<script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.js")" type="text/javascript"></script>
 @{
     ViewBag.Title = "Details";
 }
 <script>
-    function DisplayDetails() {        
+    function DisplayDetails() {
+        document.getElementById("AddPayoutDiv").style.visibility = "visible";
+        document.getElementById("NewPayoutButton").style.visibility = "hidden";
         xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
             var ctrl = document.getElementById("dynamicContent");
@@ -19,6 +23,7 @@
         xhttp.send();
     }
     function DisplayCarts() {
+        document.getElementById("AddPayoutDiv").style.visibility = "hidden";
         xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
             var ctrl = document.getElementById("dynamicContent");
@@ -32,30 +37,214 @@
         xhttp.open("GET", "/UserRecords/UserCarts?Id=@Model.Id", true);
         xhttp.send();
     }
+    function DisplayPayouts() {
+        document.getElementById("AddPayoutDiv").style.visibility = "visible";
+        document.getElementById("NewPayoutButton").style.visibility = "visible";
+
+        xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            var ctrl = document.getElementById("dynamicContent");
+            if (this.readyState == 4 && this.status == 200) {
+                ctrl.innerHTML = this.responseText;
+            }
+            else {
+                ctrl.innerHTML = "";
+            }
+        };
+        xhttp.open("GET", "/UserRecords/UserPayouts?Id=@Model.Id", true);
+        xhttp.send();
+    }
+
+    function UpdatePayoutAmount()
+    {
+        xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            var ctrl = document.getElementById("PayoutAmount");
+            if (this.readyState == 4 && this.status == 200) {
+                ctrl.innerHTML = this.responseText;
+            }
+            else {
+                ctrl.innerHTML = "";
+            }
+        };
+        xhttp.open("GET", "/UserRecords/PayoutAmount?Id=@Model.Id", true);
+        xhttp.send();
+    }
+
+    $(function () {
+        $('.btn-notes-dialog').click(function () {
+            var pid = $(this).attr('data-id');
+            var url = "/UserRecords/NotesDlgContent?Id=" + @Model.Id;
+            $.ajax({
+                url: url,
+                cache: false,
+                success: function (data) {
+                    $('#notes-dialog-content').html(data);
+                    $('#notes-dialog').modal('show');
+                },
+                failure: function (data) {
+                $('#notes-dialog-content').html(data);
+            }
+            });
+        });
+
+        //$('#transaction-dialog').on('shown.bs.modal', function () {
+        //    jQuery.validator.unobtrusive.parse($(this));
+        //})
+
+        $('#notes-dialog').on('hidden.bs.modal', function () {
+            $(this).removeData('bs.modal');
+        });
+    });
+    function successNotes(data, status, xhr) {
+        $('#notes-dialog').modal('hide');
+    }
+
+    function failureNotes(xhr, status, error) {
+        $('#notes-dialog').modal('show');
+    }
+</script>
+<script>
+    function DeletePayout(id)
+    {
+        var updateTarget = "PayOut"+id;
+        var url = "/UserRecords/DeletePayoutDlgContent?Id=" + id + "&UserId=@Model.Id" + "&UpdateTarget=" + updateTarget;
+        $.ajax({
+            url: url,
+            cache: false,
+            success: function (data) {
+                $('#deletepayout-dialog-content').html(data);
+                $('#deletepayout-dialog').modal('show');
+            },
+            failure: function (data) {
+                $('#deletepayout-dialog-content').html(data);
+            }
+        });
+    }
+    function successDeletePayout(data, status, xhr) {
+        //$("#dynamicContent").html = data;
+        var row = document.getElementById(data);
+        row.parentNode.removeChild(row);
+        $('#deletepayout-dialog').modal('hide');
+        UpdatePayoutAmount();
+    }
+
+    function failureDeletePayout(xhr, status, error) {
+        $('#deletepayout-dialog').modal('show');
+    }
+
+    function EditPayout(id)
+    {
+            var updateTarget = "PayOut"+id;
+            var url = "/UserRecords/PayoutDlgContent?Id=" + id + "&UserId=@Model.Id" + "&UpdateTarget=" + updateTarget;
+            $.ajax({
+                url: url,
+                cache: false,
+                success: function (data) {
+                    $('#payout-dialog-content').html(data);
+                    $('#payout-dialog').modal('show');
+                },
+                failure: function (data) {
+                    $('#payout-dialog-content').html(data);
+                }
+            });
+    }
+
+    $(function () {
+        $('.btn-payout-dialog').click(function () {
+            var pid = $(this).attr('data-id');
+            var updateTarget = $(this).attr('data-target');
+            var url = "/UserRecords/PayoutDlgContent?Id=" + pid + "&UserId=@Model.Id" + "&UpdateTarget=" + updateTarget;
+            $.ajax({
+                url: url,
+                cache: false,
+                success: function (data) {
+                    $('#payout-dialog-content').html(data);
+                    $('#payout-dialog').modal('show');
+                },
+                failure: function (data) {
+                    $('#payout-dialog-content').html(data);
+                }
+            });
+        });
+
+        //$('#transaction-dialog').on('shown.bs.modal', function () {
+        //    jQuery.validator.unobtrusive.parse($(this));
+        //})
+
+        $('#payout-dialog').on('hidden.bs.modal', function () {
+            $(this).removeData('bs.modal');
+        });
+    });
+    function successPayout(data, status, xhr) {
+        $('#payout-dialog').modal('hide');
+        UpdatePayoutAmount();
+    }
+
+    function failurePayout(xhr, status, error) {
+        $('#payout-dialog').modal('show');
+    }
 </script>
 
 <h2>Buyer / Seller Details</h2>
+@{ 
+    var amount = Model.Carts.Sum(c => c.Transactions.Where(t => t.SellerId == Model.Id).Sum(x=>x.PayOut));
+    var sAmount = string.Format("$ {0:0.00}", amount);
+    amount = Model.Payouts.Sum(p=>p.Amount);
+    var pAmount = string.Format("$ {0:0.00}", amount);
+}
 <table class="table">
-    <tr>
-        <td class="col-sm-1">hobbyDB</td>
-        <td class="col-sm-2">@Model.HDBUserName</td>
-        <td class="col-sm-1" rowspan="2">Notes</td>
-        <td class="col-sm-7" rowspan="2">@Model.Notes</td>
-    </tr>
     <tr>
         <td class="col-sm-1">Name</td>
         <td class="col-sm-2">@Model.FirstName @Model.LastName</td>
+        <td class="col-sm-1">Sales</td>
+        <td class="col-sm-1" >@sAmount</td>
+        <td class="col-sm-1" rowspan="2"><button type="button" class="btn btn-notes-dialog" data-id="0" data-toggle="modal" data-target="#Notes-dialog-container" id="NewSellerButton">Notes</button></td>
+        <td class="col-sm-5" rowspan="2" id="userRecord_Notes">@Model.Notes</td>
+    </tr>
+    <tr>
+        <td class="col-sm-1">hobbyDB</td>
+        <td class="col-sm-2">@Model.hobbyDBUserName</td>
+        <td class="col-sm-1">Payout</td>
+        <td class="col-sm-1" id="PayoutAmount">@pAmount</td>    
     </tr>
 </table>     
 
 <button type="button" class="btn btn-default" onclick="DisplayDetails()">Details</button>
-<button type="button" class="btn btn-default" onclick="DisplayCarts()">Carts</button>
-<button type="button" class="btn btn-default" onclick="DisplayPayOuts()">Pay Outs</button>
+@{ 
+    string disabledCarts = "";
+    if (Model.Carts.Count == 0)
+    { disabledCarts = "disabled=\"disabled\""; }
+}
+<button type="button" class="btn btn-default" @disabledCarts onclick="DisplayCarts()">Carts</button>
+<button type="button" class="btn btn-default" @disabledCarts onclick="DisplayPayouts()">Pay Outs</button>
+
+<div id="AddPayoutDiv" style="visibility:collapse">
+    <br />
+    <button type="button" class="btn btn-payout-dialog" data-id="0" data-toggle="modal" data-target="dynamicContent" id="NewPayoutButton">Add Payout</button>
+</div>
 
 <div id="dynamicContent">
    
 </div>
+<br/>
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @*@Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |*@
     @Html.ActionLink("Back to List", "Index")
 </p>
+
+<div class="modal" id="notes-dialog" tabindex="-1" role="dialog" aria-labelledby="editor-title">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" id="notes-dialog-content"></div>
+    </div>
+</div>
+<div class="modal" id="payout-dialog" tabindex="-1" role="dialog" aria-labelledby="editor-title">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" id="payout-dialog-content"></div>
+    </div>
+</div>
+<div class="modal" id="deletepayout-dialog" tabindex="-1" role="dialog" aria-labelledby="editor-title">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" id="deletepayout-dialog-content"></div>
+    </div>
+</div>

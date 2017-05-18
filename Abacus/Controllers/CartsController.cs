@@ -388,7 +388,7 @@ namespace Abacus.Controllers
 
 
         [HttpPost]
-        public ActionResult HobbyDBUser(HobbyDBUser hdbUser)
+        public ActionResult HobbyDBUser(HobbyDBUserVM hdbUser)
         {
             int userRecordId = 0;
             if (ModelState.IsValid)
@@ -497,12 +497,12 @@ namespace Abacus.Controllers
             bool isBuyer = string.Compare(Request.Params["UserType"], "buyer", true) == 0;
             bool isSeller = string.Compare(Request.Params["UserType"], "seller", true) == 0;
 
-            HobbyDBUser ur = new ViewModel.HobbyDBUser() { IsNewRecord = (id == 0), Id = id, IsBuyer = isBuyer, IsSeller = isSeller };            
+            HobbyDBUserVM ur = new ViewModel.HobbyDBUserVM() { IsNewRecord = (id == 0), Id = id, IsBuyer = isBuyer, IsSeller = isSeller };            
             
             if (id > 0)
             {
                 UserRecord user = db.UserRecords.SingleOrDefault(u => u.Id == id);
-                ur = new ViewModel.HobbyDBUser(user);
+                ur = new ViewModel.HobbyDBUserVM(user);
             }
             ur.Dialog.Controller = Request.Params["dlgCtrl"];
             ur.Dialog.Method = Request.Params["dlgMethod"];
