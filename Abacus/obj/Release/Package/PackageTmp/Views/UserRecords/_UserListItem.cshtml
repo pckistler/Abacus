@@ -1,51 +1,69 @@
 ﻿@model Abacus.Models.UserRecord
 
-@{  
+@{
     var item = Model;
     var rowId = "row" + item.Id;
     var userId = "user" + item.Id;
 }
 
-    <td>
-        @{
-            string dataUserType = string.Empty;
+<td>
+    @{
+        @Html.ActionLink(@item.HDBUserName, "Details", new { id = item.Id })
+        @*string dataUserType = string.Empty;
             string dataTarget = "data-dlg_target=" + rowId;
             if (item.UserType == Abacus.Models.UserRecord.UserTypes.Buyer ||
                 item.UserType == Abacus.Models.UserRecord.UserTypes.Seller)
             {
                 dataUserType = "data-usertype=" + item.UserType.ToString();
             }
-            <a class="btn editor-user_record" data-id="@item.Id" data-toggle="modal" @dataUserType data-title="Edit Buyer / Seller" @dataTarget data-target="#editor-user_record" id=@userId name=@userId>@item.HDBUserName</a>
+            <a class="btn editor-user_record" data-id="@item.Id" data-toggle="modal" @dataUserType data-title="Edit Buyer / Seller" @dataTarget data-target="#editor-user_record" id=@userId name=@userId>@item.HDBUserName</a>*@
+    }
+</td>
+<td>
+    @string.Format("{0} {1}", item.FirstName, item.LastName)
+</td>
+<td>
+    @Html.DisplayFor(modelItem => item.HDBUserId)
+</td>
+<td>
+    @{
+        string userType = string.Empty;
+        if ((item.UserType & Abacus.Models.UserRecord.UserTypes.Buyer) == Abacus.Models.UserRecord.UserTypes.Buyer)
+        {
+            userType = "Buyer";
         }
-    </td>
-    <td>
-        @Html.DisplayFor(modelItem => item.FirstName)
-    </td>
-    <td>
-        @Html.DisplayFor(modelItem => item.LastName)
-    </td>
-    <td>
-        @{
-            string userType = string.Empty;
-            if ((item.UserType & Abacus.Models.UserRecord.UserTypes.Buyer) == Abacus.Models.UserRecord.UserTypes.Buyer)
-            {
-                userType = "Buyer";
-            }
-            if ((item.UserType & Abacus.Models.UserRecord.UserTypes.Seller) == Abacus.Models.UserRecord.UserTypes.Seller)
-            {
-                if (userType != string.Empty) { userType += ", "; }
-                userType += "Seller";
-            }
-            @userType
+        if ((item.UserType & Abacus.Models.UserRecord.UserTypes.Seller) == Abacus.Models.UserRecord.UserTypes.Seller)
+        {
+            if (userType != string.Empty) { userType += ", "; }
+            userType += "Seller";
         }
-    </td>
-    <td>
-        @Html.DisplayFor(modelItem => item.HDBUserId)
-    </td>
-    <td>
-        @*@Html.ActionLink("Edit", "Edit", new { id=item.Id }) |*@
-        @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+        @userType
+    }
+</td>
+
+
+
+<td>
+    @{
+        string dataUserType = string.Empty;
+        string dataTarget = "data-dlg_target=" + rowId;
+        if (item.UserType == Abacus.Models.UserRecord.UserTypes.Buyer ||
+        item.UserType == Abacus.Models.UserRecord.UserTypes.Seller)
+        {
+            dataUserType = "data-usertype=" + item.UserType.ToString();
+        }
+
+        var sales = 0.0;
+        if (Model.Transactions.Count > 0)
+        { sales = Model.Transactions.Sum(t => t.PayOut); }
+    }
+    <a class="editor-user_record" data-id="@item.Id" data-toggle="modal" @dataUserType data-title="Edit Buyer / Seller" @dataTarget data-target="#editor-user_record" id=@userId name=@userId>Edit</a> |
+    @Html.ActionLink("Details", "Details", new { id = item.Id })
+    @if (sales == 0)
+    {
+        @:|
         @Html.ActionLink("Delete", "Delete", new { id = item.Id })
-    </td>
+    }
+</td>
 
 

@@ -1,0 +1,15 @@
+﻿@model Abacus.Models.Cart
+
+@{ 
+    var userId = (int) ViewData["UserId"];
+    var payout = string.Format("PayOut{0}", Model.Id);
+    var transaction = Model.Transactions.FirstOrDefault(t => t.SellerId == userId);
+}
+
+<td>@Html.ActionLink(Model.Id.ToString(), "Details", "Carts", new {  Id = Model.Id }, null)</td>
+<td>@Html.DisplayFor(model => model.SaleDate)</td>
+<td class="text-right">@transaction.NumOfItems</td>
+<td class="text-right">@string.Format("$ {0:0.00}",transaction.ItemCosts)</td>
+<td class="text-right">@string.Format("$ {0:0.00}", transaction.ShippingCost)</td>
+<td class="text-right">@string.Format("$ {0:0.00}", transaction.HobbyDBFees)</td>
+<td class="text-right">@string.Format("$ {0:0.00}", transaction.PayOut)</td>

@@ -146,7 +146,12 @@ namespace Abacus.Controllers
             var items = db.Carts.Where(c=>c.Transactions.Any(u=>u.SellerId == Id)).OrderByDescending(c=>c.SaleDate).ToList();
             if (items != null)
             {
-                return PartialView("../Carts/_CartList", items);
+                if (!ViewData.ContainsKey("UserId"))
+                    ViewData.Add("UserId", Id);
+                ViewData["UserId"] = Id;
+                ActionResult ar = PartialView("_Carts", items);
+                //ViewData.Remove("UserId");
+                return ar;
             }
             return View();
         }
@@ -192,13 +197,24 @@ namespace Abacus.Controllers
         }
         public ActionResult PayoutDlgContent(int Id)
         {
-            var payout = db.PayOuts.FirstOrDefault(c => c.Id == Id);
             PayoutVM payoutVM = new PayoutVM();
+            payoutVM.UserId = Int32.Parse(Request.Params["UserId"]);
+
+            if (payoutVM.UserId > 0)
+            {
+                var payouts = db.PayOuts.Where(c => c.SellerId == payoutVM.UserId);
+                var sales = db.TransactionRecords.Where(t => t.SellerId == payoutVM.UserId);
+                double payoutAmount = payouts.ToList().Sum(p => p.Amount);
+                double salesAmount = sales.ToList().Sum(t => t.PayOut);
+                payoutVM.Amount = salesAmount - payoutAmount;
+            }
+
+            var payout = db.PayOuts.FirstOrDefault(c => c.Id == Id);
             if (payout != null)
                 payoutVM = new PayoutVM(payout);
 
-            payoutVM.UserId = Int32.Parse(Request.Params["UserId"]);
-            payoutVM.Dialog.UpdateTarget =Request.Params["UpdateTarget"];
+            payoutVM.Dialog.UpdateTarget = Request.Params["UpdateTarget"];
+
             return PartialView("_PayoutDlg", payoutVM);
         }
 
@@ -363,7 +379,11 @@ namespace Abacus.Controllers
                     ur.PreferredEmailId = preferredEmail.Id;
                     db.Entry(ur).State = EntityState.Modified;
                     db.SaveChanges();
-                    return PartialView("_UserListItem", ur);
+
+                    string pv = "_UserListItem";
+                    if (!string.IsNullOrEmpty(hdbUser.Dialog.PartialView))
+                        pv = hdbUser.Dialog.PartialView;
+                    return PartialView(pv, ur);
                 }
             }
             else

@@ -25,10 +25,15 @@ namespace Abacus.ViewModel
         public int Id { get; set; }
         public int UserId { get; set; }
 
+        [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime Date { get; set; }
+
+        [DataType(DataType.Currency)]
         public double Amount { get; set; }
+
         public double BalanceDue { get; set; }
+
         public DialogData Dialog { get; set; }
         public class DialogData
         {

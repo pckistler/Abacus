@@ -49,6 +49,7 @@ namespace Abacus.Models
         public string PhoneNumber { get; set; }
 
         public virtual ICollection<Payout> Payouts { get; set; }
+        public virtual ICollection<TransactionRecord> Transactions { get; set; }
 
         public string Notes { get; set; }
 

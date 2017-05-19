@@ -1,0 +1,20 @@
+﻿@model IEnumerable<Abacus.Models.Cart>
+
+<div class="container">
+    <table class="table" id="CartTable">
+        <thead>
+            <tr>
+                <th class="col-sm-1">Cart</th>
+                <th class="col-sm-1">Date</th>
+                <th class="col-sm-1 text-right">Items</th>
+                <th class="col-sm-1 text-right">Amount</th>
+                <th class="col-sm-1 text-right">Shipping</th>
+                <th class="col-sm-1 text-right">hobbyDB Fees</th>
+                <th class="col-sm-1 text-right">Payout</th>
+            </tr>
+        </thead>
+        <tbody id="CartListBody">
+            @Html.Partial("_CartList", Model)
+        </tbody>
+    </table>
+</div>

@@ -91,12 +91,13 @@ namespace Abacus.ViewModel
 
         public class DialogStuff
         {
-            public string Title { get; set; }
-            public string Controller { get; set; }
-            public string Method { get; set; }
-            public string Target { get; set; }
-            public string SuccessMethod { get; set; }
-            public string FailureMethod { get; set; }
+            public string Title { get; set; } = string.Empty;
+            public string Controller { get; set; } = string.Empty;
+            public string Method { get; set; } = string.Empty;
+            public string Target { get; set; } = string.Empty;
+            public string SuccessMethod { get; set; } = string.Empty;
+            public string FailureMethod { get; set; } = string.Empty;
+            public string PartialView { get; set; } = string.Empty;
         }
 
     }

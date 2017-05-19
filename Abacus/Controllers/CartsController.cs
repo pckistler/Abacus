@@ -510,7 +510,9 @@ namespace Abacus.Controllers
             ur.Dialog.FailureMethod = Request.Params["dlgFailure"];
             ur.Dialog.Target = Request.Params["dlgTarget"];
             ur.Dialog.Title = Request.Params["dlgTitle"];
+            ur.Dialog.PartialView = Request.Params["dlgPartialView"];
 
+            ActionResult ar = PartialView("_HobbyDBUser", ur);
             return PartialView("_HobbyDBUser", ur);
         }
 
@@ -642,7 +644,9 @@ namespace Abacus.Controllers
                 case nameof(Cart.SearchOptions.CartNumber):
                     return "<input class=\"form-control text-box single-line valid\" data-val=\"true\" data-val-number=\"The field Cart must be a number.\" data-val-required=\"The Cart field is required.\" id=\"" + searchType + "\" name=\"" + searchType + "\" type=\"number\">";
                 case nameof(Cart.SearchOptions.Date):
-                    break;
+                    result = "<label>Begin</label>&nbsp;<input class=\"text-box single-line valid\" data-val=\"true\" data-val-date=\"The field must be a date.\" data-val-required=\"The field is required.\" id=\"Date1\" name=\"Date1\" type=\"date\" value=\"" + DateTime.Now.ToShortDateString() + "\" aria-required=\"true\" aria-describedby=\"Date-error\" aria-invalid=\"false\">";
+                    result += "&nbsp;&nbsp;&nbsp;<label>End</label>&nbsp;<input class=\"text-box single-line valid\" data-val=\"true\" data-val-date=\"The field must be a date.\" data-val-required=\"The field is required.\" id=\"Date2\" name=\"Date2\" type=\"date\" value=\"" + DateTime.Now.ToShortDateString() + "\" aria-required=\"true\" aria-describedby=\"Date-error\" aria-invalid=\"false\">";
+                    return result;
                 case nameof(Cart.SearchOptions.SellerUsername):
                     {
                         var list = db.UserRecords.Where(u => (u.UserType & UserRecord.UserTypes.Seller) == UserRecord.UserTypes.Seller).Select(r => new { r.HDBUserName, r.Id, }).OrderBy(o => o.HDBUserName);

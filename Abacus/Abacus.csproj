@@ -272,7 +272,7 @@
     <Compile Include="ViewModel\CartIndexVM.cs" />
     <Compile Include="ViewModel\CartVM.cs" />
     <Compile Include="ViewModel\PayoutVM.cs" />
-    <Compile Include="ViewModel\HobbyDBUser.cs" />
+    <Compile Include="ViewModel\HobbyDBUserVM.cs" />
     <Compile Include="ViewModel\ManageUsersListVM.cs" />
     <Compile Include="ViewModel\TransactionVM.cs" />
     <Compile Include="ViewModel\UserRecordVM.cs" />
@@ -415,6 +415,9 @@
     <Content Include="Views\UserRecords\_Payout.cshtml" />
     <Content Include="Views\UserRecords\_PayoutDlg.cshtml" />
     <Content Include="Views\UserRecords\_DeletePayoutDlg.cshtml" />
+    <Content Include="Views\UserRecords\_Carts.cshtml" />
+    <Content Include="Views\UserRecords\_CartList.cshtml" />
+    <Content Include="Views\UserRecords\_CartListItem.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

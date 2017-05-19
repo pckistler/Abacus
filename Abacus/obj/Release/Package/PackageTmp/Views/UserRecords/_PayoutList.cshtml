@@ -1,0 +1,8 @@
+﻿@model IEnumerable<Abacus.Models.Payout>
+
+@foreach (var item in Model)
+{
+    <tr id="@string.Format("PayOut{0}",item.Id)">
+        @Html.Partial("_PayOutListItem", item)
+    </tr>
+}

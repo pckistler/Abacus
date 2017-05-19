@@ -1,4 +1,4 @@
-﻿@model Abacus.ViewModel.HobbyDBUser
+﻿@model Abacus.ViewModel.HobbyDBUserVM
 
 @{ 
     var action = "Modify ";
@@ -113,6 +113,7 @@
             @Html.HiddenFor(model => model.Dialog.Controller)
             @Html.HiddenFor(model => model.Dialog.Method)
             @Html.HiddenFor(model => model.Dialog.Target)
+            @Html.HiddenFor(model => model.Dialog.PartialView)
             @Html.HiddenFor(model => model.Dialog.SuccessMethod)
             @Html.HiddenFor(model => model.Dialog.FailureMethod)
 
