@@ -8,6 +8,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Abacus.Models;
+using Abacus.Utility;
 using Abacus.ViewModel;
 
 namespace Abacus.Controllers
@@ -613,14 +614,14 @@ namespace Abacus.Controllers
             {
                 case nameof(Cart.SearchOptions.BuyerEmail):
                     {
-                        var list = db.UserRecords.Where(u => (u.UserType & UserRecord.UserTypes.Buyer) == UserRecord.UserTypes.Buyer).Select(r => new { r.PreferredEmail.EmailAddress, r.Id, }).OrderBy(o => o.EmailAddress);
+                        var list = db.UserRecords.Where(u => (u.UserType & UserRecord.UserTypes.Buyer) == UserRecord.UserTypes.Buyer).Select(r => new { r.PreferredEmail.EmailAddress, r.PreferredEmailId }).OrderBy(o => o.EmailAddress);
                         result = "<select class=\"form-control\" data-val=\"true\" data-val-number=\"The field BuyerId must be a number.\" data-val-required=\"The BuyerId field is required.\" id=\"" + searchType + "\" name=\"" + searchType + "\">";
                         var duplicates = new List<string>();
                         foreach (var item in list)
                         {
                             if (!duplicates.Contains(item.EmailAddress))
                             {
-                                result += string.Format("<option value = \"{0}\" >{1}</ option >", item.Id, item.EmailAddress);
+                                result += string.Format("<option value = \"{0}\" >{1}</ option >", item.PreferredEmailId, item.EmailAddress);
                                 duplicates.Add(item.EmailAddress);
                             }
                         }
@@ -644,7 +645,7 @@ namespace Abacus.Controllers
                 case nameof(Cart.SearchOptions.CartNumber):
                     return "<input class=\"form-control text-box single-line valid\" data-val=\"true\" data-val-number=\"The field Cart must be a number.\" data-val-required=\"The Cart field is required.\" id=\"" + searchType + "\" name=\"" + searchType + "\" type=\"number\">";
                 case nameof(Cart.SearchOptions.Date):
-                    result = "<label>Begin</label>&nbsp;<input class=\"text-box single-line valid\" data-val=\"true\" data-val-date=\"The field must be a date.\" data-val-required=\"The field is required.\" id=\"Date1\" name=\"Date1\" type=\"date\" value=\"" + DateTime.Now.ToShortDateString() + "\" aria-required=\"true\" aria-describedby=\"Date-error\" aria-invalid=\"false\">";
+                    result = "<label>Begin</label>&nbsp;<input class=\"text-box single-line valid\" data-val=\"true\" data-val-date=\"The field must be a date.\" data-val-required=\"The field is required.\" id=\""+searchType+ "\" name=\"" + searchType + "\" type=\"date\" value=\"" + DateTime.Now.ToShortDateString() + "\" aria-required=\"true\" aria-describedby=\"Date-error\" aria-invalid=\"false\">";
                     result += "&nbsp;&nbsp;&nbsp;<label>End</label>&nbsp;<input class=\"text-box single-line valid\" data-val=\"true\" data-val-date=\"The field must be a date.\" data-val-required=\"The field is required.\" id=\"Date2\" name=\"Date2\" type=\"date\" value=\"" + DateTime.Now.ToShortDateString() + "\" aria-required=\"true\" aria-describedby=\"Date-error\" aria-invalid=\"false\">";
                     return result;
                 case nameof(Cart.SearchOptions.SellerUsername):
@@ -677,15 +678,15 @@ namespace Abacus.Controllers
                     }
                 case nameof(Cart.SearchOptions.BuyerName):
                     {
-                        string data = Request.Params["value"];
-                        var carts = db.Carts.Where(c => c.Buyer.FirstName.Contains(data) || c.Buyer.LastName.Contains(data)).OrderByDescending(r => r.Id);
+                        string data = Request.Params["value"].ToUpper();
+                        var carts = db.Carts.Where(c => c.Buyer.FirstName.ToUpper().Contains(data) || c.Buyer.LastName.ToUpper().Contains(data)).OrderByDescending(r => r.Id);
                         return PartialView("_CartList", carts.ToList());
                     }
                 case nameof(Cart.SearchOptions.BuyerUsername):
                     {
                         int data = Int32.Parse(Request.Params["value"]);
                         var carts = db.Carts.Where(c => c.BuyerId == data).OrderByDescending(r => r.Id).ToList();
-                        var tmp =  PartialView("_CartList", carts);
+                        var tmp = PartialView("_CartList", carts);
                         return tmp;
                     }
                 case nameof(Cart.SearchOptions.CartNumber):
@@ -696,11 +697,18 @@ namespace Abacus.Controllers
                         return tmp;
                     }
                 case nameof(Cart.SearchOptions.Date):
-                    break;
+                    {
+                        var data = DateTime.Parse(Request.Params["value"]);
+                        var data2 = DateTime.Parse(Request.Params["value2"]);
+                        DateTime d1 = DateTime.Compare(data, data2) > 0 ? data2 : data;
+                        DateTime d2 = DateTime.Compare(data, data2) > 0 ? data : data2;
+                        var carts = db.Carts.Where(c => d1 <= c.SaleDate && c.SaleDate <= d2).OrderByDescending(r => r.Id);
+                        return PartialView("_CartList", carts.ToList());
+                    }
                 case nameof(Cart.SearchOptions.SellerName):
                     {
-                        string data = Request.Params["value"];
-                        var carts = db.Carts.Where(c => c.Transactions.Any(t=>t.Seller.FirstName.Contains(data) || t.Seller.LastName.Contains(data))).OrderByDescending(r => r.Id);
+                        string data = Request.Params["value"].ToUpper();
+                        var carts = db.Carts.Where(c => c.Transactions.Any(t => t.Seller.FirstName.ToUpper().Contains(data) || t.Seller.LastName.ToUpper().Contains(data))).OrderByDescending(r => r.Id);
                         return PartialView("_CartList", carts.ToList());
                     }
                 case nameof(Cart.SearchOptions.SellerUsername):

@@ -30,4 +30,16 @@ namespace Abacus.Utility
     //        return equal_to(value).not();
     //    }
     //}
+
+    class MyStringCompare : IEqualityComparer<string>
+    {
+        public bool Equals(string x, string y)
+        {
+            return string.Compare(x, y, true) == 0;
+        }
+        public int GetHashCode(string s)
+        {
+            return s.GetHashCode();
+        }
+    }
 }
