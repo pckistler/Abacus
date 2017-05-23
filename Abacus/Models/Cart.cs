@@ -63,6 +63,7 @@ namespace Abacus.Models
 
         public enum SearchOptions
         {
+            None,
             CartNumber,
             SellerName,
             SellerUsername,
@@ -80,7 +81,8 @@ namespace Abacus.Models
             { SearchOptions.CartNumber, "Cart number" },
             { SearchOptions.Date, "Date" },
             { SearchOptions.SellerName, "Seller name" },
-            { SearchOptions.SellerUsername, "Seller username" }
+            { SearchOptions.SellerUsername, "Seller username" },
+            { SearchOptions.None, "None" }
         };
     }
 }

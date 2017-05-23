@@ -1,10 +1,17 @@
 ﻿@model Abacus.ViewModel.CartIndexVM
 
 @{
+    var search = Session["CartSearch"];
+
     ViewBag.Title = "Index";
+
+    var sSearch = search as Abacus.Controllers.CartsController.CartSearch<string>;
+    var iSearch = search as Abacus.Controllers.CartsController.CartSearch<int>;
+    var dateSearch = search as Abacus.Controllers.CartsController.CartSearch<DateTime>;
 }
+
 <script>
-    function SearchOptionChange(option) {
+    function SearchOptionChange(option, loadSession) {        
         if (option == "")
         {
             option = document.getElementById("SearchOptions").value;
@@ -15,15 +22,18 @@
                 document.getElementById("cart_search_criteria").innerHTML = this.responseText;
             }
         };
-        xhttp.open("GET", "/Carts/SearchOptions?type=" + option, true);
+        xhttp.open("GET", "/Carts/SearchOptions?type=" + option + "&LoadSession=" + loadSession, true);
         xhttp.send();
     }
     function ExecuteSearch() {
         var option = document.getElementById("SearchOptions").value;
         if (option != "") {
-            var data = document.getElementById(option).value;
-            if (data == "")
-                return;
+            var data = "";
+            if (option != "None") {
+                data = document.getElementById(option).value;
+                if (data == "")
+                    return;
+            }
             if (option == "Date")
             {
                 var data2 = document.getElementById("Date2").value;
@@ -50,16 +60,16 @@
     <div class="row">
         <div class="col-sm-3">
             @Html.ActionLink("New Cart", "Create", null, new { @class = "btn btn-default" })
-            <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#searchCarts" onclick="SearchOptionChange('')">Search</button>
+            <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#searchCarts" onclick="SearchOptionChange('', false)">Search</button>
         </div>
     </div>
 
     <div class="collapse" id="searchCarts">
         <div id="SearchBar">
             <br/>
-            <div class="col-sm-3">@Html.DropDownList("SearchOptions", Model.SearchOptions, htmlAttributes: new { @class = "form-control", onchange = "SearchOptionChange(this.value)" })</div>
+            <div class="col-sm-3">@Html.DropDownList("SearchOptions", Model.SearchOptions, htmlAttributes: new { @class = "form-control", onchange = "SearchOptionChange(this.value, false)" })</div>
             <div class="col-sm-8" id="cart_search_criteria"></div>
-            <div><button type="button" class="btn editor-container col-sm-1" data-id="0" data-usertype="buyer" onclick="ExecuteSearch()" data-toggle="modal" data-target="#editor-container">Search</button></div>
+            <div><button type="button" class="btn editor-container col-sm-1" data-id="0" data-usertype="buyer" onclick="ExecuteSearch()" data-toggle="modal" data-target="#editor-container">Apply</button></div>
         </div>
     </div>
 </div>
@@ -67,4 +77,39 @@
 <div id="CartListing">
     @Html.Partial("_CartList", Model.Carts)
 </div>
+<script>
+    $(document).ready(function () {
+        @if (search != null)
+        {
+            string rslt = string.Empty;
+            string searchType = string.Empty;
+            string stringFormat = "SearchOptionChange('{0}', true);";
+            if (sSearch != null)
+            {
+                rslt = string.Format(stringFormat, sSearch.SearchType);
+                searchType = sSearch.SearchType;
+            }
+            else if (iSearch != null)
+            {
+                rslt = string.Format(stringFormat, iSearch.SearchType);
+                searchType = iSearch.SearchType;
+            }
+            else if (@dateSearch != null)
+            {
+                rslt = string.Format(stringFormat, dateSearch.SearchType);
+                searchType = dateSearch.SearchType;
+            }
+
+            if (!string.IsNullOrEmpty(rslt))
+            {
+                @Html.Raw("$('.collapse').collapse();\n")
+                @Html.Raw("document.getElementById('SearchOptions').value='" + searchType + "';\n")
+                @Html.Raw(rslt+'\n')
+               // @Html.Raw("ExecuteSearch();\n")
+            }
+
+
+            }
+    });
+</script>
 

@@ -20,15 +20,22 @@ namespace Abacus.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: Carts
-        public async Task<ActionResult> Index()
+        public ActionResult Index()
         {
             var logs = db.LogRecords.Where(l => l.RecordType == Utilities.RecordType.New && l.Guid == typeof(Cart).GUID).OrderByDescending(l=>l.DateTime).Take(15);
             var list = logs.Select(l => db.Carts.FirstOrDefault(c => c.Id == l.RecordId));
             //var tmp = db.Carts.Where(c => logs.Any(l => l.RecordId == c.Id)).ToList() ;
             //var carts = db.Carts.Include(c => c.Buyer).Include(c => c.BuyerEmail);
-
+            var cartSearch = Session["CartSearch"] ?? new CartSearch<int>() { SearchType = nameof(Cart.SearchOptions.None) };
+            CartSearch<int> iSearch = cartSearch as CartSearch<int>;
+            CartSearch<string> sSearch = cartSearch as CartSearch<string>;
+            CartSearch<DateTime> dtSearch = cartSearch as CartSearch<DateTime>;
+            IEnumerable<Cart> carts = null;
+            if (iSearch != null) carts = ProcessSearch(iSearch);
+            else if (sSearch != null) carts = ProcessSearch(sSearch);
+            else if (dtSearch != null) carts = ProcessSearch(dtSearch);
             CartIndexVM ciVM = new CartIndexVM();
-            ciVM.Carts = await list.ToListAsync();
+            ciVM.Carts = carts;
             ciVM.SearchOptions = new SelectList(Cart.SearchOptionNames, "Key", "Value");
             return View(ciVM);
         }
@@ -609,19 +616,29 @@ namespace Abacus.Controllers
         public string SearchOptions()
         {
             var searchType = Request.Params["type"];
+            var loadSession = bool.Parse(Request.Params["LoadSession"]);
             string result = string.Empty;
             switch(searchType)
             {
                 case nameof(Cart.SearchOptions.BuyerEmail):
                     {
+                        int id = 0;
+                        if (loadSession)
+                        {
+                            CartSearch<int> session = Session["CartSearch"] as CartSearch<int>;
+                            id = session.Value;
+                        }
+
                         var list = db.UserRecords.Where(u => (u.UserType & UserRecord.UserTypes.Buyer) == UserRecord.UserTypes.Buyer).Select(r => new { r.PreferredEmail.EmailAddress, r.PreferredEmailId }).OrderBy(o => o.EmailAddress);
                         result = "<select class=\"form-control\" data-val=\"true\" data-val-number=\"The field BuyerId must be a number.\" data-val-required=\"The BuyerId field is required.\" id=\"" + searchType + "\" name=\"" + searchType + "\">";
                         var duplicates = new List<string>();
+                        string selected;
                         foreach (var item in list)
                         {
+                            selected = id == item.PreferredEmailId ? "selected" : string.Empty;
                             if (!duplicates.Contains(item.EmailAddress))
                             {
-                                result += string.Format("<option value = \"{0}\" >{1}</ option >", item.PreferredEmailId, item.EmailAddress);
+                                result += string.Format("<option value = \"{0}\" {2}>{1}</ option >", item.PreferredEmailId, item.EmailAddress, selected);
                                 duplicates.Add(item.EmailAddress);
                             }
                         }
@@ -630,38 +647,89 @@ namespace Abacus.Controllers
                     }
                 case nameof(Cart.SearchOptions.SellerName):
                 case nameof(Cart.SearchOptions.BuyerName):
-                    return "<input class=\"form-control text-box single-line\" data-val=\"true\" id=\"" + searchType + "\" name=\"" + searchType + "\" type=\"text\" >";
+                    {
+                        string value = string.Empty;
+                        if (loadSession)
+                        {
+                            CartSearch<string> session = Session["CartSearch"] as CartSearch<string>;
+                            value = string.Format("value='{0}'", session.Value);
+                        }
+                        return "<input class=\"form-control text-box single-line\" data-val=\"true\" id=\"" + searchType + "\" name=\"" + searchType + "\" type=\"text\"" + value +" >";
+                    }
                 case nameof(Cart.SearchOptions.BuyerUsername):
                     {
+                        int id = 0;
+                        if (loadSession)
+                        {
+                            CartSearch<int> session = Session["CartSearch"] as CartSearch<int>;
+                            id = session.Value;
+                        }
+
                         var list = db.UserRecords.Where(u => (u.UserType & UserRecord.UserTypes.Buyer) == UserRecord.UserTypes.Buyer).Select(r => new { r.HDBUserName, r.Id, }).OrderBy(o => o.HDBUserName);
                         result = "<select class=\"form-control\" data-val=\"true\"  id=\"" + searchType + "\" name=\"" + searchType + "\">";
+                        string selected;
                         foreach (var item in list)
                         {
-                            result += string.Format("<option value = \"{0}\" >{1}</ option >", item.Id, item.HDBUserName);
+                            selected = id == item.Id ? "selected" : string.Empty;
+                            result += string.Format("<option value = \"{0}\" {2}>{1}</ option >", item.Id, item.HDBUserName, selected);
                         }
                         result += "</select>";
                         return result;
                     }
                 case nameof(Cart.SearchOptions.CartNumber):
-                    return "<input class=\"form-control text-box single-line valid\" data-val=\"true\" data-val-number=\"The field Cart must be a number.\" data-val-required=\"The Cart field is required.\" id=\"" + searchType + "\" name=\"" + searchType + "\" type=\"number\">";
+                    {
+                        string value = string.Empty;
+                        if (loadSession)
+                        {
+                            CartSearch<string> session = Session["CartSearch"] as CartSearch<string>;
+                            value = string.Format("value='{0}'", session.Value);
+                        }
+                        return "<input class=\"form-control text-box single-line valid\" data-val=\"true\" data-val-number=\"The field Cart must be a number.\" data-val-required=\"The Cart field is required.\" id=\"" + searchType + "\" name=\"" + searchType + "\" type=\"number\" " + value + " >";
+                    }
                 case nameof(Cart.SearchOptions.Date):
-                    result = "<label>Begin</label>&nbsp;<input class=\"text-box single-line valid\" data-val=\"true\" data-val-date=\"The field must be a date.\" data-val-required=\"The field is required.\" id=\""+searchType+ "\" name=\"" + searchType + "\" type=\"date\" value=\"" + DateTime.Now.ToShortDateString() + "\" aria-required=\"true\" aria-describedby=\"Date-error\" aria-invalid=\"false\">";
-                    result += "&nbsp;&nbsp;&nbsp;<label>End</label>&nbsp;<input class=\"text-box single-line valid\" data-val=\"true\" data-val-date=\"The field must be a date.\" data-val-required=\"The field is required.\" id=\"Date2\" name=\"Date2\" type=\"date\" value=\"" + DateTime.Now.ToShortDateString() + "\" aria-required=\"true\" aria-describedby=\"Date-error\" aria-invalid=\"false\">";
-                    return result;
+                    {
+                        DateTime d1 = DateTime.Now;
+                        DateTime d2 = DateTime.Now;
+                        if (loadSession)
+                        {
+                            CartSearch<DateTime> session = Session["CartSearch"] as CartSearch<DateTime>;
+                            d1 = session.Value;
+                            d2 = session.Value2;
+                        }
+                        result = "<label>Begin</label>&nbsp;<input class=\"text-box single-line valid\" data-val=\"true\" data-val-date=\"The field must be a date.\" data-val-required=\"The field is required.\" id=\"" + searchType + "\" name=\"" + searchType + "\" type=\"date\" value=\"" + d1.ToShortDateString() + "\" aria-required=\"true\" aria-describedby=\"Date-error\" aria-invalid=\"false\">";
+                        result += "&nbsp;&nbsp;&nbsp;<label>End</label>&nbsp;<input class=\"text-box single-line valid\" data-val=\"true\" data-val-date=\"The field must be a date.\" data-val-required=\"The field is required.\" id=\"Date2\" name=\"Date2\" type=\"date\" value=\"" + d2.ToShortDateString() + "\" aria-required=\"true\" aria-describedby=\"Date-error\" aria-invalid=\"false\">";
+                        return result;
+                    }
                 case nameof(Cart.SearchOptions.SellerUsername):
                     {
+                        int id = 0;
+                        if (loadSession)
+                        {
+                            CartSearch<int> session = Session["CartSearch"] as CartSearch<int>;
+                            id = session.Value;
+                        }
+
                         var list = db.UserRecords.Where(u => (u.UserType & UserRecord.UserTypes.Seller) == UserRecord.UserTypes.Seller).Select(r => new { r.HDBUserName, r.Id, }).OrderBy(o => o.HDBUserName);
                         result = "<select class=\"form-control\" data-val=\"true\"  id=\"" + searchType + "\" name=\"" + searchType + "\">";
                         foreach (var item in list)
                         {
-                            result += string.Format("<option value = \"{0}\" >{1}</ option >", item.Id, item.HDBUserName);
+                            result += string.Format("<option value = \"{0}\" {2}>{1}</ option >", item.Id, item.HDBUserName, (id==item.Id?"selected":""));
                         }
                         result += "</select>";
                         return result;
-                    }                    
+                    }
+                case nameof(Cart.SearchOptions.None):
+                    return "";
             }
 
             return "<label>"+searchType+"</label>";
+        }
+
+        public class CartSearch<ValueType>
+        {
+            public string SearchType { get; set; }
+            public ValueType Value { get; set; }
+            public ValueType Value2 { get; set; }
         }
 
         public ActionResult ProcessSearch()
@@ -670,31 +738,56 @@ namespace Abacus.Controllers
             string result = string.Empty;
             switch (searchType)
             {
+                case nameof(Cart.SearchOptions.None):
+                    {                        
+                        var cartSearch = new CartSearch<int> { SearchType = searchType };
+                        Session["CartSearch"] = null;
+                        var list = ProcessSearch(cartSearch);
+                        return PartialView("_CartList", list);
+                    }
                 case nameof(Cart.SearchOptions.BuyerEmail):
                     {
                         int data = Int32.Parse(Request.Params["value"]);
-                        var carts = db.Carts.Where(c => c.BuyerEmailId == data).OrderByDescending(r => r.Id);
-                        return PartialView("_CartList", carts.ToList());
+                        var cartSearch = new CartSearch<int> { SearchType = searchType, Value = data };
+                        Session["CartSearch"] = cartSearch;
+                        var carts = ProcessSearch(cartSearch);
+                        if (carts != null && carts.Count() > 0)
+                            return PartialView("_CartList", carts.ToList());
+                        else
+                            return new ContentResult() { Content = "No carts found" };                        
                     }
                 case nameof(Cart.SearchOptions.BuyerName):
                     {
-                        string data = Request.Params["value"].ToUpper();
-                        var carts = db.Carts.Where(c => c.Buyer.FirstName.ToUpper().Contains(data) || c.Buyer.LastName.ToUpper().Contains(data)).OrderByDescending(r => r.Id);
-                        return PartialView("_CartList", carts.ToList());
+                        string data = Request.Params["value"];
+                        var cartSearch = new CartSearch<string> { SearchType = searchType, Value = data };
+                        Session["CartSearch"] = cartSearch;
+                        var carts = ProcessSearch(cartSearch);
+                        if (carts != null && carts.Count() > 0)
+                            return PartialView("_CartList", carts.ToList());
+                        else
+                            return new ContentResult() { Content = "No carts found" };
                     }
                 case nameof(Cart.SearchOptions.BuyerUsername):
                     {
                         int data = Int32.Parse(Request.Params["value"]);
-                        var carts = db.Carts.Where(c => c.BuyerId == data).OrderByDescending(r => r.Id).ToList();
-                        var tmp = PartialView("_CartList", carts);
-                        return tmp;
+                        var cartSearch = new CartSearch<int> { SearchType = searchType, Value = data };
+                        Session["CartSearch"] = cartSearch;
+                        var carts = ProcessSearch(cartSearch);
+                        if (carts != null && carts.Count() > 0)
+                            return PartialView("_CartList", carts.ToList());
+                        else
+                            return new ContentResult() { Content = "No carts found" };
                     }
                 case nameof(Cart.SearchOptions.CartNumber):
                     {
                         string data = Request.Params["value"];
-                        var carts = db.Carts.Where(c => c.CartNumber.ToString().Contains(data)).OrderByDescending(r => r.Id).ToList();
-                        var tmp = PartialView("_CartList", carts);
-                        return tmp;
+                        var cartSearch = new CartSearch<string> { SearchType = searchType, Value = data };
+                        Session["CartSearch"] = cartSearch;
+                        var carts = ProcessSearch(cartSearch);
+                        if (carts != null && carts.Count() > 0)
+                            return PartialView("_CartList", carts.ToList());
+                        else
+                            return new ContentResult() { Content = "No carts found" };
                     }
                 case nameof(Cart.SearchOptions.Date):
                     {
@@ -702,20 +795,107 @@ namespace Abacus.Controllers
                         var data2 = DateTime.Parse(Request.Params["value2"]);
                         DateTime d1 = DateTime.Compare(data, data2) > 0 ? data2 : data;
                         DateTime d2 = DateTime.Compare(data, data2) > 0 ? data : data2;
-                        var carts = db.Carts.Where(c => d1 <= c.SaleDate && c.SaleDate <= d2).OrderByDescending(r => r.Id);
-                        return PartialView("_CartList", carts.ToList());
+                        var cartSearch = new CartSearch<DateTime> { SearchType = searchType, Value = d1, Value2 = d2 };
+                        Session["CartSearch"] = cartSearch;
+                        var carts = ProcessSearch(cartSearch);
+                        if (carts != null && carts.Count() > 0)
+                            return PartialView("_CartList", carts.ToList());
+                        else
+                            return new ContentResult() { Content = "No carts found" };
                     }
                 case nameof(Cart.SearchOptions.SellerName):
                     {
-                        string data = Request.Params["value"].ToUpper();
-                        var carts = db.Carts.Where(c => c.Transactions.Any(t => t.Seller.FirstName.ToUpper().Contains(data) || t.Seller.LastName.ToUpper().Contains(data))).OrderByDescending(r => r.Id);
-                        return PartialView("_CartList", carts.ToList());
+                        string data = Request.Params["value"];
+                        var cartSearch = new CartSearch<string> { SearchType = searchType, Value = data };
+                        Session["CartSearch"] = cartSearch;
+                        data = data.ToUpper();
+                        var carts = ProcessSearch(cartSearch);
+                        if (carts != null && carts.Count() > 0)
+                            return PartialView("_CartList", carts.ToList());
+                        else
+                            return new ContentResult() { Content = "No carts found" };
                     }
                 case nameof(Cart.SearchOptions.SellerUsername):
                     {
                         int data = Int32.Parse(Request.Params["value"]);
-                        var carts = db.Carts.Where(c => c.Transactions.Any(t => t.SellerId == data)).OrderByDescending(r=>r.Id);
-                        return PartialView("_CartList", carts.ToList());
+                        var cartSearch = new CartSearch<int> { SearchType = searchType, Value = data };
+                        Session["CartSearch"] = cartSearch;
+                        var carts = ProcessSearch(cartSearch);
+                        if (carts != null && carts.Count() > 0)
+                            return PartialView("_CartList", carts.ToList());
+                        else
+                            return new ContentResult() { Content = "No carts found" };
+                    }
+            }
+
+            return null;
+        }
+
+
+        private IEnumerable<Cart> ProcessSearch(CartSearch<int> cartSearch)
+        {
+            switch (cartSearch.SearchType)
+            {
+                case nameof(Cart.SearchOptions.None):
+                    {
+                        var logs = db.LogRecords.Where(l => l.RecordType == Utilities.RecordType.New && l.Guid == typeof(Cart).GUID).OrderByDescending(l => l.DateTime).Take(15);
+                        var list = logs.Select(l => db.Carts.FirstOrDefault(c => c.Id == l.RecordId));
+                        return list.ToList();
+                    }
+                case nameof(Cart.SearchOptions.BuyerEmail):
+                    {
+                        var carts = db.Carts.Where(c => c.BuyerEmailId == cartSearch.Value).OrderByDescending(r => r.Id);
+                        return carts.ToList();
+                    }
+                case nameof(Cart.SearchOptions.BuyerUsername):
+                    {
+                        var carts = db.Carts.Where(c => c.BuyerId == cartSearch.Value).OrderByDescending(r => r.Id);
+                        return carts.ToList();
+                    }
+                case nameof(Cart.SearchOptions.SellerUsername):
+                    {
+                        var carts = db.Carts.Where(c => c.Transactions.Any(t => t.SellerId == cartSearch.Value)).OrderByDescending(r => r.Id);
+                        return carts.ToList();
+                    }
+            }
+
+            return null;
+        }
+
+        private IEnumerable<Cart> ProcessSearch(CartSearch<DateTime> cartSearch)
+        {
+            switch (cartSearch.SearchType)
+            {
+                case nameof(Cart.SearchOptions.Date):
+                    {
+                        var carts = db.Carts.Where(c => cartSearch.Value <= c.SaleDate && c.SaleDate <= cartSearch.Value2).OrderByDescending(r => r.Id);
+                        return carts.ToList();
+                    }
+            }
+
+            return null;
+        }
+
+        private IEnumerable<Cart> ProcessSearch(CartSearch<string> cartSearch)
+        {
+            switch (cartSearch.SearchType)
+            {
+                case nameof(Cart.SearchOptions.BuyerName):
+                    {
+                        string name = cartSearch.Value.ToUpper();
+                        var carts = db.Carts.Where(c => c.Buyer.FirstName.ToUpper().Contains(name) || c.Buyer.LastName.ToUpper().Contains(name)).OrderByDescending(r => r.Id);
+                        return carts.ToList();
+                    }
+                case nameof(Cart.SearchOptions.CartNumber):
+                    {
+                        var carts = db.Carts.Where(c => c.CartNumber.ToString().Contains(cartSearch.Value)).OrderByDescending(r => r.Id);
+                        return carts.ToList();
+                    }
+                case nameof(Cart.SearchOptions.SellerName):
+                    {
+                        string name = cartSearch.Value.ToUpper();
+                        var carts = db.Carts.Where(c => c.Transactions.Any(t => t.Seller.FirstName.ToUpper().Contains(name) || t.Seller.LastName.ToUpper().Contains(name))).OrderByDescending(r => r.Id);
+                        return carts.ToList();
                     }
             }
 
