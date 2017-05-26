@@ -417,7 +417,7 @@ namespace Abacus.Controllers
             string result = string.Empty;
             switch (searchType)
             {
-                case nameof(UserRecord.SearchOptions.SellerEmail):
+                case nameof(UserRecord.SearchOptions.Email):
                     {
                         int id = 0;
                         if (loadSession)
@@ -442,7 +442,7 @@ namespace Abacus.Controllers
                         result += "</select>";
                         return result;
                     }
-                case nameof(UserRecord.SearchOptions.SellerPayPalEmail):
+                case nameof(UserRecord.SearchOptions.PayPalEmail):
                     {
                         int id = 0;
                         if (loadSession)
@@ -477,7 +477,7 @@ namespace Abacus.Controllers
                         }
                         return "<input class=\"form-control text-box single-line valid\" data-val=\"true\" data-val-number=\"The field Cart must be a number.\" data-val-required=\"The Cart field is required.\" id=\"" + searchType + "\" name=\"" + searchType + "\" type=\"number\" " + value + " >";
                     }
-                case nameof(UserRecord.SearchOptions.SellerName):
+                case nameof(UserRecord.SearchOptions.Name):
                     {
                         string value = string.Empty;
                         if (loadSession)
@@ -515,7 +515,7 @@ namespace Abacus.Controllers
                         var list = ProcessSearch(search);
                         return PartialView("_UserList", list.ToList());
                     }
-                case nameof(UserRecord.SearchOptions.SellerEmail):
+                case nameof(UserRecord.SearchOptions.Email):
                     {
                         int data = Int32.Parse(Request.Params["value"]);
                         var search = new UserRecordsSearch<int> { SearchType = searchType, Value = data };
@@ -526,7 +526,7 @@ namespace Abacus.Controllers
                         else
                             return new ContentResult() { Content = "No records found" };
                     }
-                case nameof(UserRecord.SearchOptions.SellerPayPalEmail):
+                case nameof(UserRecord.SearchOptions.PayPalEmail):
                     {
                         int data = Int32.Parse(Request.Params["value"]);
                         var search = new UserRecordsSearch<int> { SearchType = searchType, Value = data };
@@ -549,7 +549,7 @@ namespace Abacus.Controllers
                             return new ContentResult() { Content = "No records found" };
                     }               
 
-                case nameof(UserRecord.SearchOptions.SellerName):
+                case nameof(UserRecord.SearchOptions.Name):
                     {
                         string data = Request.Params["value"];
                         var search = new UserRecordsSearch<string> { SearchType = searchType, Value = data };
@@ -575,13 +575,13 @@ namespace Abacus.Controllers
                     {
                         return db.UserRecords.OrderBy(u => u.HDBUserName);
                     }
-                case nameof(UserRecord.SearchOptions.SellerEmail):
+                case nameof(UserRecord.SearchOptions.Email):
                     {
                         int value = (search as UserRecordsSearch<int>).Value;
                         var items = db.UserRecords.Where(c => c.PreferredEmailId == value).OrderByDescending(r => r.Id);
                         return items.ToList();
                     }
-                case nameof(UserRecord.SearchOptions.SellerPayPalEmail):
+                case nameof(UserRecord.SearchOptions.PayPalEmail):
                     {
                         int value = (search as UserRecordsSearch<int>).Value;
                         var items = db.UserRecords.Where(c => c.PayPalEmailId == value).OrderByDescending(r => r.Id);
@@ -593,11 +593,10 @@ namespace Abacus.Controllers
                         var items = db.UserRecords.Where(c => c.PhoneNumber.Contains(value)).OrderByDescending(r => r.Id);
                         return items.ToList();
                     }
-                case nameof(UserRecord.SearchOptions.SellerName):
+                case nameof(UserRecord.SearchOptions.Name):
                     {
                         string value = (search as UserRecordsSearch<string>).Value.ToUpper();
-                        var items = db.UserRecords.Where(c => ((c.UserType & UserRecord.UserTypes.Seller) == UserRecord.UserTypes.Seller) &&
-                                (c.FirstName.ToUpper().Contains(value) || c.LastName.ToUpper().Contains(value))).OrderByDescending(r => r.HDBUserName);
+                        var items = db.UserRecords.Where(c => c.FirstName.ToUpper().Contains(value) || c.LastName.ToUpper().Contains(value)).OrderByDescending(r => r.HDBUserName);
                         return items.ToList();
                     }
             }

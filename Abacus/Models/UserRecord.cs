@@ -64,18 +64,18 @@ namespace Abacus.Models
         public enum SearchOptions
         {
             None,
-            SellerName,
-            SellerEmail,
-            SellerPayPalEmail,
+            Name,
+            Email,
+            PayPalEmail,
             PhoneNumber
         }
 
         public static Dictionary<SearchOptions, string> SearchOptionNames = new Dictionary<SearchOptions, string>()
         {
-            { SearchOptions.SellerName, "Seller name" },
-            { SearchOptions.SellerEmail, "Seller email" },
-            { SearchOptions.SellerPayPalEmail, "Seller PayPal email" },
-            { SearchOptions.PhoneNumber, "Seller phone number" },
+            { SearchOptions.Name, "Name" },
+            { SearchOptions.Email, "Email" },
+            { SearchOptions.PayPalEmail, "PayPal email" },
+            { SearchOptions.PhoneNumber, "Phone number" },
             { SearchOptions.None, "None" }
         };
     }
