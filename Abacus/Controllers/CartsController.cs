@@ -10,6 +10,7 @@ using System.Web.Mvc;
 using Abacus.Models;
 using Abacus.Utility;
 using Abacus.ViewModel;
+using Abacus.Models.Interfaces;
 
 namespace Abacus.Controllers
 {
@@ -24,8 +25,6 @@ namespace Abacus.Controllers
         {
             var logs = db.LogRecords.Where(l => l.RecordType == Utilities.RecordType.New && l.Guid == typeof(Cart).GUID).OrderByDescending(l=>l.DateTime).Take(15);
             var list = logs.Select(l => db.Carts.FirstOrDefault(c => c.Id == l.RecordId));
-            //var tmp = db.Carts.Where(c => logs.Any(l => l.RecordId == c.Id)).ToList() ;
-            //var carts = db.Carts.Include(c => c.Buyer).Include(c => c.BuyerEmail);
             var cartSearch = Session["CartSearch"] ?? new CartSearch<int>() { SearchType = nameof(Cart.SearchOptions.None) };
             CartSearch<int> iSearch = cartSearch as CartSearch<int>;
             CartSearch<string> sSearch = cartSearch as CartSearch<string>;
@@ -725,7 +724,7 @@ namespace Abacus.Controllers
             return "<label>"+searchType+"</label>";
         }
 
-        public class CartSearch<ValueType>
+        public class CartSearch<ValueType> : ISearchType
         {
             public string SearchType { get; set; }
             public ValueType Value { get; set; }
@@ -736,12 +735,12 @@ namespace Abacus.Controllers
         {
             var searchType = Request.Params["type"];
             string result = string.Empty;
+            Session["CartSearch"] = null;
             switch (searchType)
             {
                 case nameof(Cart.SearchOptions.None):
                     {                        
-                        var cartSearch = new CartSearch<int> { SearchType = searchType };
-                        Session["CartSearch"] = null;
+                        var cartSearch = new CartSearch<int> { SearchType = searchType };                        
                         var list = ProcessSearch(cartSearch);
                         return PartialView("_CartList", list);
                     }
@@ -832,7 +831,7 @@ namespace Abacus.Controllers
         }
 
 
-        private IEnumerable<Cart> ProcessSearch(CartSearch<int> cartSearch)
+        private IEnumerable<Cart> ProcessSearch(ISearchType cartSearch)
         {
             switch (cartSearch.SearchType)
             {
@@ -844,56 +843,44 @@ namespace Abacus.Controllers
                     }
                 case nameof(Cart.SearchOptions.BuyerEmail):
                     {
-                        var carts = db.Carts.Where(c => c.BuyerEmailId == cartSearch.Value).OrderByDescending(r => r.Id);
+                        int value = (cartSearch as CartSearch<int>).Value;
+                        var carts = db.Carts.Where(c => c.BuyerEmailId == value).OrderByDescending(r => r.Id);
                         return carts.ToList();
                     }
                 case nameof(Cart.SearchOptions.BuyerUsername):
                     {
-                        var carts = db.Carts.Where(c => c.BuyerId == cartSearch.Value).OrderByDescending(r => r.Id);
+                        int value = (cartSearch as CartSearch<int>).Value;
+                        var carts = db.Carts.Where(c => c.BuyerId == value).OrderByDescending(r => r.Id);
                         return carts.ToList();
                     }
                 case nameof(Cart.SearchOptions.SellerUsername):
                     {
-                        var carts = db.Carts.Where(c => c.Transactions.Any(t => t.SellerId == cartSearch.Value)).OrderByDescending(r => r.Id);
+                        int value = (cartSearch as CartSearch<int>).Value;
+                        var carts = db.Carts.Where(c => c.Transactions.Any(t => t.SellerId == value)).OrderByDescending(r => r.Id);
                         return carts.ToList();
                     }
-            }
-
-            return null;
-        }
-
-        private IEnumerable<Cart> ProcessSearch(CartSearch<DateTime> cartSearch)
-        {
-            switch (cartSearch.SearchType)
-            {
                 case nameof(Cart.SearchOptions.Date):
                     {
-                        var carts = db.Carts.Where(c => cartSearch.Value <= c.SaleDate && c.SaleDate <= cartSearch.Value2).OrderByDescending(r => r.Id);
+                        DateTime d1 = (cartSearch as CartSearch<DateTime>).Value;
+                        DateTime d2 = (cartSearch as CartSearch<DateTime>).Value;
+                        var carts = db.Carts.Where(c => d1 <= c.SaleDate && c.SaleDate <= d2).OrderByDescending(r => r.Id);
                         return carts.ToList();
                     }
-            }
-
-            return null;
-        }
-
-        private IEnumerable<Cart> ProcessSearch(CartSearch<string> cartSearch)
-        {
-            switch (cartSearch.SearchType)
-            {
                 case nameof(Cart.SearchOptions.BuyerName):
                     {
-                        string name = cartSearch.Value.ToUpper();
+                        string name = (cartSearch as CartSearch<string>).Value.ToUpper();
                         var carts = db.Carts.Where(c => c.Buyer.FirstName.ToUpper().Contains(name) || c.Buyer.LastName.ToUpper().Contains(name)).OrderByDescending(r => r.Id);
                         return carts.ToList();
                     }
                 case nameof(Cart.SearchOptions.CartNumber):
                     {
-                        var carts = db.Carts.Where(c => c.CartNumber.ToString().Contains(cartSearch.Value)).OrderByDescending(r => r.Id);
+                        string value = (cartSearch as CartSearch<string>).Value.ToUpper();
+                        var carts = db.Carts.Where(c => c.CartNumber.ToString().Contains(value)).OrderByDescending(r => r.Id);
                         return carts.ToList();
                     }
                 case nameof(Cart.SearchOptions.SellerName):
                     {
-                        string name = cartSearch.Value.ToUpper();
+                        string name = (cartSearch as CartSearch<string>).Value.ToUpper();
                         var carts = db.Carts.Where(c => c.Transactions.Any(t => t.Seller.FirstName.ToUpper().Contains(name) || t.Seller.LastName.ToUpper().Contains(name))).OrderByDescending(r => r.Id);
                         return carts.ToList();
                     }
@@ -901,5 +888,6 @@ namespace Abacus.Controllers
 
             return null;
         }
+
     }
 }

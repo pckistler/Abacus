@@ -253,6 +253,7 @@
     <Compile Include="Models\Country.cs" />
     <Compile Include="Models\Email.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\Interfaces.cs" />
     <Compile Include="Models\LogRecord.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Payout.cs" />
@@ -275,6 +276,7 @@
     <Compile Include="ViewModel\HobbyDBUserVM.cs" />
     <Compile Include="ViewModel\ManageUsersListVM.cs" />
     <Compile Include="ViewModel\TransactionVM.cs" />
+    <Compile Include="ViewModel\UserRecordIndexVM.cs" />
     <Compile Include="ViewModel\UserRecordVM.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -24,7 +24,7 @@ namespace Abacus.ViewModel
             LastName = user.LastName;
             PhoneNumber = user.PhoneNumber;
             Email = user.PreferredEmail.EmailAddress;
-            PayPalEmail = user.PayPalId.EmailAddress;
+            PayPalEmail = user.PayPalEmail.EmailAddress;
             IsBuyer = (user.UserType & Models.UserRecord.UserTypes.Buyer) == Models.UserRecord.UserTypes.Buyer;
             IsSeller = (user.UserType & Models.UserRecord.UserTypes.Seller) == Models.UserRecord.UserTypes.Seller;
             IsNewRecord = false;

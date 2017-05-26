@@ -32,7 +32,7 @@ namespace Abacus.Models
         public int PayPalEmailId { get; set; }
         [Display(Name = "PayPal Email")]
         [ForeignKey("PayPalEmailId")]
-        public virtual Email PayPalId { get; set; }
+        public virtual Email PayPalEmail { get; set; }
 
         public int PreferredEmailId { get; set; }
         [Display(Name = "Email")]
@@ -60,5 +60,23 @@ namespace Abacus.Models
             Seller = 2,
             BuyerSeller = Buyer | Seller
         }
+
+        public enum SearchOptions
+        {
+            None,
+            SellerName,
+            SellerEmail,
+            SellerPayPalEmail,
+            PhoneNumber
+        }
+
+        public static Dictionary<SearchOptions, string> SearchOptionNames = new Dictionary<SearchOptions, string>()
+        {
+            { SearchOptions.SellerName, "Seller name" },
+            { SearchOptions.SellerEmail, "Seller email" },
+            { SearchOptions.SellerPayPalEmail, "Seller PayPal email" },
+            { SearchOptions.PhoneNumber, "Seller phone number" },
+            { SearchOptions.None, "None" }
+        };
     }
 }

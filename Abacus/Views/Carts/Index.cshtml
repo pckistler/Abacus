@@ -5,9 +5,7 @@
 
     ViewBag.Title = "Index";
 
-    var sSearch = search as Abacus.Controllers.CartsController.CartSearch<string>;
-    var iSearch = search as Abacus.Controllers.CartsController.CartSearch<int>;
-    var dateSearch = search as Abacus.Controllers.CartsController.CartSearch<DateTime>;
+    var iSearch = search as Abacus.Models.Interfaces.ISearchType;
 }
 
 <script>
@@ -15,6 +13,15 @@
         if (option == "")
         {
             option = document.getElementById("SearchOptions").value;
+
+            // The following checks to see if the user "closes" the Search by pressing the search button again
+            var ctrl = document.getElementById('searchButton');
+            if (ctrl.getAttribute('aria-expanded')) {
+                // Search "closed", set the search filter to none and refresh
+                option = 'None';
+                document.getElementById("SearchOptions").value = option;
+                ExecuteSearch();
+            }
         }
         xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
@@ -43,6 +50,9 @@
             xhttp.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
                     document.getElementById("CartListing").innerHTML = this.responseText;
+                    var option = document.getElementById("SearchOptions").value;
+                    sessionStorage.setItem("lastCartSearch", option);
+                    sessionStorage.setItem("lastSearchResult", this.responseText);
                 }
                 else {
                     document.getElementById("CartListing").innerHTML = "";
@@ -60,7 +70,7 @@
     <div class="row">
         <div class="col-sm-3">
             @Html.ActionLink("New Cart", "Create", null, new { @class = "btn btn-default" })
-            <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#searchCarts" onclick="SearchOptionChange('', false)">Search</button>
+            <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#searchCarts" id="searchButton" onclick="SearchOptionChange('', false)">Search</button>
         </div>
     </div>
 
@@ -77,39 +87,16 @@
 <div id="CartListing">
     @Html.Partial("_CartList", Model.Carts)
 </div>
-<script>
+<script id="startupScript">
     $(document).ready(function () {
-        @if (search != null)
-        {
-            string rslt = string.Empty;
-            string searchType = string.Empty;
-            string stringFormat = "SearchOptionChange('{0}', true);";
-            if (sSearch != null)
-            {
-                rslt = string.Format(stringFormat, sSearch.SearchType);
-                searchType = sSearch.SearchType;
-            }
-            else if (iSearch != null)
-            {
-                rslt = string.Format(stringFormat, iSearch.SearchType);
-                searchType = iSearch.SearchType;
-            }
-            else if (@dateSearch != null)
-            {
-                rslt = string.Format(stringFormat, dateSearch.SearchType);
-                searchType = dateSearch.SearchType;
-            }
-
-            if (!string.IsNullOrEmpty(rslt))
-            {
-                @Html.Raw("$('.collapse').collapse();\n")
-                @Html.Raw("document.getElementById('SearchOptions').value='" + searchType + "';\n")
-                @Html.Raw(rslt+'\n')
-               // @Html.Raw("ExecuteSearch();\n")
-            }
-
-
-            }
+        if (sessionStorage.lastCartSearch) {
+            var option = sessionStorage.lastCartSearch;
+            if (option != "None")
+            { $('#searchCarts').collapse(); }
+            document.getElementById('SearchOptions').value = option;
+            SearchOptionChange(option, true);
+            document.getElementById("CartListing").innerHTML = sessionStorage.lastSearchResult;
+        }
     });
 </script>
 

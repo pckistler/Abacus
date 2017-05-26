@@ -9,6 +9,7 @@ using System.Web;
 using System.Web.Mvc;
 using Abacus.Models;
 using Abacus.ViewModel;
+using Abacus.Models.Interfaces;
 
 namespace Abacus.Controllers
 {
@@ -19,10 +20,16 @@ namespace Abacus.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: UserRecords
-        public async Task<ActionResult> Index()
+        public ActionResult Index()
         {
-            var userRecords = db.UserRecords.OrderBy(u=>u.HDBUserName).Include(u => u.PayPalId).Include(u => u.PreferredEmail);
-            return View(await userRecords.ToListAsync());
+            var urSearch = Session["UserRecordSearch"] as ISearchType ?? new UserRecordsSearch<int>() { SearchType = nameof(UserRecord.SearchOptions.None) };
+            var userRecords = ProcessSearch(urSearch);
+
+            UserRecordIndexVM urVM = new UserRecordIndexVM();
+            urVM.UserRecords = userRecords.ToList();
+            urVM.SearchOptions = new SelectList(UserRecord.SearchOptionNames, "Key", "Value");
+
+            return View(urVM);
         }
 
         // GET: UserRecords/Details/5
@@ -137,7 +144,8 @@ namespace Abacus.Controllers
             var user = db.UserRecords.FirstOrDefault(u => u.Id == Id);
             if (user != null)
             {
-                return PartialView("_Details", user);
+                var rslt = PartialView("_Details", user);
+                return rslt;
             }
             return View();
         }
@@ -363,7 +371,7 @@ namespace Abacus.Controllers
                     db.SaveChanges();
                     userRecordId = ur.Id;
 
-                    var userRecords = db.UserRecords.Include(u => u.PayPalId).Include(u => u.PreferredEmail);
+                    var userRecords = db.UserRecords.Include(u => u.PayPalEmail).Include(u => u.PreferredEmail);
                     return PartialView("_UserList", userRecords.ToList());
                 }
                 else
@@ -399,6 +407,201 @@ namespace Abacus.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+
+        public string SearchOptions()
+        {
+            var searchType = Request.Params["type"];
+            var loadSession = bool.Parse(Request.Params["LoadSession"]);
+            string result = string.Empty;
+            switch (searchType)
+            {
+                case nameof(UserRecord.SearchOptions.SellerEmail):
+                    {
+                        int id = 0;
+                        if (loadSession)
+                        {
+                            UserRecordsSearch<int> session = Session["UserRecordSearch"] as UserRecordsSearch<int>;
+                            id = session.Value;
+                        }
+
+                        var list = db.UserRecords.Where(u => (u.UserType & UserRecord.UserTypes.Seller) == UserRecord.UserTypes.Seller).Select(r => new { r.PreferredEmail.EmailAddress, r.PreferredEmailId }).OrderBy(o => o.EmailAddress);
+                        result = "<select class=\"form-control\" data-val=\"true\" id=\"" + searchType + "\" name=\"" + searchType + "\">";
+                        var duplicates = new List<string>();
+                        string selected;
+                        foreach (var item in list)
+                        {
+                            selected = id == item.PreferredEmailId ? "selected" : string.Empty;
+                            if (!duplicates.Contains(item.EmailAddress))
+                            {
+                                result += string.Format("<option value = \"{0}\" {2}>{1}</ option >", item.PreferredEmailId, item.EmailAddress, selected);
+                                duplicates.Add(item.EmailAddress);
+                            }
+                        }
+                        result += "</select>";
+                        return result;
+                    }
+                case nameof(UserRecord.SearchOptions.SellerPayPalEmail):
+                    {
+                        int id = 0;
+                        if (loadSession)
+                        {
+                            UserRecordsSearch<int> session = Session["UserRecordSearch"] as UserRecordsSearch<int>;
+                            id = session.Value;
+                        }
+
+                        var list = db.UserRecords.Where(u => (u.UserType & UserRecord.UserTypes.Seller) == UserRecord.UserTypes.Seller).Select(r => new { r.PayPalEmail.EmailAddress, r.PayPalEmailId}).OrderBy(o => o.EmailAddress);
+                        result = "<select class=\"form-control\" data-val=\"true\" id=\"" + searchType + "\" name=\"" + searchType + "\">";
+                        var duplicates = new List<string>();
+                        string selected;
+                        foreach (var item in list)
+                        {
+                            selected = id == item.PayPalEmailId ? "selected" : string.Empty;
+                            if (!duplicates.Contains(item.EmailAddress))
+                            {
+                                result += string.Format("<option value = \"{0}\" {2}>{1}</ option >", item.PayPalEmailId, item.EmailAddress, selected);
+                                duplicates.Add(item.EmailAddress);
+                            }
+                        }
+                        result += "</select>";
+                        return result;
+                    }
+                case nameof(UserRecord.SearchOptions.PhoneNumber):
+                    {
+                        string value = string.Empty;
+                        if (loadSession)
+                        {
+                            UserRecordsSearch<string> session = Session["UserRecordSearch"] as UserRecordsSearch<string>;
+                            value = string.Format("value='{0}'", session.Value);
+                        }
+                        return "<input class=\"form-control text-box single-line valid\" data-val=\"true\" data-val-number=\"The field Cart must be a number.\" data-val-required=\"The Cart field is required.\" id=\"" + searchType + "\" name=\"" + searchType + "\" type=\"number\" " + value + " >";
+                    }
+                case nameof(UserRecord.SearchOptions.SellerName):
+                    {
+                        string value = string.Empty;
+                        if (loadSession)
+                        {
+                            UserRecordsSearch<string> session = Session["UserRecordSearch"] as UserRecordsSearch<string>;
+                            value = string.Format("value='{0}'", session.Value);
+                        }
+                        return "<input class=\"form-control text-box single-line\" data-val=\"true\" id=\"" + searchType + "\" name=\"" + searchType + "\" type=\"text\"" + value + " >";
+                    }
+                case nameof(UserRecord.SearchOptions.None):
+                    return "";
+            }
+
+            return "<label>" + searchType + "</label>";
+        }
+
+
+        public class UserRecordsSearch<ValueType> : ISearchType
+        {
+            public string SearchType { get; set; }
+
+            public ValueType Value { get; set; }
+        }
+
+        public ActionResult ProcessSearch()
+        {
+            var searchType = Request.Params["type"];
+            string result = string.Empty;
+            switch (searchType)
+            {
+                case nameof(UserRecord.SearchOptions.None):
+                    {
+                        var search = new UserRecordsSearch<int> { SearchType = searchType };
+                        Session["UserRecordSearch"] = null;
+                        var list = ProcessSearch(search);
+                        return PartialView("_UserList", list.ToList());
+                    }
+                case nameof(UserRecord.SearchOptions.SellerEmail):
+                    {
+                        int data = Int32.Parse(Request.Params["value"]);
+                        var search = new UserRecordsSearch<int> { SearchType = searchType, Value = data };
+                        Session["UserRecordSearch"] = search;
+                        var users = ProcessSearch(search);
+                        if (users != null && users.Count() > 0)
+                            return PartialView("_UserList", users.ToList());
+                        else
+                            return new ContentResult() { Content = "No records found" };
+                    }
+                case nameof(UserRecord.SearchOptions.SellerPayPalEmail):
+                    {
+                        int data = Int32.Parse(Request.Params["value"]);
+                        var search = new UserRecordsSearch<int> { SearchType = searchType, Value = data };
+                        Session["UserRecordSearch"] = search;
+                        var users = ProcessSearch(search);
+                        if (users != null && users.Count() > 0)
+                            return PartialView("_UserList", users.ToList());
+                        else
+                            return new ContentResult() { Content = "No records found" };
+                    }
+                case nameof(UserRecord.SearchOptions.PhoneNumber):
+                    {
+                        string data = Request.Params["value"];
+                        var search = new UserRecordsSearch<string> { SearchType = searchType, Value = data };
+                        Session["UserRecordSearch"] = search;
+                        var users = ProcessSearch(search);
+                        if (users != null && users.Count() > 0)
+                            return PartialView("_UserList", users.ToList());
+                        else
+                            return new ContentResult() { Content = "No records found" };
+                    }               
+
+                case nameof(UserRecord.SearchOptions.SellerName):
+                    {
+                        string data = Request.Params["value"];
+                        var search = new UserRecordsSearch<string> { SearchType = searchType, Value = data };
+                        Session["UserRecordSearch"] = search;
+                        data = data.ToUpper();
+                        var users = ProcessSearch(search);
+                        if (users != null && users.Count() > 0)
+                            return PartialView("_UserList", users.ToList());
+                        else
+                            return new ContentResult() { Content = "No records found" };
+                    }
+            }
+
+            return null;
+        }
+
+
+        private IEnumerable<UserRecord> ProcessSearch(ISearchType search)
+        {
+            switch (search.SearchType)
+            {
+                case nameof(UserRecord.SearchOptions.None):
+                    {
+                        return db.UserRecords.OrderBy(u => u.HDBUserName);
+                    }
+                case nameof(UserRecord.SearchOptions.SellerEmail):
+                    {
+                        int value = (search as UserRecordsSearch<int>).Value;
+                        var items = db.UserRecords.Where(c => c.PreferredEmailId == value).OrderByDescending(r => r.Id);
+                        return items.ToList();
+                    }
+                case nameof(UserRecord.SearchOptions.SellerPayPalEmail):
+                    {
+                        int value = (search as UserRecordsSearch<int>).Value;
+                        var items = db.UserRecords.Where(c => c.PayPalEmailId == value).OrderByDescending(r => r.Id);
+                        return items.ToList();
+                    }
+                case nameof(UserRecord.SearchOptions.PhoneNumber):
+                    {
+                        string value = (search as UserRecordsSearch<string>).Value;
+                        var items = db.UserRecords.Where(c => c.PhoneNumber.Contains(value)).OrderByDescending(r => r.Id);
+                        return items.ToList();
+                    }
+                case nameof(UserRecord.SearchOptions.SellerName):
+                    {
+                        string value = (search as UserRecordsSearch<string>).Value.ToUpper();
+                        var items = db.UserRecords.Where(c => c.Transactions.Any(t => t.Seller.FirstName.ToUpper().Contains(value) || t.Seller.LastName.ToUpper().Contains(value))).OrderByDescending(r => r.Id);
+                        return items.ToList();
+                    }
+            }
+
+            return null;
         }
     }
 }
