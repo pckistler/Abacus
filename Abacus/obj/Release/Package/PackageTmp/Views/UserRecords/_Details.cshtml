@@ -70,7 +70,7 @@
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.PayPalId.EmailAddress)
+            @Html.DisplayFor(model => model.PayPalEmail.EmailAddress)
         </dd>
 
         <dt>
@@ -109,6 +109,15 @@
                 var amount = Model.Transactions.Where(t => t.SellerId == Model.Id).Sum(x => x.ItemCosts);
             }
             @string.Format("$ {0:0.00}", amount)
+        </dd>
+        <dt>
+            Total Shipping Fees
+        </dt>
+        <dd>
+            @{
+                var shippingFees = Model.Transactions.Where(t => t.SellerId == Model.Id).Sum(x => x.ShippingCost);
+            }
+            @string.Format("$ {0:0.00}", shippingFees)
         </dd>
 
         <dt>

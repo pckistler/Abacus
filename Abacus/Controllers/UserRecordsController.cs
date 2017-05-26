@@ -596,7 +596,8 @@ namespace Abacus.Controllers
                 case nameof(UserRecord.SearchOptions.SellerName):
                     {
                         string value = (search as UserRecordsSearch<string>).Value.ToUpper();
-                        var items = db.UserRecords.Where(c => c.Transactions.Any(t => t.Seller.FirstName.ToUpper().Contains(value) || t.Seller.LastName.ToUpper().Contains(value))).OrderByDescending(r => r.Id);
+                        var items = db.UserRecords.Where(c => ((c.UserType & UserRecord.UserTypes.Seller) == UserRecord.UserTypes.Seller) &&
+                                (c.FirstName.ToUpper().Contains(value) || c.LastName.ToUpper().Contains(value))).OrderByDescending(r => r.HDBUserName);
                         return items.ToList();
                     }
             }
