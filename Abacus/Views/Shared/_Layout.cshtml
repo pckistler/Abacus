@@ -33,7 +33,7 @@
                     <ul class="nav navbar-nav">
                         <li>@Html.ActionLink("Carts", "Index", "Carts")</li>
                         <li>@Html.ActionLink("Buyers / Sellers", "Index", "UserRecords")</li>
-                        <li><a>Reports</a></li>                        
+                        <li>@Html.ActionLink("Report", "Index", "Report")</li>                        
                         @{ 
                             var claims = ((System.Security.Claims.ClaimsIdentity)User.Identity);
                             var isAdmin = claims.Claims.Any(c => c.Type == claims.RoleClaimType && c.Value == "Admin");

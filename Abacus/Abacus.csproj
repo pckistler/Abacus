@@ -204,6 +204,7 @@
     <Compile Include="Controllers\CountriesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Controllers\ShippingCompaniesController.cs" />
     <Compile Include="Controllers\ShippingRecordsController.cs" />
     <Compile Include="Controllers\StatesController.cs" />
@@ -275,6 +276,7 @@
     <Compile Include="ViewModel\PayoutVM.cs" />
     <Compile Include="ViewModel\HobbyDBUserVM.cs" />
     <Compile Include="ViewModel\ManageUsersListVM.cs" />
+    <Compile Include="ViewModel\ReportVM.cs" />
     <Compile Include="ViewModel\TransactionVM.cs" />
     <Compile Include="ViewModel\UserRecordIndexVM.cs" />
     <Compile Include="ViewModel\UserRecordVM.cs" />
@@ -420,6 +422,7 @@
     <Content Include="Views\UserRecords\_Carts.cshtml" />
     <Content Include="Views\UserRecords\_CartList.cshtml" />
     <Content Include="Views\UserRecords\_CartListItem.cshtml" />
+    <Content Include="Views\Report\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
