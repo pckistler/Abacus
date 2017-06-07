@@ -63,7 +63,7 @@
 
 
 <div class="row">
-    <button type="button" class="btn editor-user_record" data-id="0" data-toggle="modal" data-target="#editor-user_record" data-title="Create Buyer / Seller" data-dlg_target="user_listing" id="AddUser" name="AddUser">Add Buyer / Seller</button>
+    <button type="button" class="btn editor-user_record" data-id="0" data-toggle="modal" data-target="#editor-user_record" data-title="Create Buyer / Seller" data-dlg_target="UserRecordsListing" id="AddUser" name="AddUser">Add Buyer / Seller</button>
     <button type="button" class="btn btn-default" id="searchButton" data-toggle="collapse" data-target="#searchUserRecords" onclick="SearchOptionChange('', false)">Search</button>
 </div>
 <div class="collapse" id="searchUserRecords">
@@ -137,7 +137,7 @@
             $('#editor-content-user_record').html("");
             $('#editor-user_record').modal('hide');
 
-            RefreshSomeEventListener();
+           RefreshSomeEventListener();
         }
 
         function failureMethod(xhr, status, error) {

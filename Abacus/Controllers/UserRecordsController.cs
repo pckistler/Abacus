@@ -290,6 +290,7 @@ namespace Abacus.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult HobbyDBUser(HobbyDBUserVM hdbUser)
         {
             int userRecordId = 0;
@@ -371,7 +372,7 @@ namespace Abacus.Controllers
                     db.SaveChanges();
                     userRecordId = ur.Id;
 
-                    var userRecords = db.UserRecords.Include(u => u.PayPalEmail).Include(u => u.PreferredEmail);
+                    var userRecords = db.UserRecords.OrderBy(r=>r.HDBUserName).Include(u => u.PayPalEmail).Include(u => u.PreferredEmail);
                     return PartialView("_UserList", userRecords.ToList());
                 }
                 else
