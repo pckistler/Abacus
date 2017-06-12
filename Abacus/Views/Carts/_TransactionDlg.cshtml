@@ -40,7 +40,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="control-label col-sm-5" for="@nameof(Model.NumItems)">Total Items Cost (in $)</label>
+                    <label class="control-label col-sm-5" for="@nameof(Model.NumItems)">Number of Items</label>
                     @*@Html.LabelFor(model => model.ItemsTotal, htmlAttributes: new { @class = "control-label col-sm-4" })*@
                     <div class="col-sm-7">
                         @{ value = string.Format("{0}", (Model.NumItems == 0?1:Model.NumItems));}

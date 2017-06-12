@@ -100,8 +100,8 @@
                 var target = $(this).attr('data-dlg_target');
                 var ctl = "UserRecords";
                 var method = "HobbyDBUser";
-                var successMethod = "successMethod";
-                var failMethod = "failureMethod";
+                var successFunc = "successMethod";
+                var failFunc = "failureMethod";
                 //var target = if (id[0]=='') ?
                 var url = "/Carts/HobbyDBUserDialog?Id=" + pid +
                     "&UserType=" + defType +
@@ -109,8 +109,8 @@
                     "&dlgTarget=" + target +
                     "&dlgCtrl=" + ctl +
                     "&dlgMethod=" + method +
-                    "&dlgSuccess=" + successMethod +
-                    "&dlgFailure=" + failMethod +
+                    "&dlgSuccess=" + successFunc +
+                    "&dlgFailure=" + failFunc +
                     "&dlgTime=" + Date.now().toString(); // HACK, This should keep the page from being cached
                 $.ajax({
                     url: url,
@@ -137,7 +137,7 @@
             $('#editor-content-user_record').html("");
             $('#editor-user_record').modal('hide');
 
-           RefreshSomeEventListener();
+            RefreshSomeEventListener();
         }
 
         function failureMethod(xhr, status, error) {

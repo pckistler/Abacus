@@ -173,3 +173,4 @@ C:\Users\Peter_2\Documents\Visual Studio 2015\Projects\Abacus\Abacus\obj\Debug\A
 C:\Users\Peter_2\Documents\Visual Studio 2015\Projects\Abacus\Abacus\obj\Debug\Abacus.csproj.GenerateResource.Cache
 C:\Users\Peter_2\Documents\Visual Studio 2015\Projects\Abacus\Abacus\obj\Debug\Abacus.dll
 C:\Users\Peter_2\Documents\Visual Studio 2015\Projects\Abacus\Abacus\obj\Debug\Abacus.pdb
+C:\Users\Peter_2\Documents\Visual Studio 2015\Projects\Abacus\Abacus\obj\Debug\Abacus.csprojResolveAssemblyReference.cache
