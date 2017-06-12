@@ -55,10 +55,10 @@
             @Html.LabelFor(model => model.CartNumber, htmlAttributes: new { @class = "control-label col-sm-3" })
             <div class="col-sm-3">
                 @{
-                    var defValue = "";
-                    if (Model.CartNumber > 0)
+                    // This keeps the error from showing up if the user tabs off the cart field with the value set to 0
+                    if (Model.CartNumber == 0)
                     {
-                        defValue = Model.CartNumber.ToString();
+                        Model.CartNumber = 1;
                     }
                 }
                 @Html.EditorFor(model => model.CartNumber, new { htmlAttributes = new { @class = "form-control", tabindex = tabIndex } })

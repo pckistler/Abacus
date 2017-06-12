@@ -40,7 +40,12 @@
         @userType
     }
 </td>
-
+<td class="text-right" >
+    @{ 
+        var payoutAmount = item.Transactions?.Sum(t=>t.PayOut) ?? 0 - item.Payouts?.Sum(i => i.Amount) ?? 0;
+    }
+    @string.Format("$ {0:0.00}", payoutAmount)
+</td>
 
 
 <td>

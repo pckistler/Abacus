@@ -90,7 +90,10 @@
         $(function () {
             $('.btn-transaction-dialog').click(function () {
                 var pid = $(this).attr('data-id');
-                var url = "TransactionDialogContents?Id=" + pid;
+                var nItems = document.getElementById("NumberOfItems").value;
+                var itemsAmount = document.getElementById("ItemsAmount").value;
+                var shippingAmount = document.getElementById("ShippingAmount").value;
+                var url = "TransactionDialogContents?Id=" + pid + "&nItems=" + nItems + "&iAmount=" + itemsAmount + "&sAmount=" + shippingAmount;
                 $.ajax({
                     url: url,
                     cache: false,

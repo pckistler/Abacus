@@ -63,7 +63,7 @@
 
 
 <div class="row">
-    <button type="button" class="btn editor-user_record" data-id="0" data-toggle="modal" data-target="#editor-user_record" data-title="Create Buyer / Seller" data-dlg_target="user_listing" id="AddUser" name="AddUser">Add Buyer / Seller</button>
+    <button type="button" class="btn editor-user_record" data-id="0" data-toggle="modal" data-target="#editor-user_record" data-title="Create Buyer / Seller" data-dlg_target="UserRecordsListing" id="AddUser" name="AddUser">Add Buyer / Seller</button>
     <button type="button" class="btn btn-default" id="searchButton" data-toggle="collapse" data-target="#searchUserRecords" onclick="SearchOptionChange('', false)">Search</button>
 </div>
 <div class="collapse" id="searchUserRecords">
@@ -100,8 +100,8 @@
                 var target = $(this).attr('data-dlg_target');
                 var ctl = "UserRecords";
                 var method = "HobbyDBUser";
-                var successMethod = "successMethod";
-                var failMethod = "failureMethod";
+                var successFunc = "successMethod";
+                var failFunc = "failureMethod";
                 //var target = if (id[0]=='') ?
                 var url = "/Carts/HobbyDBUserDialog?Id=" + pid +
                     "&UserType=" + defType +
@@ -109,8 +109,8 @@
                     "&dlgTarget=" + target +
                     "&dlgCtrl=" + ctl +
                     "&dlgMethod=" + method +
-                    "&dlgSuccess=" + successMethod +
-                    "&dlgFailure=" + failMethod +
+                    "&dlgSuccess=" + successFunc +
+                    "&dlgFailure=" + failFunc +
                     "&dlgTime=" + Date.now().toString(); // HACK, This should keep the page from being cached
                 $.ajax({
                     url: url,

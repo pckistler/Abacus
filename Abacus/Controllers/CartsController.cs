@@ -14,7 +14,6 @@ using Abacus.Models.Interfaces;
 
 namespace Abacus.Controllers
 {
-    [Authorize]
     [Authorize(Roles = "Admin,User")]
     public class CartsController : Controller
     {
@@ -525,13 +524,30 @@ namespace Abacus.Controllers
 
         public ActionResult TransactionDialogContents()
         {
-            int id = 0;
+            int id = 0;            
+
             TransactionVM tr = new TransactionVM();
             if (Int32.TryParse(Request.Params["Id"], out id))
             {
                 TransactionRecord user = db.TransactionRecords.SingleOrDefault(u => u.Id == id);
                 if (user != null)
+                {
                     tr = new TransactionVM(user);
+
+                }
+                int nItems = int.Parse(Request["nItems"]);
+                double iAmount = double.Parse(Request["iAmount"]);
+                double sAmount = double.Parse(Request["sAmount"]);
+                var transactions = Session["Transactions"] as List<TransactionVM>;
+                if (transactions != null)
+                {
+                    nItems -= transactions.Sum(t => t.NumItems);
+                    iAmount -= transactions.Sum(t => t.ItemsTotal);
+                    sAmount -= transactions.Sum(t => t.ShippingTotal);
+                }
+                tr.NumItems = nItems;
+                tr.ItemsTotal = iAmount;
+                tr.ShippingTotal = sAmount;
             }
             else
             {

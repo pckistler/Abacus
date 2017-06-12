@@ -65,7 +65,6 @@ namespace Abacus.ViewModel
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
 
-        [Required]
         [Display(Name ="PayPal Email")]
         [DataType(DataType.EmailAddress)]
         public string PayPalEmail { get; set; }

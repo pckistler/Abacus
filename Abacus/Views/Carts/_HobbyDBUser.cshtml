@@ -1,17 +1,17 @@
 ﻿@model Abacus.ViewModel.HobbyDBUserVM
 
-@{ 
+@{
     var action = "Modify ";
     if (Model.IsNewRecord)
     { action = "Create "; }
 
-    var controller = ""+Request.Params["Controller"];
+    var controller = "" + Request.Params["Controller"];
     if (controller == null || controller == "")
     { controller = "Carts"; }
 
     var updateTarget = Request.Params["UpdateTarget"];
     var title = action + " ";// hobbyDB ";
-    if ((Model.IsBuyer == Model.IsSeller ))//|| Model.Id > 0)
+    if ((Model.IsBuyer == Model.IsSeller))//|| Model.Id > 0)
     { title += "Buyer / Seller"; }
     else if (Model.IsBuyer)
     {
@@ -24,6 +24,13 @@
         updateTarget = "seller_dropdown";
     }
     ViewBag.ListType = Model.IsBuyer;
+
+    object payPalAttributes = new { htmlAttributes = new { @class = "form-control" } };
+
+    if (Model.IsSeller)
+    {
+        payPalAttributes = new { htmlAttributes = new { @class = "form-control", required = "The PayPal Email field is required." } };
+    }
 
 }
 @*<script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.js")" type="text/javascript"></script>
@@ -176,7 +183,8 @@
                 <div class="form-group">
                     @Html.LabelFor(model => model.PayPalEmail, htmlAttributes: new { @class = "control-label col-sm-4" })
                     <div class="col-sm-8">
-                        @Html.EditorFor(model => model.PayPalEmail, new { htmlAttributes = new { @class = "form-control" } })
+                        
+                        @Html.EditorFor(model => model.PayPalEmail, payPalAttributes)
                         @Html.ValidationMessageFor(model => model.PayPalEmail, "", new { @class = "text-danger" })
                     </div>
                 </div>

@@ -13,20 +13,20 @@ using Abacus.Models.Interfaces;
 
 namespace Abacus.Controllers
 {
-    [Authorize]
     [Authorize(Roles = "Admin,User")]
     public class UserRecordsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: UserRecords
+        [OutputCache(VaryByParam = "*", Duration = 0, NoStore = true)]
         public ActionResult Index()
         {
             var urSearch = Session["UserRecordSearch"] as ISearchType ?? new UserRecordsSearch<int>() { SearchType = nameof(UserRecord.SearchOptions.None) };
             var userRecords = ProcessSearch(urSearch);
 
             UserRecordIndexVM urVM = new UserRecordIndexVM();
-            urVM.UserRecords = userRecords.ToList();
+            urVM.UserRecords = userRecords;//.ToList();
             urVM.SearchOptions = new SelectList(UserRecord.SearchOptionNames, "Key", "Value");
 
             return View(urVM);
@@ -131,11 +131,11 @@ namespace Abacus.Controllers
         // POST: UserRecords/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeleteConfirmed(int id)
+        public ActionResult DeleteConfirmed(int id)
         {
-            UserRecord userRecord = await db.UserRecords.FindAsync(id);
+            UserRecord userRecord = db.UserRecords.Find(id);
             db.UserRecords.Remove(userRecord);
-            await db.SaveChangesAsync();
+            db.SaveChanges();
             return RedirectToAction("Index");
         }
 
@@ -574,30 +574,30 @@ namespace Abacus.Controllers
             {
                 case nameof(UserRecord.SearchOptions.None):
                     {
-                        return db.UserRecords.OrderBy(u => u.HDBUserName);
+                        return db.UserRecords.OrderBy(u => u.HDBUserName).ToList();
                     }
                 case nameof(UserRecord.SearchOptions.Email):
                     {
                         int value = (search as UserRecordsSearch<int>).Value;
-                        var items = db.UserRecords.Where(c => c.PreferredEmailId == value).OrderByDescending(r => r.Id);
+                        var items = db.UserRecords.Where(c => c.PreferredEmailId == value).OrderBy(r => r.HDBUserName);
                         return items.ToList();
                     }
                 case nameof(UserRecord.SearchOptions.PayPalEmail):
                     {
                         int value = (search as UserRecordsSearch<int>).Value;
-                        var items = db.UserRecords.Where(c => c.PayPalEmailId == value).OrderByDescending(r => r.Id);
+                        var items = db.UserRecords.Where(c => c.PayPalEmailId == value).OrderBy(r => r.HDBUserName);
                         return items.ToList();
                     }
                 case nameof(UserRecord.SearchOptions.PhoneNumber):
                     {
                         string value = (search as UserRecordsSearch<string>).Value;
-                        var items = db.UserRecords.Where(c => c.PhoneNumber.Contains(value)).OrderByDescending(r => r.Id);
+                        var items = db.UserRecords.Where(c => c.PhoneNumber.Contains(value)).OrderBy(r => r.HDBUserName);
                         return items.ToList();
                     }
                 case nameof(UserRecord.SearchOptions.Name):
                     {
                         string value = (search as UserRecordsSearch<string>).Value.ToUpper();
-                        var items = db.UserRecords.Where(c => c.FirstName.ToUpper().Contains(value) || c.LastName.ToUpper().Contains(value)).OrderByDescending(r => r.HDBUserName);
+                        var items = db.UserRecords.Where(c => c.FirstName.ToUpper().Contains(value) || c.LastName.ToUpper().Contains(value)).OrderBy(r => r.HDBUserName);
                         return items.ToList();
                     }
             }
